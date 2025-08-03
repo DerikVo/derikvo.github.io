@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reflections - Derik Vo</title>
+    <script>
+      // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+      if (
+        localStorage.getItem("color-theme") === "dark" ||
+        (!("color-theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    </script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header>
+      <nav class="sticky">
+        <div class="container">
+          <a href="index.html" class="logo">Derik Vo</a>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropbtn">Coursework ▼</a>
+              <div class="dropdown-content">
+                <a href="coursework-phase1.html">Phase 1: Placements</a>
+                <a href="coursework-phase2.html">Phase 2: Environment</a>
+                <a href="coursework-phase3.html">Phase 3: TPA/Knowledge</a>
+                <a href="coursework-phase4.html">Phase 4: Practitioner</a>
+                <a href="coursework-phase5.html"
+                  >Phase 5: Putting It All Together</a
+                >
+              </div>
+            </li>
+            <li><a href="reflections.html">Reflections</a></li>
+            <li><a href="journal.html">Journal</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropbtn">Resources ▼</a>
+              <div class="dropdown-content">
+                <a href="ed-tech-tools.html">EdTech Tools</a>
+                <a href="english-learner-emerging-bilingual.html"
+                  >ESL/Bilingual</a
+                >
+                <a href="reading-resource-list.html">Reading List</a>
+                <a href="acronym-dictionary.html">Acronyms</a>
+              </div>
+            </li>
+          </ul>
+          <button
+            id="theme-toggle"
+            type="button"
+            class="theme-toggle-button"
+            aria-label="Toggle dark and light mode"
+          >
+            <svg
+              id="theme-toggle-dark-icon"
+              class="toggle-icon hidden"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+            >
+              <path
+                d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+              ></path>
+            </svg>
+            <svg
+              id="theme-toggle-light-icon"
+              class="toggle-icon hidden"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+            >
+              <path
+                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <h1>Reflections</h1>
+      <p class="subtitle">My thoughts on teaching, learning, and equity.</p>
+
+      <article class="journal-entry">
+        <h2>Reflection: Teacher Biases, Empathy, and Cultural Awareness</h2>
+        <p class="meta">Date: August 2, 2025</p>
+        <p>
+          This week, I learned about how different biases can impact teachers.
+          The "curse of knowledge" really stood out. This is when a teacher
+          assumes students have the background knowledge to understand a topic,
+          which can highlight an inability to understand a student's zone of
+          proximal development. This bias can also lead to a misalignment
+          between a teacher's and a student's learning styles. As we learned in
+          class, when students are unfamiliar with "rote" learning, they spend
+          more time building those skills. Because of that, they may fall behind
+          and be viewed from a deficit perspective rather than from their
+          strengths. As a result, these students are often mislabeled as low
+          performing.
+        </p>
+        <p>
+          Additionally, I've witnessed how survivorship bias and confirmation
+          bias can impact a student. I've seen teachers use success stories of
+          similar students to overlook a student's struggles. I've seen teachers
+          say a student didn't need accommodations because other students like
+          them didn't. For example, there was a time a teacher denied an
+          accommodation for a student experiencing bereavement. This teacher
+          didn't budge until higher-ups were involved. These biases and lack of
+          empathy have taught me the importance of building empathy and
+          perspective-taking in teachers. Every student has different needs and
+          levels of resilience, and teachers need to be more understanding of
+          the unique support each student requires.
+        </p>
+        <p>
+          Other than that, I enjoyed learning about other people's cultures
+          during the "Who am I?" presentations. Particularly how anti-caste
+          system Indians use their father's and/or mother's name for their last
+          name. So some may feel weird being called by their last name because
+          it is their parent's name.
+        </p>
+      </article>
+
+      <article class="journal-entry">
+        <h2>Reflection: The Nuances of ADHD Diagnosis and Intervention</h2>
+        <p class="meta">Date: July 25, 2025</p>
+        <p>
+          One thing I learned this week was about the prevalence of ADHD
+          diagnoses in eastern states. It calls into question the granularity of
+          what populations are being diagnosed and medicated for ADHD. It
+          reminds me of a therapist I've talked to who mentions people of color
+          are often misdiagnosed because cultural experiences are not accounted
+          for. For example, they mention
+          <a
+            href="https://psychiatryonline.org/doi/10.1176/appi.ps.201800223"
+            target="_blank"
+            rel="noopener noreferrer"
+            >how African-American male teens are more likely to be diagnosed
+            with schizophrenia even though they clearly display signs of severe
+            depression (Gara et al., 2023).</a
+          >
+        </p>
+        <p>
+          Do these students have ADHD, or are they being misdiagnosed? It
+          reminds me of students I've worked with in special ed that get put on
+          medication due to behavior problems who lose all their personality and
+          become very compliant, which was brought up in the video we watched in
+          class. Are we supporting students with ADHD? Or are we using ADHD as
+          an excuse to force students to become compliant? I bring this up
+          because I was on the opposite end of this dilemma; I had undiagnosed
+          ADHD and instead of receiving support for it, I was labeled as an
+          English language learner even though I was only fluent in English.
+          Although I was able to sit still, I had difficulty focusing on
+          relevant tasks and struggled with prioritizing them. So it comes into
+          question: how many students are misdiagnosed with ADHD, and how many
+          are undiagnosed?
+        </p>
+        <p>
+          Another point that I found interesting during our discussion is
+          whether medication is age-appropriate. Are we expecting preschool
+          children to sit for long periods of time and labeling them as
+          misbehaving if they don't? Circling back to misdiagnosis, are we
+          pushing for an ADHD diagnosis because we believe not being able to sit
+          still is a symptom? It reminds me of the pyramid of intervention. Why
+          do people often jump to medication instead of accommodating the
+          environment or material? It should go from the least invasive to the
+          most intensive intervention. I hope that I can become more aware of
+          any biases and assumptions I have to prevent perpetuating inequity,
+          such as the teacher mentioned in the reading that believed families
+          living in poverty were not investing in education. I hope I have a
+          trusted network of colleagues that will challenge any biases I may
+          hold.
+        </p>
+      </article>
+
+      <article class="journal-entry">
+        <h2>Reflection: TPEs, Adaptive Technology, and Professional Growth</h2>
+        <p class="meta">Date: July 19, 2025</p>
+        <p>
+          One of the things I learned this week is the "teacher performance
+          expectations" (TPEs) and the competencies that are expected of
+          incoming teachers. Specifically, sections 1.4 and 4.4 mention a
+          multi-tiered system of supports, which is something I referenced in a
+          discussion post. One thing I'm excited about that was mentioned in the
+          TPEs is the use of adaptive technology. Through experience working
+          with medically fragile students who require various adaptations
+          involving switches, I often find myself (as a paraeducator)
+          collaborating with teachers, occupational therapists, physical
+          therapists, and adapted P.E. teachers to adapt activities to allow
+          students to participate. For example, using switches and devices to
+          pour dirt and seeds, turn on watering hoses, and communicate in a
+          gardening activity. Then as a part of earth science, we categorize
+          things we grow as well as smell the different fragrances of the herbs
+          we grow.
+        </p>
+        <p>
+          By reviewing the TPEs, I was able to identify what I have done and
+          areas where I need to develop. Although the document is dense, I enjoy
+          skimming through to find areas of strength/experience or areas of
+          deficit/growth. For example, in area 4.5, I have experience in writing
+          (mock) IEP and IFSP forms, but it has been years since I've done them.
+          Additionally, I don't have experience with ITP or 504 plans, so that
+          helped me identify my zone of proximal growth. This document can be
+          paired with mentor feedback and self-reflection to better align my
+          competencies to teacher performance expectations.
+        </p>
+      </article>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>&copy; 2025 Derik Vo</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
