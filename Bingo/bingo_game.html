@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bingo Game</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 10px;
+        box-sizing: border-box;
+      }
+
+      .bingo-board-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 10px auto;
+        padding: 10px;
+        border: 2px solid #ccc;
+        background-color: #fff;
+        border-radius: 10px;
+        box-sizing: border-box;
+      }
+
+      .bingo-board {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: min(8px, 1.5vw);
+        width: 100%;
+        aspect-ratio: 1;
+        margin: 10px auto;
+      }
+
+      .bingo-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #000;
+        color: white;
+        font-size: min(12px, 2.5vw);
+        font-weight: bold;
+        border: 2px solid #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        text-align: center;
+        border-radius: 8px;
+        padding: 4px;
+        box-sizing: border-box;
+        aspect-ratio: 1;
+        min-height: 60px;
+        word-wrap: break-word;
+        hyphens: auto;
+      }
+
+      .bingo-cell.clicked {
+        background-color: #28a745;
+      }
+
+      .bingo-cell.free {
+        background-color: #28a745;
+        color: white;
+        pointer-events: none;
+        font-size: min(14px, 3vw);
+        font-weight: bold;
+      }
+
+      .button-container {
+        margin: 15px 0;
+      }
+
+      button {
+        padding: 8px 16px;
+        font-size: min(14px, 3vw);
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        margin: 5px;
+      }
+
+      .seed-container {
+        margin: 15px 0;
+      }
+
+      .seed-container input {
+        font-size: min(14px, 3vw);
+        padding: 5px;
+        margin: 0 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: min(80px, 20vw);
+      }
+
+      .seed-container label {
+        font-size: min(14px, 3vw);
+      }
+
+      .bingo-board.bingo {
+        background-color: #d4edda;
+        border-radius: 10px;
+        padding: 5px;
+      }
+
+      h1 {
+        font-size: min(24px, 5vw);
+        margin: 10px 0;
+      }
+
+      /* Media queries for extra small screens */
+      @media (max-width: 480px) {
+        .bingo-cell {
+          min-height: 50px;
+          font-size: 10px;
+          padding: 2px;
+        }
+
+        .bingo-cell.free {
+          font-size: 11px;
+        }
+
+        .seed-container input {
+          width: 60px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Bingo Game</h1>
+
+    <div class="seed-container">
+      <label for="seedInput">Set Seed: </label>
+      <input type="number" id="seedInput" value="123" />
+      <button onclick="generateBingoCard()">Generate New Card</button>
+    </div>
+
+    <div class="bingo-board-container">
+      <div class="bingo-board" id="bingo-board"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.3/seedrandom.min.js"></script>
+    <script>
+      const bingoContent = [
+        { text: "Has a dog" },
+        { text: "Has a cat" },
+        { text: "Wearing glasses today" },
+        { text: "Has blue eyes" },
+        { text: "Has brown eyes" },
+        { text: "Curtains are visible" },
+        { text: "Has a water bottle" },
+        { text: "Is sitting on the floor" },
+        { text: "Has a pillow" },
+        { text: "Has pink nail polish" },
+        { text: "Has white nail polish" },
+        { text: "Has a nose piercing" },
+        { text: "Has earrings on" },
+        { text: "Has a microphone" },
+        { text: "Is biting their nails" },
+        { text: "Is wearing a necklace" },
+        { text: "Has coffee or tea" },
+        { text: "Is working from bed" },
+        { text: "Is wearing blue" },
+        { text: "Uses a virtual background" },
+        { text: "Has no background" },
+        { text: "Has a pony tail" },
+        { text: "A plant is visible" },
+        { text: "Has a blurred background" },
+        { text: "Is eating" },
+        { text: "Is drinking" },
+        { text: "Has posters on their wall" },
+        { text: "Has blonde hair" },
+        { text: "Has black hair" },
+        { text: "Has brown hair" },
+        { text: "Is wearing white" },
+        { text: "Is wearing black" },
+        { text: "Is wearing pajamas" },
+        { text: "Is wearing glasses" },
+        { text: "Is in an office" },
+        { text: "Has long hair" },
+        { text: "Has short hair" },
+        { text: "Teaches at the same district" },
+        { text: "Teaches at the same school" },
+        { text: "Earning the same credential" },
+        { text: "Wearing Glasses" },
+        { text: "Is wearing a watch" },
+        { text: "Is wearing a ring" },
+        { text: "Has clips in their hair" },
+        { text: "Another person is visible" },
+      ];
+
+      let pickedStrings = [];
+      let bingoCard = [];
+
+      function generateBingoCard() {
+        const seedValue = parseInt(document.getElementById("seedInput").value);
+        setRandomSeed(seedValue);
+
+        // Clear picked strings when generating new card
+        pickedStrings = [];
+
+        // Generate the Bingo card
+        bingoCard = generateCard(bingoContent, 5);
+        renderCard(bingoCard);
+      }
+
+      function setRandomSeed(seed) {
+        Math.seedrandom(seed); // Set seed for random number generation
+      }
+
+      function generateCard(contentList, size = 5) {
+        const selectedContent = [];
+        const usedContent = new Set();
+
+        // Randomly pick content for each cell (24 cells, excluding the center)
+        while (selectedContent.length < size * size - 1) {
+          const randomIndex = Math.floor(Math.random() * contentList.length);
+          const content = contentList[randomIndex].text;
+          if (!usedContent.has(content)) {
+            usedContent.add(content);
+            selectedContent.push({ type: "text", text: content });
+          }
+        }
+
+        // Shuffle the 24 selected items
+        selectedContent.sort(() => Math.random() - 0.5);
+
+        // Create 5x5 Bingo grid with FREE SPACE in center
+        const card = [];
+        let contentIndex = 0;
+
+        for (let i = 0; i < size; i++) {
+          card[i] = [];
+          for (let j = 0; j < size; j++) {
+            // Center position (2,2) gets FREE SPACE
+            if (i === 2 && j === 2) {
+              card[i][j] = { text: "FREE SPACE" };
+            } else {
+              card[i][j] = selectedContent[contentIndex++];
+            }
+          }
+        }
+
+        return card;
+      }
+
+      function renderCard(card) {
+        const board = document.getElementById("bingo-board");
+        board.innerHTML = ""; // Clear previous board
+
+        card.forEach((row, i) => {
+          row.forEach((cell, j) => {
+            const cellElement = document.createElement("div");
+            cellElement.classList.add("bingo-cell");
+            cellElement.textContent = cell.text;
+            if (cell.text === "FREE SPACE") {
+              cellElement.classList.add("free");
+              cellElement.textContent = "FREE SPACE";
+            }
+            cellElement.onclick = () => handleCellClick(cellElement, cell.text);
+            board.appendChild(cellElement);
+          });
+        });
+      }
+
+      function handleCellClick(cell, content) {
+        if (content === "FREE SPACE") return; // Don't allow clicking on the FREE SPACE
+        if (pickedStrings.includes(content)) {
+          pickedStrings = pickedStrings.filter((item) => item !== content);
+          cell.classList.remove("clicked");
+        } else {
+          pickedStrings.push(content);
+          cell.classList.add("clicked");
+        }
+
+        // Check if Bingo is achieved
+        if (checkBingo()) {
+          document.querySelector(".bingo-board").classList.add("bingo");
+        } else {
+          document.querySelector(".bingo-board").classList.remove("bingo");
+        }
+      }
+
+      function checkBingo() {
+        // Check rows, columns, and diagonals
+        for (let i = 0; i < 5; i++) {
+          // Check row
+          if (
+            bingoCard[i].every(
+              (cell) =>
+                cell.text === "FREE SPACE" || pickedStrings.includes(cell.text)
+            )
+          ) {
+            return true;
+          }
+          // Check column
+          if (
+            bingoCard.every(
+              (row) =>
+                row[i].text === "FREE SPACE" ||
+                pickedStrings.includes(row[i].text)
+            )
+          ) {
+            return true;
+          }
+        }
+        // Check diagonals
+        if (
+          bingoCard.every(
+            (row, idx) =>
+              row[idx].text === "FREE SPACE" ||
+              pickedStrings.includes(row[idx].text)
+          )
+        ) {
+          return true;
+        }
+        if (
+          bingoCard.every(
+            (row, idx) =>
+              row[4 - idx].text === "FREE SPACE" ||
+              pickedStrings.includes(row[4 - idx].text)
+          )
+        ) {
+          return true;
+        }
+
+        return false;
+      }
+
+      generateBingoCard(); // Initial card generation
+    </script>
+  </body>
+</html>
