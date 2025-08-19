@@ -5,33 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bingo Game</title>
     <style>
+      html,
       body {
         font-family: Arial, sans-serif;
         text-align: center;
         background-color: #f4f4f4;
         margin: 0;
-        padding: 10px;
+        padding: 0;
+        height: 100vh;
+        overflow: hidden; /* Prevents scrolling */
         box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+      }
+
+      h1 {
+        font-size: min(20px, 4vw);
+        margin: 5px 0;
+        flex-shrink: 0;
+      }
+
+      .seed-container {
+        margin: 5px 0;
+        flex-shrink: 0;
+      }
+
+      .seed-container input {
+        font-size: min(12px, 2.5vw);
+        padding: 3px;
+        margin: 0 3px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: min(60px, 15vw);
+      }
+
+      .seed-container label {
+        font-size: min(12px, 2.5vw);
+      }
+
+      button {
+        padding: 6px 12px;
+        font-size: min(12px, 2.5vw);
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        margin: 3px;
       }
 
       .bingo-board-container {
-        width: 100%;
-        max-width: 600px;
-        margin: 10px auto;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         padding: 10px;
-        border: 2px solid #ccc;
-        background-color: #fff;
-        border-radius: 10px;
         box-sizing: border-box;
+        min-height: 0; /* Important for flex child */
       }
 
       .bingo-board {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: min(8px, 1.5vw);
+        gap: min(6px, 1vw);
         width: 100%;
+        max-width: min(500px, 80vw);
         aspect-ratio: 1;
-        margin: 10px auto;
+        background-color: #fff;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        padding: 8px;
+        box-sizing: border-box;
       }
 
       .bingo-cell {
@@ -40,17 +84,16 @@
         align-items: center;
         background-color: #fbff00;
         color: rgb(0, 0, 0);
-        font-size: min(12px, 2.5vw);
+        font-size: min(10px, 2vw);
         font-weight: bold;
         border: 2px solid #fff;
         cursor: pointer;
         transition: background-color 0.3s;
         text-align: center;
-        border-radius: 8px;
-        padding: 4px;
+        border-radius: 6px;
+        padding: 2px;
         box-sizing: border-box;
         aspect-ratio: 1;
-        min-height: 60px;
         word-wrap: break-word;
         hyphens: auto;
       }
@@ -63,67 +106,32 @@
         background-color: #28a745;
         color: rgb(0, 0, 0);
         pointer-events: none;
-        font-size: min(14px, 3vw);
+        font-size: min(11px, 2.2vw);
         font-weight: bold;
-      }
-
-      .button-container {
-        margin: 15px 0;
-      }
-
-      button {
-        padding: 8px 16px;
-        font-size: min(14px, 3vw);
-        cursor: pointer;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        margin: 5px;
-      }
-
-      .seed-container {
-        margin: 15px 0;
-      }
-
-      .seed-container input {
-        font-size: min(14px, 3vw);
-        padding: 5px;
-        margin: 0 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        width: min(80px, 20vw);
-      }
-
-      .seed-container label {
-        font-size: min(14px, 3vw);
       }
 
       .bingo-board.bingo {
         background-color: #d4edda;
         border-radius: 10px;
-        padding: 5px;
-      }
-
-      h1 {
-        font-size: min(24px, 5vw);
-        margin: 10px 0;
       }
 
       /* Media queries for extra small screens */
       @media (max-width: 480px) {
         .bingo-cell {
-          min-height: 50px;
-          font-size: 10px;
-          padding: 2px;
+          font-size: 8px;
+          padding: 1px;
         }
 
         .bingo-cell.free {
-          font-size: 11px;
+          font-size: 9px;
         }
 
         .seed-container input {
-          width: 60px;
+          width: 50px;
+        }
+
+        h1 {
+          font-size: 16px;
         }
       }
     </style>
