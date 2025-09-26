@@ -17,7 +17,6 @@
       }
     </script>
     <style>
-      /* Base styles - adapted from your existing CSS structure */
       * {
         margin: 0;
         padding: 0;
@@ -74,6 +73,83 @@
         text-decoration: none;
       }
 
+      /* Navigation styles */
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      nav ul li {
+        position: relative;
+      }
+
+      nav ul li a {
+        text-decoration: none;
+        font-weight: 500;
+        color: #374151;
+        transition: color 0.2s ease;
+      }
+
+      nav ul li a:hover {
+        color: #007bff;
+      }
+
+      .dark nav ul li a {
+        color: #d1d5db;
+      }
+
+      .dark nav ul li a:hover {
+        color: #60a5fa;
+      }
+
+      /* Dropdown menu */
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        min-width: 200px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+
+      .dropdown-content a {
+        display: block;
+        padding: 10px 15px;
+        color: #374151;
+        text-decoration: none;
+        font-weight: normal;
+      }
+
+      .dropdown-content a:hover {
+        background: #f3f4f6;
+        color: #007bff;
+      }
+
+      .dark .dropdown-content {
+        background: #374151;
+        border-color: #4b5563;
+      }
+
+      .dark .dropdown-content a {
+        color: #f9fafb;
+      }
+
+      .dark .dropdown-content a:hover {
+        background: #4b5563;
+        color: #60a5fa;
+      }
+
+      /* Show dropdown on hover */
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+
       .theme-toggle-button {
         background: none;
         border: 2px solid #e5e7eb;
@@ -124,7 +200,6 @@
         color: #9ca3af;
       }
 
-      /* Search and filter styles */
       .controls {
         display: flex;
         flex-direction: column;
@@ -208,7 +283,6 @@
         color: #9ca3af;
       }
 
-      /* Journal entry styles */
       .journal-entry {
         background: #fff;
         border: 1px solid #e5e7eb;
@@ -322,20 +396,6 @@
         color: #9ca3af;
       }
 
-      /* Highlight search results */
-      .highlight {
-        background-color: #fef3c7;
-        color: #92400e;
-        padding: 1px 2px;
-        border-radius: 2px;
-        font-weight: 500;
-      }
-
-      .dark .highlight {
-        background-color: #f59e0b;
-        color: #000;
-      }
-
       footer {
         background: #f9fafb;
         border-top: 1px solid #e5e7eb;
@@ -350,7 +410,6 @@
         color: #9ca3af;
       }
 
-      /* Responsive design */
       @media (max-width: 768px) {
         .search-row {
           flex-direction: column;
@@ -378,21 +437,43 @@
 
   <body>
     <header>
-      <nav>
+      <nav class="sticky">
         <div class="container">
-          <a href="#" class="logo">Derik Vo</a>
-          <button
-            id="theme-toggle"
-            type="button"
-            class="theme-toggle-button"
-            aria-label="Toggle dark and light mode"
-          >
+          <a href="index.html" class="logo">Derik Vo</a>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropbtn">Coursework ▼</a>
+              <div class="dropdown-content">
+                <a href="coursework-phase1.html">Phase 1: Placements</a>
+                <a href="coursework-phase2.html">Phase 2: Environment</a>
+                <a href="coursework-phase3.html">Phase 3: TPA/Knowledge</a>
+                <a href="coursework-phase4.html">Phase 4: Practitioner</a>
+                <a href="coursework-phase5.html"
+                  >Phase 5: Putting It All Together</a
+                >
+              </div>
+            </li>
+            <li><a href="reflections.html">Reflections</a></li>
+            <li><a href="journal.html">Journal</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropbtn">Resources ▼</a>
+              <div class="dropdown-content">
+                <a href="ed-tech-tools.html">EdTech Tools</a>
+                <a href="english-learner-emerging-bilingual.html"
+                  >ESL/Bilingual</a
+                >
+                <a href="reading-resource-list.html">Reading List</a>
+                <a href="acronym-dictionary.html">Acronyms</a>
+              </div>
+            </li>
+          </ul>
+          <button id="theme-toggle" type="button" class="theme-toggle-button">
             <svg
               id="theme-toggle-dark-icon"
               class="toggle-icon hidden"
               fill="currentColor"
               viewBox="0 0 20 20"
-              aria-hidden="true"
             >
               <path
                 d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
@@ -403,7 +484,6 @@
               class="toggle-icon hidden"
               fill="currentColor"
               viewBox="0 0 20 20"
-              aria-hidden="true"
             >
               <path
                 d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
@@ -460,10 +540,8 @@
       let journalData = [];
       let filteredData = [];
 
-      // Load journal entries from CSV
       async function loadJournalEntries() {
         try {
-          console.log("Loading journal entries from CSV...");
           const response = await fetch("Data/journal-entries.csv");
 
           if (!response.ok) {
@@ -471,7 +549,6 @@
           }
 
           const csvText = await response.text();
-          console.log("CSV loaded, parsing...");
 
           Papa.parse(csvText, {
             header: true,
@@ -479,9 +556,6 @@
             dynamicTyping: false,
             delimitersToGuess: [",", "\t", "|", ";"],
             complete: function (results) {
-              console.log("Parse results:", results);
-
-              // Clean and process the data
               journalData = results.data
                 .map((row) => ({
                   title: (row.title || "").trim(),
@@ -495,265 +569,161 @@
                   year: new Date(row.date || "").getFullYear(),
                 }))
                 .filter((entry) => entry.title && entry.date && entry.content)
-                .sort((a, b) => b.dateObj - a.dateObj); // Sort by date, newest first
-
-              console.log("Processed journal data:", journalData);
+                .sort((a, b) => b.dateObj - a.dateObj);
 
               if (journalData.length === 0) {
                 document.getElementById("entriesContainer").innerHTML =
-                  '<div class="no-results">No valid journal entries found in CSV file. Check console for details.</div>';
+                  '<div class="no-results">No valid journal entries found in CSV file.</div>';
                 return;
               }
 
+              // Populate year filter
+              const years = [...new Set(journalData.map((entry) => entry.year))]
+                .filter((year) => !isNaN(year))
+                .sort((a, b) => b - a);
+              const yearFilter = document.getElementById("yearFilter");
+              yearFilter.innerHTML = '<option value="all">All Years</option>';
+              years.forEach((year) => {
+                const option = document.createElement("option");
+                option.value = year;
+                option.textContent = year;
+                yearFilter.appendChild(option);
+              });
+
               filteredData = [...journalData];
-              populateYearFilter();
-              sortEntries("date-desc");
-              displayEntries();
-              updateCount();
+              renderEntries(filteredData);
             },
             error: function (error) {
               console.error("Error parsing CSV:", error);
               document.getElementById("entriesContainer").innerHTML =
-                '<div class="no-results">Error parsing CSV file. Check console for details.</div>';
+                '<div class="no-results">Error loading journal entries. Please check the console for details.</div>';
             },
           });
         } catch (error) {
-          console.error("Error loading CSV file:", error);
-          document.getElementById(
-            "entriesContainer"
-          ).innerHTML = `<div class="no-results">Error loading Data/journal-entries.csv: ${error.message}<br><br>
-            <strong>To set up your journal system:</strong><br>
-            1. Create a folder called "Data" in your website directory<br>
-            2. Save your journal entries as "journal-entries.csv" in that folder<br>
-            3. Use the CSV format provided in the instructions</div>`;
+          console.error("Error loading journal entries:", error);
+          document.getElementById("entriesContainer").innerHTML =
+            '<div class="no-results">Error loading journal entries. Please check the console for details.</div>';
         }
       }
 
-      // Populate year filter dropdown
-      function populateYearFilter() {
-        const years = [...new Set(journalData.map((entry) => entry.year))].sort(
-          (a, b) => b - a
-        );
-        const yearFilter = document.getElementById("yearFilter");
-
-        // Clear existing options except "All Years"
-        yearFilter.innerHTML = '<option value="all">All Years</option>';
-
-        years.forEach((year) => {
-          const option = document.createElement("option");
-          option.value = year;
-          option.textContent = year;
-          yearFilter.appendChild(option);
-        });
-      }
-
-      // Sort entries based on selected criteria
-      function sortEntries(criteria) {
-        filteredData.sort((a, b) => {
-          switch (criteria) {
-            case "date-desc":
-              return b.dateObj - a.dateObj;
-            case "date-asc":
-              return a.dateObj - b.dateObj;
-            case "title-asc":
-              return a.title.localeCompare(b.title);
-            case "title-desc":
-              return b.title.localeCompare(a.title);
-            default:
-              return b.dateObj - a.dateObj;
-          }
-        });
-      }
-
-      // Display journal entries
-      function displayEntries() {
+      function renderEntries(data) {
         const container = document.getElementById("entriesContainer");
+        const countDiv = document.getElementById("entryCount");
 
-        if (filteredData.length === 0) {
+        if (data.length === 0) {
           container.innerHTML =
-            '<div class="no-results">No journal entries found matching your search criteria.</div>';
+            '<div class="no-results">No matching reflections found.</div>';
+          countDiv.textContent = "0 entries found";
           return;
         }
 
-        const html = filteredData
+        countDiv.textContent = `${data.length} entr${
+          data.length === 1 ? "y" : "ies"
+        } found`;
+
+        container.innerHTML = data
           .map(
             (entry) => `
-          <article class="journal-entry">
+          <div class="journal-entry">
             <h2>${entry.title}</h2>
             <div class="meta">
-              <span class="date-badge">${formatDate(entry.date)}</span>
-              <span>${entry.tags.slice(0, 3).join(", ")}</span>
+              <span class="date-badge">${new Date(
+                entry.date
+              ).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}</span>
+              ${
+                entry.tags.length
+                  ? `<span>Tags: ${entry.tags.join(", ")}</span>`
+                  : ""
+              }
             </div>
-            <div class="content">
-              ${entry.content
-                .split("\n\n")
-                .map((paragraph) => `<p>${paragraph}</p>`)
-                .join("")}
-            </div>
-          </article>
+            <p>${entry.content.replace(/\n/g, "<br>")}</p>
+          </div>
         `
           )
           .join("");
-
-        container.innerHTML = html;
       }
 
-      // Format date for display
-      function formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-      }
-
-      // Update entry count display
-      function updateCount() {
-        const countElement = document.getElementById("entryCount");
-        const total = journalData.length;
-        const showing = filteredData.length;
-
-        if (showing === total) {
-          countElement.textContent = `Showing all ${total} reflection${
-            total !== 1 ? "s" : ""
-          }`;
-        } else {
-          countElement.textContent = `Found ${showing} of ${total} reflection${
-            total !== 1 ? "s" : ""
-          }`;
-        }
-      }
-
-      // Search functionality
-      function searchEntries(query) {
-        const searchTerm = query.trim().toLowerCase();
-
-        if (!searchTerm) {
-          filteredData = [...journalData];
-        } else {
-          filteredData = journalData.filter(
-            (entry) =>
-              entry.title.toLowerCase().includes(searchTerm) ||
-              entry.content.toLowerCase().includes(searchTerm) ||
-              entry.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
-          );
-        }
-
-        // Apply current year filter
-        applyYearFilter();
-
-        // Apply current sort
-        const sortValue = document.getElementById("sortSelect").value;
-        sortEntries(sortValue);
-
-        displayEntries();
-        updateCount();
-      }
-
-      // Apply year filter
-      function applyYearFilter() {
-        const yearFilter = document.getElementById("yearFilter").value;
-
-        if (yearFilter !== "all") {
-          filteredData = filteredData.filter(
-            (entry) => entry.year === parseInt(yearFilter)
-          );
-        }
-      }
-
-      // Filter by year
-      function filterByYear(year) {
-        const searchTerm = document
+      function filterAndSortEntries() {
+        const searchInput = document
           .getElementById("searchInput")
-          .value.trim()
-          .toLowerCase();
-
-        if (searchTerm) {
-          filteredData = journalData.filter(
-            (entry) =>
-              entry.title.toLowerCase().includes(searchTerm) ||
-              entry.content.toLowerCase().includes(searchTerm) ||
-              entry.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
-          );
-        } else {
-          filteredData = [...journalData];
-        }
-
-        if (year !== "all") {
-          filteredData = filteredData.filter(
-            (entry) => entry.year === parseInt(year)
-          );
-        }
-
+          .value.toLowerCase();
         const sortValue = document.getElementById("sortSelect").value;
-        sortEntries(sortValue);
-        displayEntries();
-        updateCount();
-      }
+        const yearValue = document.getElementById("yearFilter").value;
 
-      // Debounce function for search
-      function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-          const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-          };
-          clearTimeout(timeout);
-          timeout = setTimeout(later, wait);
-        };
-      }
+        filteredData = journalData.filter((entry) => {
+          const matchesSearch =
+            entry.title.toLowerCase().includes(searchInput) ||
+            entry.content.toLowerCase().includes(searchInput) ||
+            entry.tags.some((tag) => tag.toLowerCase().includes(searchInput));
 
-      // Theme toggle functionality
-      function initThemeToggle() {
-        const themeToggle = document.getElementById("theme-toggle");
-        const darkIcon = document.getElementById("theme-toggle-dark-icon");
-        const lightIcon = document.getElementById("theme-toggle-light-icon");
+          const matchesYear =
+            yearValue === "all" || entry.year.toString() === yearValue;
 
-        // Set initial icon state
-        const isDark = document.documentElement.classList.contains("dark");
-        darkIcon.classList.toggle("hidden", !isDark);
-        lightIcon.classList.toggle("hidden", isDark);
-
-        themeToggle.addEventListener("click", function () {
-          document.documentElement.classList.toggle("dark");
-          const isDark = document.documentElement.classList.contains("dark");
-          localStorage.setItem("color-theme", isDark ? "dark" : "light");
-
-          darkIcon.classList.toggle("hidden", !isDark);
-          lightIcon.classList.toggle("hidden", isDark);
-        });
-      }
-
-      // Initialize everything
-      document.addEventListener("DOMContentLoaded", function () {
-        loadJournalEntries();
-        initThemeToggle();
-
-        // Search functionality with debouncing
-        const searchInput = document.getElementById("searchInput");
-        const debouncedSearch = debounce((query) => searchEntries(query), 300);
-
-        searchInput.addEventListener("input", (e) => {
-          debouncedSearch(e.target.value);
+          return matchesSearch && matchesYear;
         });
 
-        // Sort functionality
-        document
-          .getElementById("sortSelect")
-          .addEventListener("change", (e) => {
-            sortEntries(e.target.value);
-            displayEntries();
-          });
+        switch (sortValue) {
+          case "date-desc":
+            filteredData.sort((a, b) => b.dateObj - a.dateObj);
+            break;
+          case "date-asc":
+            filteredData.sort((a, b) => a.dateObj - b.dateObj);
+            break;
+          case "title-asc":
+            filteredData.sort((a, b) => a.title.localeCompare(b.title));
+            break;
+          case "title-desc":
+            filteredData.sort((a, b) => b.title.localeCompare(a.title));
+            break;
+        }
 
-        // Year filter functionality
-        document
-          .getElementById("yearFilter")
-          .addEventListener("change", (e) => {
-            filterByYear(e.target.value);
-          });
+        renderEntries(filteredData);
+      }
+
+      // Event listeners
+      document
+        .getElementById("searchInput")
+        .addEventListener("input", filterAndSortEntries);
+      document
+        .getElementById("sortSelect")
+        .addEventListener("change", filterAndSortEntries);
+      document
+        .getElementById("yearFilter")
+        .addEventListener("change", filterAndSortEntries);
+
+      // Theme toggle
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const darkIcon = document.getElementById("theme-toggle-dark-icon");
+      const lightIcon = document.getElementById("theme-toggle-light-icon");
+
+      function updateThemeIcons() {
+        if (document.documentElement.classList.contains("dark")) {
+          lightIcon.classList.remove("hidden");
+          darkIcon.classList.add("hidden");
+        } else {
+          darkIcon.classList.remove("hidden");
+          lightIcon.classList.add("hidden");
+        }
+      }
+
+      themeToggleBtn.addEventListener("click", () => {
+        document.documentElement.classList.toggle("dark");
+        localStorage.setItem(
+          "color-theme",
+          document.documentElement.classList.contains("dark") ? "dark" : "light"
+        );
+        updateThemeIcons();
       });
+
+      // Initialize theme icons on load
+      updateThemeIcons();
+
+      // Load journal entries
+      loadJournalEntries();
     </script>
   </body>
 </html>
