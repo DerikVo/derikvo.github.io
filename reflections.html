@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reflections - Derik Vo</title>
     <script>
-      // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+      // Theme handling
       if (
         localStorage.getItem("color-theme") === "dark" ||
         (!("color-theme" in localStorage) &&
@@ -16,42 +16,371 @@
         document.documentElement.classList.remove("dark");
       }
     </script>
-    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Base styles - adapted from your existing CSS structure */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: #fff;
+        transition: all 0.3s ease;
+      }
+
+      .dark body {
+        color: #f9fafb;
+        background: #1f2937;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        background: #fff;
+        border-bottom: 1px solid #e5e7eb;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .dark header {
+        background: #1f2937;
+        border-bottom-color: #374151;
+      }
+
+      nav {
+        padding: 1rem 0;
+      }
+
+      nav .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      .theme-toggle-button {
+        background: none;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .dark .theme-toggle-button {
+        border-color: #4b5563;
+      }
+
+      .toggle-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      main {
+        padding: 2rem 0;
+        min-height: calc(100vh - 140px);
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        color: #1f2937;
+      }
+
+      .dark h1 {
+        color: #f9fafb;
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+        color: #6b7280;
+        margin-bottom: 2rem;
+      }
+
+      .dark .subtitle {
+        color: #9ca3af;
+      }
+
+      /* Search and filter styles */
+      .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background: #f9fafb;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .dark .controls {
+        background: #374151;
+        border-color: #4b5563;
+      }
+
+      .search-row {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-input {
+        flex: 1;
+        min-width: 250px;
+        padding: 12px 16px;
+        font-size: 16px;
+        border: 2px solid #d1d5db;
+        border-radius: 8px;
+        outline: none;
+        transition: border-color 0.3s ease;
+      }
+
+      .search-input:focus {
+        border-color: #007bff;
+      }
+
+      .dark .search-input {
+        background-color: #4b5563;
+        border-color: #6b7280;
+        color: #f9fafb;
+      }
+
+      .dark .search-input:focus {
+        border-color: #60a5fa;
+      }
+
+      .filter-controls {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .sort-select,
+      .year-filter {
+        padding: 8px 12px;
+        border: 2px solid #d1d5db;
+        border-radius: 6px;
+        background: #fff;
+        font-size: 14px;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+      }
+
+      .dark .sort-select,
+      .dark .year-filter {
+        background: #4b5563;
+        border-color: #6b7280;
+        color: #f9fafb;
+      }
+
+      .entry-count {
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 1rem;
+      }
+
+      .dark .entry-count {
+        color: #9ca3af;
+      }
+
+      /* Journal entry styles */
+      .journal-entry {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .journal-entry:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .dark .journal-entry {
+        background: #374151;
+        border-color: #4b5563;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+
+      .dark .journal-entry:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
+
+      .journal-entry h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: #1f2937;
+        line-height: 1.3;
+      }
+
+      .dark .journal-entry h2 {
+        color: #f9fafb;
+      }
+
+      .meta {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .dark .meta {
+        color: #9ca3af;
+      }
+
+      .date-badge {
+        background: #eff6ff;
+        color: #1d4ed8;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .dark .date-badge {
+        background: #1e3a8a;
+        color: #93c5fd;
+      }
+
+      .journal-entry p {
+        margin-bottom: 1rem;
+        text-align: justify;
+      }
+
+      .journal-entry a {
+        color: #007bff;
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.3s ease;
+      }
+
+      .journal-entry a:hover {
+        border-bottom-color: #007bff;
+      }
+
+      .dark .journal-entry a {
+        color: #60a5fa;
+      }
+
+      .dark .journal-entry a:hover {
+        border-bottom-color: #60a5fa;
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 3rem;
+        color: #6b7280;
+        font-style: italic;
+        background: #f9fafb;
+        border-radius: 12px;
+        border: 2px dashed #d1d5db;
+      }
+
+      .dark .no-results {
+        background: #374151;
+        color: #9ca3af;
+        border-color: #4b5563;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 3rem;
+        color: #6b7280;
+      }
+
+      .dark .loading {
+        color: #9ca3af;
+      }
+
+      /* Highlight search results */
+      .highlight {
+        background-color: #fef3c7;
+        color: #92400e;
+        padding: 1px 2px;
+        border-radius: 2px;
+        font-weight: 500;
+      }
+
+      .dark .highlight {
+        background-color: #f59e0b;
+        color: #000;
+      }
+
+      footer {
+        background: #f9fafb;
+        border-top: 1px solid #e5e7eb;
+        padding: 2rem 0;
+        text-align: center;
+        color: #6b7280;
+      }
+
+      .dark footer {
+        background: #1f2937;
+        border-top-color: #374151;
+        color: #9ca3af;
+      }
+
+      /* Responsive design */
+      @media (max-width: 768px) {
+        .search-row {
+          flex-direction: column;
+        }
+
+        .search-input {
+          min-width: 100%;
+        }
+
+        .filter-controls {
+          justify-content: space-between;
+          width: 100%;
+        }
+
+        .journal-entry {
+          padding: 1.5rem;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+      }
+    </style>
   </head>
 
   <body>
     <header>
-      <nav class="sticky">
+      <nav>
         <div class="container">
-          <a href="index.html" class="logo">Derik Vo</a>
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropbtn">Coursework ▼</a>
-              <div class="dropdown-content">
-                <a href="coursework-phase1.html">Phase 1: Placements</a>
-                <a href="coursework-phase2.html">Phase 2: Environment</a>
-                <a href="coursework-phase3.html">Phase 3: TPA/Knowledge</a>
-                <a href="coursework-phase4.html">Phase 4: Practitioner</a>
-                <a href="coursework-phase5.html"
-                  >Phase 5: Putting It All Together</a
-                >
-              </div>
-            </li>
-            <li><a href="reflections.html">Reflections</a></li>
-            <li><a href="journal.html">Journal</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropbtn">Resources ▼</a>
-              <div class="dropdown-content">
-                <a href="ed-tech-tools.html">EdTech Tools</a>
-                <a href="english-learner-emerging-bilingual.html"
-                  >ESL/Bilingual</a
-                >
-                <a href="reading-resource-list.html">Reading List</a>
-                <a href="acronym-dictionary.html">Acronyms</a>
-              </div>
-            </li>
-          </ul>
+          <a href="#" class="logo">Derik Vo</a>
           <button
             id="theme-toggle"
             type="button"
@@ -90,275 +419,34 @@
     <main class="container">
       <h1>Reflections</h1>
       <p class="subtitle">My thoughts on teaching, learning, and equity.</p>
-      <article class="journal-entry">
-        <h2>
-          Reflection: Dual Coding Theory and Multimodal Learning for English
-          Language Learners
-        </h2>
-        <p class="meta">Date: August 30, 2025</p>
-        <p>
-          This week, I explored the concept of Dual Coding Theory and its role
-          in enhancing vocabulary acquisition for English language learners.
-          Although I have applied this principle in special education by pairing
-          icons with verbal communication, I had not examined the underlying
-          research until this week. The logic behind this approach is was
-          sensible and studies support it, using multiple information inputs
-          improves knowledge encoding, enhances retention, and reduces cognitive
-          overload
-          <a
-            href="https://www.ntu.ac.uk/about-us/teaching/academic-development-and-quality/cadq-blogs/dual-coding-exploring-opportunities-to-deliver-learning-content-in-now"
-            target="_blank"
-            rel="noopener noreferrer"
-            >(NTU, N.D.)</a
-          >. A study by
-          <a
-            href="https://imagine.sa.ucsb.edu/issue/54/2025/effects-visual-imagery-recall-memory-dual-coding-or-depth-processing"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Ziv (2025)</a
-          >
-          reinforces the benefits of visual aids, their finding suggests
-          participants who used linguistic monomodal (words only) had the least
-          recall compared to those who used visual imagery or dual encoding.
-        </p>
-        <p>
-          However, I also found research that observed conflicting perceived
-          outcomes of this method, which are often influenced by student
-          characteristics or instructional approaches
-          <a
-            href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8963493/#S8"
-            target="_blank"
-            rel="noopener noreferrer"
-            >(Li et al., 2022)</a
-          >. In interviews, some students reported increased motivation, deeper
-          impressions of words, and a stronger ability to form associations
-          through multimodal learning. Other students, however, found the
-          approach to be more time-consuming and distracting. They argue that
-          multimodal learning strategies need to be refined to best support
-          student needs. For instance, a study by
-          <a
-            href="https://ir.ung.edu/files/pdf?fileid=e69ea02f-d90f-45f0-8356-70ddd1f26fd8"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Wooten and Cuevas (2024)</a
-          >
-          found that students who received a dual-coding intervention scored 25
-          points higher on a social studies vocabulary test than peers who
-          received traditional instruction. The researchers reference studies
-          with similar positive outcomes for English as a Second Language (ESL)
-          and English as a Foreign Language (EFL) students exposed to a
-          dual-coding intervention.
-        </p>
-        <p>
-          These findings underscore the benefits of dual coding while also
-          highlighting the importance of using meaningful multimodal stimuli to
-          minimize time inefficiencies and distractions. This is consistent with
-          my clinical experience, where my mentor emphasized the need for
-          consistent visual icons in special education classrooms. Consistent
-          icons, they argue, enable students to generalize tasks across
-          different contexts, such as personal schedules or station activities.
-          I have observed that students in the program who come from different
-          school districts or programs often use varying icon sets, which can
-          create confusion for the learner.
-        </p>
-      </article>
-      <article class="journal-entry">
-        <h2>
-          Reflection: Dyslexia, the Prison Pipeline, and Advocacy Challenges
-        </h2>
-        <p class="meta">Date: August 24, 2025</p>
-        <p>
-          One of the most interesting things I learned this week was how common
-          dyslexia is, according to the CBS video we watched, a fifth of the
-          population experiences dyslexia. Furthermore, it was especially
-          surprising that half of the prison population had dyslexia. This
-          really sheds light on the idea of the literacy-to-prison pipeline we
-          learned about in class.
-        </p>
-        <p>
-          Another surprising concept was the notion that dyslexia runs in
-          families. This raises several questions: How might a student be
-          impacted if they are born with dyslexia and live in an environment
-          with factors that also increase their likelihood of ending up in the
-          prison pipeline? What if they don't have the support to accommodate
-          their dyslexia? What if their school doesn't screen for dyslexia, and
-          instead, their teachers label them as misbehaving? This lack of
-          screening and support could lead teachers to have lower expectations
-          or even punish these students. This reminds me of a peer from my
-          childhood. Our teacher made fun of them for reading slowly and paused
-          a lot. What if that peer had dyslexia and now feels unsafe at school
-          because of it? It's frustrating to see how many components in a
-          student's ecological systems can impact their trajectory.
-        </p>
-        <p>
-          The following sessions paired nicely with the dyslexia unit. I learned
-          that dyslexia is not a listed disability under the IDEA; instead, it's
-          considered a specific learning disability. Because of this, there are
-          many nuances in how a student gets a diagnosis and whether they
-          qualify for an IEP or 504 plan. As an education support network (ESN)
-          resident, it makes me nervous to see how difficult it can be to
-          advocate for our students because so many different systems determine
-          their eligibility and what services they get. I learned from my mentor
-          that a teacher can recommend goodness of fit for a program or what
-          services a student needs, but its ultimately up to the principle or
-          other administrators.
-        </p>
-      </article>
-      <article class="journal-entry">
-        <h2>
-          Reflection: Vulnerability, Perfectionism, and Intellectual Curiosity
-        </h2>
-        <p class="meta">Date: August 16, 2025</p>
-        <p>
-          One thing I found helpful this week was learning about vulnerability
-          and how often we numb ourselves to it. I found the idea that when we
-          numb one emotion, we numb multiple emotions, and how that affects our
-          coping mechanisms, especially interesting. For example, when we strive
-          for perfection in ourselves and our children, we can negatively impact
-          both our mental health and theirs.
-        </p>
-        <p>
-          This general idea came up in discussions with my colleagues, where we
-          discussed how correctness creates an environment where students are
-          afraid to make mistakes, damaging their intellectual curiosity. We
-          also discussed how this leads to a fixed mindset, widening the gap
-          between students in environments that foster intellectual curiosity.
-          One colleague shared how their mentor teacher would intentionally make
-          mistakes to help students feel more comfortable with errors. Other
-          colleagues shared their own examples of being comfortable with making
-          mistakes.
-        </p>
-        <p>
-          Pairing this with the reflective listening exercise, I realized how
-          crucial it is to create warm, welcoming spaces free from judgment. By
-          being vulnerable and actively listening, we learned how comforting it
-          is to have our feelings acknowledged and how much more accurately we
-          can label our emotions as well as rethink our interpretations of
-          events.
-        </p>
-      </article>
-      <article class="journal-entry">
-        <h2>Reflection: Teacher Biases, Empathy, and Cultural Awareness</h2>
-        <p class="meta">Date: August 2, 2025</p>
-        <p>
-          This week, I learned about how different biases can impact teachers.
-          The "curse of knowledge" really stood out. This is when a teacher
-          assumes students have the background knowledge to understand a topic,
-          which can highlight an inability to understand a student's zone of
-          proximal development. This bias can also lead to a misalignment
-          between a teacher's and a student's learning styles. As we learned in
-          class, when students are unfamiliar with "rote" learning, they spend
-          more time building those skills. Because of that, they may fall behind
-          and be viewed from a deficit perspective rather than from their
-          strengths. As a result, these students are often mislabeled as low
-          performing.
-        </p>
-        <p>
-          Additionally, I've witnessed how survivorship bias and confirmation
-          bias can impact a student. I've seen teachers use success stories of
-          similar students to overlook a student's struggles. I've seen teachers
-          say a student didn't need accommodations because other students like
-          them didn't. For example, there was a time a teacher denied an
-          accommodation for a student experiencing bereavement. This teacher
-          didn't budge until higher-ups were involved. These biases and lack of
-          empathy have taught me the importance of building empathy and
-          perspective-taking in teachers. Every student has different needs and
-          levels of resilience, and teachers need to be more understanding of
-          the unique support each student requires.
-        </p>
-        <p>
-          Other than that, I enjoyed learning about other people's cultures
-          during the "Who am I?" presentations. Particularly how anti-caste
-          system Indians use their father's and/or mother's name for their last
-          name. So some may feel weird being called by their last name because
-          it is their parent's name.
-        </p>
-      </article>
 
-      <article class="journal-entry">
-        <h2>Reflection: The Nuances of ADHD Diagnosis and Intervention</h2>
-        <p class="meta">Date: July 25, 2025</p>
-        <p>
-          One thing I learned this week was about the prevalence of ADHD
-          diagnoses in eastern states. It calls into question the granularity of
-          what populations are being diagnosed and medicated for ADHD. It
-          reminds me of a therapist I've talked to who mentions people of color
-          are often misdiagnosed because cultural experiences are not accounted
-          for. For example, they mention
-          <a
-            href="https://psychiatryonline.org/doi/10.1176/appi.ps.201800223"
-            target="_blank"
-            rel="noopener noreferrer"
-            >how African-American male teens are more likely to be diagnosed
-            with schizophrenia even though they clearly display signs of severe
-            depression (Gara et al., 2023).</a
-          >
-        </p>
-        <p>
-          Do these students have ADHD, or are they being misdiagnosed? It
-          reminds me of students I've worked with in special ed that get put on
-          medication due to behavior problems who lose all their personality and
-          become very compliant, which was brought up in the video we watched in
-          class. Are we supporting students with ADHD? Or are we using ADHD as
-          an excuse to force students to become compliant? I bring this up
-          because I was on the opposite end of this dilemma; I had undiagnosed
-          ADHD and instead of receiving support for it, I was labeled as an
-          English language learner even though I was only fluent in English.
-          Although I was able to sit still, I had difficulty focusing on
-          relevant tasks and struggled with prioritizing them. So it comes into
-          question: how many students are misdiagnosed with ADHD, and how many
-          are undiagnosed?
-        </p>
-        <p>
-          Another point that I found interesting during our discussion is
-          whether medication is age-appropriate. Are we expecting preschool
-          children to sit for long periods of time and labeling them as
-          misbehaving if they don't? Circling back to misdiagnosis, are we
-          pushing for an ADHD diagnosis because we believe not being able to sit
-          still is a symptom? It reminds me of the pyramid of intervention. Why
-          do people often jump to medication instead of accommodating the
-          environment or material? It should go from the least invasive to the
-          most intensive intervention. I hope that I can become more aware of
-          any biases and assumptions I have to prevent perpetuating inequity,
-          such as the teacher mentioned in the reading that believed families
-          living in poverty were not investing in education. I hope I have a
-          trusted network of colleagues that will challenge any biases I may
-          hold.
-        </p>
-      </article>
+      <div class="controls">
+        <div class="search-row">
+          <input
+            type="text"
+            id="searchInput"
+            class="search-input"
+            placeholder="Search reflections by title, content, or topic..."
+            autocomplete="off"
+          />
+        </div>
+        <div class="filter-controls">
+          <select id="sortSelect" class="sort-select">
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+            <option value="title-asc">Title A-Z</option>
+            <option value="title-desc">Title Z-A</option>
+          </select>
+          <select id="yearFilter" class="year-filter">
+            <option value="all">All Years</option>
+          </select>
+        </div>
+      </div>
 
-      <article class="journal-entry">
-        <h2>Reflection: TPEs, Adaptive Technology, and Professional Growth</h2>
-        <p class="meta">Date: July 19, 2025</p>
-        <p>
-          One of the things I learned this week is the "teacher performance
-          expectations" (TPEs) and the competencies that are expected of
-          incoming teachers. Specifically, sections 1.4 and 4.4 mention a
-          multi-tiered system of supports, which is something I referenced in a
-          discussion post. One thing I'm excited about that was mentioned in the
-          TPEs is the use of adaptive technology. Through experience working
-          with medically fragile students who require various adaptations
-          involving switches, I often find myself (as a paraeducator)
-          collaborating with teachers, occupational therapists, physical
-          therapists, and adapted P.E. teachers to adapt activities to allow
-          students to participate. For example, using switches and devices to
-          pour dirt and seeds, turn on watering hoses, and communicate in a
-          gardening activity. Then as a part of earth science, we categorize
-          things we grow as well as smell the different fragrances of the herbs
-          we grow.
-        </p>
-        <p>
-          By reviewing the TPEs, I was able to identify what I have done and
-          areas where I need to develop. Although the document is dense, I enjoy
-          skimming through to find areas of strength/experience or areas of
-          deficit/growth. For example, in area 4.5, I have experience in writing
-          (mock) IEP and IFSP forms, but it has been years since I've done them.
-          Additionally, I don't have experience with ITP or 504 plans, so that
-          helped me identify my zone of proximal growth. This document can be
-          paired with mentor feedback and self-reflection to better align my
-          competencies to teacher performance expectations.
-        </p>
-      </article>
+      <div id="entryCount" class="entry-count"></div>
+      <div id="entriesContainer">
+        <div class="loading">Loading journal entries...</div>
+      </div>
     </main>
 
     <footer>
@@ -367,6 +455,305 @@
       </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script>
+      let journalData = [];
+      let filteredData = [];
+
+      // Load journal entries from CSV
+      async function loadJournalEntries() {
+        try {
+          console.log("Loading journal entries from CSV...");
+          const response = await fetch("Data/journal-entries.csv");
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const csvText = await response.text();
+          console.log("CSV loaded, parsing...");
+
+          Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            dynamicTyping: false,
+            delimitersToGuess: [",", "\t", "|", ";"],
+            complete: function (results) {
+              console.log("Parse results:", results);
+
+              // Clean and process the data
+              journalData = results.data
+                .map((row) => ({
+                  title: (row.title || "").trim(),
+                  date: (row.date || "").trim(),
+                  content: (row.content || "").trim(),
+                  tags: (row.tags || "")
+                    .split(";")
+                    .map((tag) => tag.trim())
+                    .filter((tag) => tag),
+                  dateObj: new Date(row.date || ""),
+                  year: new Date(row.date || "").getFullYear(),
+                }))
+                .filter((entry) => entry.title && entry.date && entry.content)
+                .sort((a, b) => b.dateObj - a.dateObj); // Sort by date, newest first
+
+              console.log("Processed journal data:", journalData);
+
+              if (journalData.length === 0) {
+                document.getElementById("entriesContainer").innerHTML =
+                  '<div class="no-results">No valid journal entries found in CSV file. Check console for details.</div>';
+                return;
+              }
+
+              filteredData = [...journalData];
+              populateYearFilter();
+              sortEntries("date-desc");
+              displayEntries();
+              updateCount();
+            },
+            error: function (error) {
+              console.error("Error parsing CSV:", error);
+              document.getElementById("entriesContainer").innerHTML =
+                '<div class="no-results">Error parsing CSV file. Check console for details.</div>';
+            },
+          });
+        } catch (error) {
+          console.error("Error loading CSV file:", error);
+          document.getElementById(
+            "entriesContainer"
+          ).innerHTML = `<div class="no-results">Error loading Data/journal-entries.csv: ${error.message}<br><br>
+            <strong>To set up your journal system:</strong><br>
+            1. Create a folder called "Data" in your website directory<br>
+            2. Save your journal entries as "journal-entries.csv" in that folder<br>
+            3. Use the CSV format provided in the instructions</div>`;
+        }
+      }
+
+      // Populate year filter dropdown
+      function populateYearFilter() {
+        const years = [...new Set(journalData.map((entry) => entry.year))].sort(
+          (a, b) => b - a
+        );
+        const yearFilter = document.getElementById("yearFilter");
+
+        // Clear existing options except "All Years"
+        yearFilter.innerHTML = '<option value="all">All Years</option>';
+
+        years.forEach((year) => {
+          const option = document.createElement("option");
+          option.value = year;
+          option.textContent = year;
+          yearFilter.appendChild(option);
+        });
+      }
+
+      // Sort entries based on selected criteria
+      function sortEntries(criteria) {
+        filteredData.sort((a, b) => {
+          switch (criteria) {
+            case "date-desc":
+              return b.dateObj - a.dateObj;
+            case "date-asc":
+              return a.dateObj - b.dateObj;
+            case "title-asc":
+              return a.title.localeCompare(b.title);
+            case "title-desc":
+              return b.title.localeCompare(a.title);
+            default:
+              return b.dateObj - a.dateObj;
+          }
+        });
+      }
+
+      // Display journal entries
+      function displayEntries() {
+        const container = document.getElementById("entriesContainer");
+
+        if (filteredData.length === 0) {
+          container.innerHTML =
+            '<div class="no-results">No journal entries found matching your search criteria.</div>';
+          return;
+        }
+
+        const html = filteredData
+          .map(
+            (entry) => `
+          <article class="journal-entry">
+            <h2>${entry.title}</h2>
+            <div class="meta">
+              <span class="date-badge">${formatDate(entry.date)}</span>
+              <span>${entry.tags.slice(0, 3).join(", ")}</span>
+            </div>
+            <div class="content">
+              ${entry.content
+                .split("\n\n")
+                .map((paragraph) => `<p>${paragraph}</p>`)
+                .join("")}
+            </div>
+          </article>
+        `
+          )
+          .join("");
+
+        container.innerHTML = html;
+      }
+
+      // Format date for display
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+
+      // Update entry count display
+      function updateCount() {
+        const countElement = document.getElementById("entryCount");
+        const total = journalData.length;
+        const showing = filteredData.length;
+
+        if (showing === total) {
+          countElement.textContent = `Showing all ${total} reflection${
+            total !== 1 ? "s" : ""
+          }`;
+        } else {
+          countElement.textContent = `Found ${showing} of ${total} reflection${
+            total !== 1 ? "s" : ""
+          }`;
+        }
+      }
+
+      // Search functionality
+      function searchEntries(query) {
+        const searchTerm = query.trim().toLowerCase();
+
+        if (!searchTerm) {
+          filteredData = [...journalData];
+        } else {
+          filteredData = journalData.filter(
+            (entry) =>
+              entry.title.toLowerCase().includes(searchTerm) ||
+              entry.content.toLowerCase().includes(searchTerm) ||
+              entry.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
+          );
+        }
+
+        // Apply current year filter
+        applyYearFilter();
+
+        // Apply current sort
+        const sortValue = document.getElementById("sortSelect").value;
+        sortEntries(sortValue);
+
+        displayEntries();
+        updateCount();
+      }
+
+      // Apply year filter
+      function applyYearFilter() {
+        const yearFilter = document.getElementById("yearFilter").value;
+
+        if (yearFilter !== "all") {
+          filteredData = filteredData.filter(
+            (entry) => entry.year === parseInt(yearFilter)
+          );
+        }
+      }
+
+      // Filter by year
+      function filterByYear(year) {
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.trim()
+          .toLowerCase();
+
+        if (searchTerm) {
+          filteredData = journalData.filter(
+            (entry) =>
+              entry.title.toLowerCase().includes(searchTerm) ||
+              entry.content.toLowerCase().includes(searchTerm) ||
+              entry.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
+          );
+        } else {
+          filteredData = [...journalData];
+        }
+
+        if (year !== "all") {
+          filteredData = filteredData.filter(
+            (entry) => entry.year === parseInt(year)
+          );
+        }
+
+        const sortValue = document.getElementById("sortSelect").value;
+        sortEntries(sortValue);
+        displayEntries();
+        updateCount();
+      }
+
+      // Debounce function for search
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      // Theme toggle functionality
+      function initThemeToggle() {
+        const themeToggle = document.getElementById("theme-toggle");
+        const darkIcon = document.getElementById("theme-toggle-dark-icon");
+        const lightIcon = document.getElementById("theme-toggle-light-icon");
+
+        // Set initial icon state
+        const isDark = document.documentElement.classList.contains("dark");
+        darkIcon.classList.toggle("hidden", !isDark);
+        lightIcon.classList.toggle("hidden", isDark);
+
+        themeToggle.addEventListener("click", function () {
+          document.documentElement.classList.toggle("dark");
+          const isDark = document.documentElement.classList.contains("dark");
+          localStorage.setItem("color-theme", isDark ? "dark" : "light");
+
+          darkIcon.classList.toggle("hidden", !isDark);
+          lightIcon.classList.toggle("hidden", isDark);
+        });
+      }
+
+      // Initialize everything
+      document.addEventListener("DOMContentLoaded", function () {
+        loadJournalEntries();
+        initThemeToggle();
+
+        // Search functionality with debouncing
+        const searchInput = document.getElementById("searchInput");
+        const debouncedSearch = debounce((query) => searchEntries(query), 300);
+
+        searchInput.addEventListener("input", (e) => {
+          debouncedSearch(e.target.value);
+        });
+
+        // Sort functionality
+        document
+          .getElementById("sortSelect")
+          .addEventListener("change", (e) => {
+            sortEntries(e.target.value);
+            displayEntries();
+          });
+
+        // Year filter functionality
+        document
+          .getElementById("yearFilter")
+          .addEventListener("change", (e) => {
+            filterByYear(e.target.value);
+          });
+      });
+    </script>
   </body>
 </html>
