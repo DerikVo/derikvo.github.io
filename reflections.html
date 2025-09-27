@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reflections - Derik Vo</title>
     <script>
-      // Theme handling
+      // On page load or when changing themes, best to add inline in `head` to avoid FOUC
       if (
         localStorage.getItem("color-theme") === "dark" ||
         (!("color-theme" in localStorage) &&
@@ -16,209 +16,23 @@
         document.documentElement.classList.remove("dark");
       }
     </script>
+    <link rel="stylesheet" href="style.css" />
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          sans-serif;
-        line-height: 1.6;
-        color: #333;
-        background: #fff;
-        transition: all 0.3s ease;
-      }
-
-      .dark body {
-        color: #f9fafb;
-        background: #1f2937;
-      }
-
-      .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 0 20px;
-      }
-
-      header {
-        background: #fff;
-        border-bottom: 1px solid #e5e7eb;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-      }
-
-      .dark header {
-        background: #1f2937;
-        border-bottom-color: #374151;
-      }
-
-      nav {
-        padding: 1rem 0;
-      }
-
-      nav .container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .logo {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #007bff;
-        text-decoration: none;
-      }
-
-      /* Navigation styles */
-      nav ul {
-        list-style: none;
-        display: flex;
-        gap: 1.5rem;
-        align-items: center;
-      }
-
-      nav ul li {
-        position: relative;
-      }
-
-      nav ul li a {
-        text-decoration: none;
-        font-weight: 500;
-        color: #374151;
-        transition: color 0.2s ease;
-      }
-
-      nav ul li a:hover {
-        color: #007bff;
-      }
-
-      .dark nav ul li a {
-        color: #d1d5db;
-      }
-
-      .dark nav ul li a:hover {
-        color: #60a5fa;
-      }
-
-      /* Dropdown menu */
-      .dropdown-content {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background: #fff;
-        border: 1px solid #e5e7eb;
-        border-radius: 6px;
-        min-width: 200px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-      }
-
-      .dropdown-content a {
-        display: block;
-        padding: 10px 15px;
-        color: #374151;
-        text-decoration: none;
-        font-weight: normal;
-      }
-
-      .dropdown-content a:hover {
-        background: #f3f4f6;
-        color: #007bff;
-      }
-
-      .dark .dropdown-content {
-        background: #374151;
-        border-color: #4b5563;
-      }
-
-      .dark .dropdown-content a {
-        color: #f9fafb;
-      }
-
-      .dark .dropdown-content a:hover {
-        background: #4b5563;
-        color: #60a5fa;
-      }
-
-      /* Show dropdown on hover */
-      .dropdown:hover .dropdown-content {
-        display: block;
-      }
-
-      .theme-toggle-button {
-        background: none;
-        border: 2px solid #e5e7eb;
-        border-radius: 8px;
-        padding: 8px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-      }
-
-      .dark .theme-toggle-button {
-        border-color: #4b5563;
-      }
-
-      .toggle-icon {
-        width: 20px;
-        height: 20px;
-      }
-
-      .hidden {
-        display: none;
-      }
-
-      main {
-        padding: 2rem 0;
-        min-height: calc(100vh - 140px);
-      }
-
-      h1 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-        color: #1f2937;
-      }
-
-      .dark h1 {
-        color: #f9fafb;
-      }
-
-      .subtitle {
-        font-size: 1.2rem;
-        color: #6b7280;
-        margin-bottom: 2rem;
-      }
-
-      .dark .subtitle {
-        color: #9ca3af;
-      }
-
+      /* Additional styles specific to the journal system that extend your existing CSS */
       .controls {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: calc(var(--spacing-unit) * 3);
+        margin: calc(var(--spacing-unit) * 3) 0;
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-        margin: 2rem 0;
-        padding: 1.5rem;
-        background: #f9fafb;
-        border-radius: 12px;
-        border: 1px solid #e5e7eb;
-      }
-
-      .dark .controls {
-        background: #374151;
-        border-color: #4b5563;
+        gap: calc(var(--spacing-unit) * 2);
       }
 
       .search-row {
         display: flex;
-        gap: 1rem;
+        gap: calc(var(--spacing-unit) * 2);
         flex-wrap: wrap;
         align-items: center;
       }
@@ -226,190 +40,136 @@
       .search-input {
         flex: 1;
         min-width: 250px;
-        padding: 12px 16px;
-        font-size: 16px;
-        border: 2px solid #d1d5db;
-        border-radius: 8px;
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+        font-size: 1rem;
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
         outline: none;
         transition: border-color 0.3s ease;
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        font-family: var(--font-body);
       }
 
       .search-input:focus {
-        border-color: #007bff;
-      }
-
-      .dark .search-input {
-        background-color: #4b5563;
-        border-color: #6b7280;
-        color: #f9fafb;
-      }
-
-      .dark .search-input:focus {
-        border-color: #60a5fa;
+        border-color: var(--color-primary);
       }
 
       .filter-controls {
         display: flex;
-        gap: 1rem;
+        gap: calc(var(--spacing-unit) * 2);
         flex-wrap: wrap;
         align-items: center;
       }
 
       .sort-select,
       .year-filter {
-        padding: 8px 12px;
-        border: 2px solid #d1d5db;
-        border-radius: 6px;
-        background: #fff;
-        font-size: 14px;
+        padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 1.5);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        font-family: var(--font-body);
+        font-size: 0.9rem;
         cursor: pointer;
         transition: border-color 0.3s ease;
       }
 
-      .dark .sort-select,
-      .dark .year-filter {
-        background: #4b5563;
-        border-color: #6b7280;
-        color: #f9fafb;
+      .sort-select:focus,
+      .year-filter:focus {
+        border-color: var(--color-primary);
+        outline: none;
       }
 
       .entry-count {
-        color: #6b7280;
-        font-size: 14px;
-        margin-bottom: 1rem;
-      }
-
-      .dark .entry-count {
-        color: #9ca3af;
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: calc(var(--spacing-unit) * 2);
+        font-style: italic;
       }
 
       .journal-entry {
-        background: #fff;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2rem;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: calc(var(--spacing-unit) * 3);
+        margin-bottom: calc(var(--spacing-unit) * 3);
         transition: all 0.3s ease;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow-sm);
       }
 
       .journal-entry:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: var(--shadow-md);
         transform: translateY(-2px);
       }
 
-      .dark .journal-entry {
-        background: #374151;
-        border-color: #4b5563;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-      }
-
-      .dark .journal-entry:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      }
-
       .journal-entry h2 {
+        font-family: var(--font-heading);
         font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-        color: #1f2937;
+        margin-top: 0;
+        margin-bottom: calc(var(--spacing-unit) * 1);
+        color: var(--color-text-primary);
         line-height: 1.3;
       }
 
-      .dark .journal-entry h2 {
-        color: #f9fafb;
-      }
-
-      .meta {
-        color: #6b7280;
+      .journal-meta {
+        color: var(--color-text-secondary);
         font-size: 0.9rem;
-        margin-bottom: 1rem;
+        margin-bottom: calc(var(--spacing-unit) * 2);
         display: flex;
         align-items: center;
-        gap: 1rem;
-      }
-
-      .dark .meta {
-        color: #9ca3af;
+        gap: calc(var(--spacing-unit) * 2);
+        flex-wrap: wrap;
       }
 
       .date-badge {
-        background: #eff6ff;
-        color: #1d4ed8;
-        padding: 2px 8px;
-        border-radius: 4px;
+        background: var(--color-primary);
+        color: white;
+        padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit));
+        border-radius: var(--border-radius);
         font-size: 0.8rem;
-        font-weight: 500;
+        font-weight: 700;
+        font-family: var(--font-body);
       }
 
-      .dark .date-badge {
-        background: #1e3a8a;
-        color: #93c5fd;
-      }
-
-      .journal-entry p {
-        margin-bottom: 1rem;
+      .journal-entry .content p {
+        margin-bottom: calc(var(--spacing-unit) * 2);
         text-align: justify;
+        line-height: 1.7;
+      }
+
+      .journal-entry .content p:last-child {
+        margin-bottom: 0;
       }
 
       .journal-entry a {
-        color: #007bff;
+        color: var(--color-primary);
         text-decoration: none;
         border-bottom: 1px solid transparent;
         transition: border-color 0.3s ease;
       }
 
       .journal-entry a:hover {
-        border-bottom-color: #007bff;
-      }
-
-      .dark .journal-entry a {
-        color: #60a5fa;
-      }
-
-      .dark .journal-entry a:hover {
-        border-bottom-color: #60a5fa;
+        border-bottom-color: var(--color-primary);
       }
 
       .no-results {
         text-align: center;
-        padding: 3rem;
-        color: #6b7280;
+        padding: calc(var(--spacing-unit) * 4);
+        color: var(--color-text-secondary);
         font-style: italic;
-        background: #f9fafb;
-        border-radius: 12px;
-        border: 2px dashed #d1d5db;
-      }
-
-      .dark .no-results {
-        background: #374151;
-        color: #9ca3af;
-        border-color: #4b5563;
+        background: var(--color-surface);
+        border-radius: var(--border-radius);
+        border: 2px dashed var(--color-border);
       }
 
       .loading {
         text-align: center;
-        padding: 3rem;
-        color: #6b7280;
+        padding: calc(var(--spacing-unit) * 4);
+        color: var(--color-text-secondary);
       }
 
-      .dark .loading {
-        color: #9ca3af;
-      }
-
-      footer {
-        background: #f9fafb;
-        border-top: 1px solid #e5e7eb;
-        padding: 2rem 0;
-        text-align: center;
-        color: #6b7280;
-      }
-
-      .dark footer {
-        background: #1f2937;
-        border-top-color: #374151;
-        color: #9ca3af;
-      }
-
+      /* Responsive design for journal-specific elements */
       @media (max-width: 768px) {
         .search-row {
           flex-direction: column;
@@ -425,11 +185,13 @@
         }
 
         .journal-entry {
-          padding: 1.5rem;
+          padding: calc(var(--spacing-unit) * 2);
         }
 
-        h1 {
-          font-size: 2rem;
+        .journal-meta {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: calc(var(--spacing-unit));
         }
       }
     </style>
@@ -468,12 +230,18 @@
               </div>
             </li>
           </ul>
-          <button id="theme-toggle" type="button" class="theme-toggle-button">
+          <button
+            id="theme-toggle"
+            type="button"
+            class="theme-toggle-button"
+            aria-label="Toggle dark and light mode"
+          >
             <svg
               id="theme-toggle-dark-icon"
               class="toggle-icon hidden"
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path
                 d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
@@ -484,6 +252,7 @@
               class="toggle-icon hidden"
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path
                 d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
@@ -535,13 +304,16 @@
       </div>
     </footer>
 
+    <script src="script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
       let journalData = [];
       let filteredData = [];
 
+      // Load journal entries from CSV
       async function loadJournalEntries() {
         try {
+          console.log("Loading journal entries from CSV...");
           const response = await fetch("Data/journal-entries.csv");
 
           if (!response.ok) {
@@ -549,6 +321,7 @@
           }
 
           const csvText = await response.text();
+          console.log("CSV loaded, parsing...");
 
           Papa.parse(csvText, {
             header: true,
@@ -556,6 +329,9 @@
             dynamicTyping: false,
             delimitersToGuess: [",", "\t", "|", ";"],
             complete: function (results) {
+              console.log("Parse results:", results);
+
+              // Clean and process the data
               journalData = results.data
                 .map((row) => ({
                   title: (row.title || "").trim(),
@@ -569,161 +345,252 @@
                   year: new Date(row.date || "").getFullYear(),
                 }))
                 .filter((entry) => entry.title && entry.date && entry.content)
-                .sort((a, b) => b.dateObj - a.dateObj);
+                .sort((a, b) => b.dateObj - a.dateObj); // Sort by date, newest first
+
+              console.log("Processed journal data:", journalData);
 
               if (journalData.length === 0) {
                 document.getElementById("entriesContainer").innerHTML =
-                  '<div class="no-results">No valid journal entries found in CSV file.</div>';
+                  '<div class="no-results">No valid journal entries found in CSV file. Check console for details.</div>';
                 return;
               }
 
-              // Populate year filter
-              const years = [...new Set(journalData.map((entry) => entry.year))]
-                .filter((year) => !isNaN(year))
-                .sort((a, b) => b - a);
-              const yearFilter = document.getElementById("yearFilter");
-              yearFilter.innerHTML = '<option value="all">All Years</option>';
-              years.forEach((year) => {
-                const option = document.createElement("option");
-                option.value = year;
-                option.textContent = year;
-                yearFilter.appendChild(option);
-              });
-
               filteredData = [...journalData];
-              renderEntries(filteredData);
+              populateYearFilter();
+              sortEntries("date-desc");
+              displayEntries();
+              updateCount();
             },
             error: function (error) {
               console.error("Error parsing CSV:", error);
               document.getElementById("entriesContainer").innerHTML =
-                '<div class="no-results">Error loading journal entries. Please check the console for details.</div>';
+                '<div class="no-results">Error parsing CSV file. Check console for details.</div>';
             },
           });
         } catch (error) {
-          console.error("Error loading journal entries:", error);
-          document.getElementById("entriesContainer").innerHTML =
-            '<div class="no-results">Error loading journal entries. Please check the console for details.</div>';
+          console.error("Error loading CSV file:", error);
+          document.getElementById(
+            "entriesContainer"
+          ).innerHTML = `<div class="no-results">Error loading Data/journal-entries.csv: ${error.message}<br><br>
+            <strong>To set up your journal system:</strong><br>
+            1. Create a folder called "Data" in your website directory<br>
+            2. Save your journal entries as "journal-entries.csv" in that folder<br>
+            3. Use the CSV format provided in the instructions</div>`;
         }
       }
 
-      function renderEntries(data) {
-        const container = document.getElementById("entriesContainer");
-        const countDiv = document.getElementById("entryCount");
+      // Populate year filter dropdown
+      function populateYearFilter() {
+        const years = [...new Set(journalData.map((entry) => entry.year))].sort(
+          (a, b) => b - a
+        );
+        const yearFilter = document.getElementById("yearFilter");
 
-        if (data.length === 0) {
+        // Clear existing options except "All Years"
+        yearFilter.innerHTML = '<option value="all">All Years</option>';
+
+        years.forEach((year) => {
+          const option = document.createElement("option");
+          option.value = year;
+          option.textContent = year;
+          yearFilter.appendChild(option);
+        });
+      }
+
+      // Sort entries based on selected criteria
+      function sortEntries(criteria) {
+        filteredData.sort((a, b) => {
+          switch (criteria) {
+            case "date-desc":
+              return b.dateObj - a.dateObj;
+            case "date-asc":
+              return a.dateObj - b.dateObj;
+            case "title-asc":
+              return a.title.localeCompare(b.title);
+            case "title-desc":
+              return b.title.localeCompare(a.title);
+            default:
+              return b.dateObj - a.dateObj;
+          }
+        });
+      }
+
+      // Display journal entries
+      function displayEntries() {
+        const container = document.getElementById("entriesContainer");
+
+        if (filteredData.length === 0) {
           container.innerHTML =
-            '<div class="no-results">No matching reflections found.</div>';
-          countDiv.textContent = "0 entries found";
+            '<div class="no-results">No journal entries found matching your search criteria.</div>';
           return;
         }
 
-        countDiv.textContent = `${data.length} entr${
-          data.length === 1 ? "y" : "ies"
-        } found`;
-
-        container.innerHTML = data
+        const html = filteredData
           .map(
             (entry) => `
-          <div class="journal-entry">
+          <article class="journal-entry">
             <h2>${entry.title}</h2>
-            <div class="meta">
-              <span class="date-badge">${new Date(
-                entry.date
-              ).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })}</span>
+            <div class="journal-meta">
+              <span class="date-badge">${formatDate(entry.date)}</span>
               ${
                 entry.tags.length
-                  ? `<span>Tags: ${entry.tags.join(", ")}</span>`
+                  ? `<span>Tags: ${entry.tags.slice(0, 3).join(", ")}</span>`
                   : ""
               }
             </div>
-            <p>${entry.content.replace(/\n/g, "<br>")}</p>
-          </div>
+            <div class="content">
+              ${entry.content
+                .split("\n\n")
+                .map((paragraph) =>
+                  paragraph.trim()
+                    ? `<p>${paragraph.replace(/\n/g, "<br>")}</p>`
+                    : ""
+                )
+                .filter((p) => p)
+                .join("")}
+            </div>
+          </article>
         `
           )
           .join("");
+
+        container.innerHTML = html;
       }
 
-      function filterAndSortEntries() {
-        const searchInput = document
-          .getElementById("searchInput")
-          .value.toLowerCase();
+      // Format date for display
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+
+      // Update entry count display
+      function updateCount() {
+        const countElement = document.getElementById("entryCount");
+        const total = journalData.length;
+        const showing = filteredData.length;
+
+        if (showing === total) {
+          countElement.textContent = `Showing all ${total} reflection${
+            total !== 1 ? "s" : ""
+          }`;
+        } else {
+          countElement.textContent = `Found ${showing} of ${total} reflection${
+            total !== 1 ? "s" : ""
+          }`;
+        }
+      }
+
+      // Search functionality
+      function searchEntries(query) {
+        const searchTerm = query.trim().toLowerCase();
+
+        if (!searchTerm) {
+          filteredData = [...journalData];
+        } else {
+          filteredData = journalData.filter(
+            (entry) =>
+              entry.title.toLowerCase().includes(searchTerm) ||
+              entry.content.toLowerCase().includes(searchTerm) ||
+              entry.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
+          );
+        }
+
+        // Apply current year filter
+        applyYearFilter();
+
+        // Apply current sort
         const sortValue = document.getElementById("sortSelect").value;
-        const yearValue = document.getElementById("yearFilter").value;
+        sortEntries(sortValue);
 
-        filteredData = journalData.filter((entry) => {
-          const matchesSearch =
-            entry.title.toLowerCase().includes(searchInput) ||
-            entry.content.toLowerCase().includes(searchInput) ||
-            entry.tags.some((tag) => tag.toLowerCase().includes(searchInput));
+        displayEntries();
+        updateCount();
+      }
 
-          const matchesYear =
-            yearValue === "all" || entry.year.toString() === yearValue;
+      // Apply year filter
+      function applyYearFilter() {
+        const yearFilter = document.getElementById("yearFilter").value;
 
-          return matchesSearch && matchesYear;
+        if (yearFilter !== "all") {
+          filteredData = filteredData.filter(
+            (entry) => entry.year === parseInt(yearFilter)
+          );
+        }
+      }
+
+      // Filter by year
+      function filterByYear(year) {
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.trim()
+          .toLowerCase();
+
+        if (searchTerm) {
+          filteredData = journalData.filter(
+            (entry) =>
+              entry.title.toLowerCase().includes(searchTerm) ||
+              entry.content.toLowerCase().includes(searchTerm) ||
+              entry.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
+          );
+        } else {
+          filteredData = [...journalData];
+        }
+
+        if (year !== "all") {
+          filteredData = filteredData.filter(
+            (entry) => entry.year === parseInt(year)
+          );
+        }
+
+        const sortValue = document.getElementById("sortSelect").value;
+        sortEntries(sortValue);
+        displayEntries();
+        updateCount();
+      }
+
+      // Debounce function for search
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      // Initialize everything
+      document.addEventListener("DOMContentLoaded", function () {
+        loadJournalEntries();
+
+        // Search functionality with debouncing
+        const searchInput = document.getElementById("searchInput");
+        const debouncedSearch = debounce((query) => searchEntries(query), 300);
+
+        searchInput.addEventListener("input", (e) => {
+          debouncedSearch(e.target.value);
         });
 
-        switch (sortValue) {
-          case "date-desc":
-            filteredData.sort((a, b) => b.dateObj - a.dateObj);
-            break;
-          case "date-asc":
-            filteredData.sort((a, b) => a.dateObj - b.dateObj);
-            break;
-          case "title-asc":
-            filteredData.sort((a, b) => a.title.localeCompare(b.title));
-            break;
-          case "title-desc":
-            filteredData.sort((a, b) => b.title.localeCompare(a.title));
-            break;
-        }
+        // Sort functionality
+        document
+          .getElementById("sortSelect")
+          .addEventListener("change", (e) => {
+            sortEntries(e.target.value);
+            displayEntries();
+          });
 
-        renderEntries(filteredData);
-      }
-
-      // Event listeners
-      document
-        .getElementById("searchInput")
-        .addEventListener("input", filterAndSortEntries);
-      document
-        .getElementById("sortSelect")
-        .addEventListener("change", filterAndSortEntries);
-      document
-        .getElementById("yearFilter")
-        .addEventListener("change", filterAndSortEntries);
-
-      // Theme toggle
-      const themeToggleBtn = document.getElementById("theme-toggle");
-      const darkIcon = document.getElementById("theme-toggle-dark-icon");
-      const lightIcon = document.getElementById("theme-toggle-light-icon");
-
-      function updateThemeIcons() {
-        if (document.documentElement.classList.contains("dark")) {
-          lightIcon.classList.remove("hidden");
-          darkIcon.classList.add("hidden");
-        } else {
-          darkIcon.classList.remove("hidden");
-          lightIcon.classList.add("hidden");
-        }
-      }
-
-      themeToggleBtn.addEventListener("click", () => {
-        document.documentElement.classList.toggle("dark");
-        localStorage.setItem(
-          "color-theme",
-          document.documentElement.classList.contains("dark") ? "dark" : "light"
-        );
-        updateThemeIcons();
+        // Year filter functionality
+        document
+          .getElementById("yearFilter")
+          .addEventListener("change", (e) => {
+            filterByYear(e.target.value);
+          });
       });
-
-      // Initialize theme icons on load
-      updateThemeIcons();
-
-      // Load journal entries
-      loadJournalEntries();
     </script>
   </body>
 </html>
