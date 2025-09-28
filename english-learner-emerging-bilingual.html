@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ESL Strategies - Derik Vo</title>
     <script>
+      // Theme initialization
       if (
         localStorage.getItem("color-theme") === "dark" ||
         (!("color-theme" in localStorage) &&
@@ -16,7 +17,264 @@
       }
     </script>
     <link rel="stylesheet" href="style.css" />
+    <style>
+      /* ESL Strategies specific styles extending your existing CSS */
+      .controls {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: calc(var(--spacing-unit) * 3);
+        margin: calc(var(--spacing-unit) * 3) 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--spacing-unit) * 2);
+      }
+
+      .search-row {
+        display: flex;
+        gap: calc(var(--spacing-unit) * 2);
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-input {
+        flex: 1;
+        min-width: 250px;
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+        font-size: 1rem;
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        outline: none;
+        transition: border-color 0.3s ease;
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        font-family: var(--font-body);
+      }
+
+      .search-input:focus {
+        border-color: var(--color-primary);
+      }
+
+      .filter-controls {
+        display: flex;
+        gap: calc(var(--spacing-unit) * 2);
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .sort-select,
+      .category-filter,
+      .level-filter {
+        padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 1.5);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+      }
+
+      .sort-select:focus,
+      .category-filter:focus,
+      .level-filter:focus {
+        border-color: var(--color-primary);
+        outline: none;
+      }
+
+      .strategy-count {
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: calc(var(--spacing-unit) * 2);
+        font-style: italic;
+      }
+
+      .strategy-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: calc(var(--spacing-unit) * 3);
+        margin-bottom: calc(var(--spacing-unit) * 3);
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .strategy-card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+      }
+
+      .strategy-card h2 {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: calc(var(--spacing-unit) * 1);
+        color: var(--color-text-primary);
+        line-height: 1.3;
+      }
+
+      .strategy-meta {
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: calc(var(--spacing-unit) * 2);
+        display: flex;
+        align-items: center;
+        gap: calc(var(--spacing-unit) * 2);
+        flex-wrap: wrap;
+      }
+
+      .category-badge {
+        background: var(--color-primary);
+        color: white;
+        padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit));
+        border-radius: var(--border-radius);
+        font-size: 0.8rem;
+        font-weight: 700;
+        font-family: var(--font-body);
+      }
+
+      .level-badge {
+        background: var(--color-accent, #28a745);
+        color: white;
+        padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit));
+        border-radius: var(--border-radius);
+        font-size: 0.8rem;
+        font-weight: 700;
+        font-family: var(--font-body);
+      }
+
+      .level-badge.intermediate {
+        background: var(--color-warning, #ffc107);
+        color: #000;
+      }
+
+      .level-badge.advanced {
+        background: var(--color-danger, #dc3545);
+      }
+
+      .strategy-card .description {
+        margin-bottom: calc(var(--spacing-unit) * 2);
+        line-height: 1.7;
+        text-align: justify;
+      }
+
+      .implementation-steps {
+        background: var(--color-background);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: calc(var(--spacing-unit) * 2);
+        margin: calc(var(--spacing-unit) * 2) 0;
+      }
+
+      .implementation-steps h4 {
+        margin-top: 0;
+        margin-bottom: calc(var(--spacing-unit));
+        color: var(--color-text-primary);
+        font-size: 1rem;
+      }
+
+      .implementation-steps ol {
+        margin: 0;
+        padding-left: calc(var(--spacing-unit) * 2);
+      }
+
+      .implementation-steps li {
+        margin-bottom: calc(var(--spacing-unit) * 0.5);
+        line-height: 1.6;
+      }
+
+      .materials-needed {
+        background: var(--color-surface);
+        border-left: 4px solid var(--color-primary);
+        padding: calc(var(--spacing-unit) * 1.5);
+        margin: calc(var(--spacing-unit) * 2) 0;
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      }
+
+      .materials-needed h4 {
+        margin-top: 0;
+        margin-bottom: calc(var(--spacing-unit));
+        color: var(--color-primary);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+
+      .materials-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: calc(var(--spacing-unit));
+      }
+
+      .material-tag {
+        background: var(--color-primary);
+        color: white;
+        padding: calc(var(--spacing-unit) * 0.3) calc(var(--spacing-unit) * 0.8);
+        border-radius: calc(var(--border-radius) * 2);
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .strategy-card a {
+        color: var(--color-primary);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.3s ease;
+      }
+
+      .strategy-card a:hover {
+        border-bottom-color: var(--color-primary);
+      }
+
+      .no-results {
+        text-align: center;
+        padding: calc(var(--spacing-unit) * 4);
+        color: var(--color-text-secondary);
+        font-style: italic;
+        background: var(--color-surface);
+        border-radius: var(--border-radius);
+        border: 2px dashed var(--color-border);
+      }
+
+      .loading {
+        text-align: center;
+        padding: calc(var(--spacing-unit) * 4);
+        color: var(--color-text-secondary);
+      }
+
+      /* Responsive design for strategy-specific elements */
+      @media (max-width: 768px) {
+        .search-row {
+          flex-direction: column;
+        }
+
+        .search-input {
+          min-width: 100%;
+        }
+
+        .filter-controls {
+          justify-content: space-between;
+          width: 100%;
+        }
+
+        .strategy-card {
+          padding: calc(var(--spacing-unit) * 2);
+        }
+
+        .strategy-meta {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: calc(var(--spacing-unit));
+        }
+
+        .materials-list {
+          gap: calc(var(--spacing-unit) * 0.5);
+        }
+      }
+    </style>
   </head>
+
   <body>
     <header>
       <nav class="sticky">
@@ -37,7 +295,6 @@
               </div>
             </li>
             <li><a href="reflections.html">Reflections</a></li>
-            <!-- <li><a href="journal.html">Journal</a></li> -->
             <li class="dropdown">
               <a href="#" class="dropbtn">Resources ▼</a>
               <div class="dropdown-content">
@@ -50,12 +307,18 @@
               </div>
             </li>
           </ul>
-          <button id="theme-toggle" type="button" class="theme-toggle-button">
+          <button
+            id="theme-toggle"
+            type="button"
+            class="theme-toggle-button"
+            aria-label="Toggle dark and light mode"
+          >
             <svg
               id="theme-toggle-dark-icon"
               class="toggle-icon hidden"
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path
                 d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
@@ -66,6 +329,7 @@
               class="toggle-icon hidden"
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path
                 d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
@@ -80,16 +344,44 @@
 
     <main class="container">
       <h1>English Learner/Emerging Bilingual Strategies</h1>
-      <div class="content-section">
-        <h2>Strategy 1: Name of Strategy</h2>
-        <p>
-          Describe the strategy in detail and explain how it supports English
-          Learners and Emerging Bilinguals.
-        </p>
+      <p class="subtitle">
+        Research-based strategies and techniques for supporting multilingual
+        learners in the classroom.
+      </p>
+
+      <div class="controls">
+        <div class="search-row">
+          <input
+            type="text"
+            id="searchInput"
+            class="search-input"
+            placeholder="Search strategies by name, description, or implementation steps..."
+            autocomplete="off"
+          />
+        </div>
+        <div class="filter-controls">
+          <select id="sortSelect" class="sort-select">
+            <option value="name-asc">Strategy Name A-Z</option>
+            <option value="name-desc">Strategy Name Z-A</option>
+            <option value="category-asc">Category A-Z</option>
+            <option value="level-asc">Proficiency Level</option>
+          </select>
+          <select id="categoryFilter" class="category-filter">
+            <option value="all">All Categories</option>
+          </select>
+          <select id="levelFilter" class="level-filter">
+            <option value="all">All Levels</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+            <option value="all-levels">All Levels</option>
+          </select>
+        </div>
       </div>
-      <div class="content-section">
-        <h2>Strategy 2: Name of Strategy</h2>
-        <p>Describe another strategy here.</p>
+
+      <div id="strategyCount" class="strategy-count"></div>
+      <div id="strategiesContainer">
+        <div class="loading">Loading ESL strategies...</div>
       </div>
     </main>
 
@@ -98,6 +390,389 @@
         <p>&copy; 2025 Derik Vo</p>
       </div>
     </footer>
+
     <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script>
+      let strategiesData = [];
+      let filteredData = [];
+
+      // Load ESL strategies from CSV
+      async function loadESLStrategies() {
+        try {
+          console.log("Loading ESL strategies from CSV...");
+          const response = await fetch("Data/esl-strategies.csv");
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const csvText = await response.text();
+          console.log("CSV loaded, parsing...");
+
+          Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            dynamicTyping: false,
+            delimitersToGuess: [",", "\t", "|", ";"],
+            complete: function (results) {
+              console.log("Parse results:", results);
+
+              // Clean and process the data
+              strategiesData = results.data
+                .map((row) => ({
+                  name: (row.name || "").trim(),
+                  description: (row.description || "").trim(),
+                  category: (row.category || "").trim(),
+                  level: (row.level || "").trim().toLowerCase(),
+                  implementation_steps: (row.implementation_steps || "")
+                    .split(";")
+                    .map((step) => step.trim())
+                    .filter((step) => step),
+                  materials: (row.materials || "")
+                    .split(";")
+                    .map((material) => material.trim())
+                    .filter((material) => material),
+                  grade_levels: (row.grade_levels || "").trim(),
+                  time_required: (row.time_required || "").trim(),
+                  research_basis: (row.research_basis || "").trim(),
+                }))
+                .filter((strategy) => strategy.name && strategy.description)
+                .sort((a, b) => a.name.localeCompare(b.name)); // Sort by name A-Z initially
+
+              console.log("Processed strategies data:", strategiesData);
+
+              if (strategiesData.length === 0) {
+                document.getElementById("strategiesContainer").innerHTML =
+                  '<div class="no-results">No valid ESL strategies found in CSV file. Check console for details.</div>';
+                return;
+              }
+
+              filteredData = [...strategiesData];
+              populateCategoryFilter();
+              sortStrategies("name-asc");
+              displayStrategies();
+              updateCount();
+            },
+            error: function (error) {
+              console.error("Error parsing CSV:", error);
+              document.getElementById("strategiesContainer").innerHTML =
+                '<div class="no-results">Error parsing CSV file. Check console for details.</div>';
+            },
+          });
+        } catch (error) {
+          console.error("Error loading CSV file:", error);
+          document.getElementById(
+            "strategiesContainer"
+          ).innerHTML = `<div class="no-results">Error loading Data/esl-strategies.csv: ${error.message}<br><br>
+            <strong>To set up your ESL strategies database:</strong><br>
+            1. Create a folder called "Data" in your website directory<br>
+            2. Save your strategies as "esl-strategies.csv" in that folder<br>
+            3. Use columns: name, description, category, level, implementation_steps, materials, grade_levels, time_required, research_basis</div>`;
+        }
+      }
+
+      // Populate category filter dropdown
+      function populateCategoryFilter() {
+        const categories = [
+          ...new Set(
+            strategiesData
+              .map((strategy) => strategy.category)
+              .filter((cat) => cat)
+          ),
+        ].sort();
+        const categoryFilter = document.getElementById("categoryFilter");
+
+        // Clear existing options except "All Categories"
+        categoryFilter.innerHTML =
+          '<option value="all">All Categories</option>';
+
+        categories.forEach((category) => {
+          const option = document.createElement("option");
+          option.value = category;
+          option.textContent = category;
+          categoryFilter.appendChild(option);
+        });
+      }
+
+      // Sort strategies based on selected criteria
+      function sortStrategies(criteria) {
+        filteredData.sort((a, b) => {
+          switch (criteria) {
+            case "name-asc":
+              return a.name.localeCompare(b.name);
+            case "name-desc":
+              return b.name.localeCompare(a.name);
+            case "category-asc":
+              return (
+                a.category.localeCompare(b.category) ||
+                a.name.localeCompare(b.name)
+              );
+            case "level-asc":
+              const levelOrder = {
+                beginner: 1,
+                intermediate: 2,
+                advanced: 3,
+                "all-levels": 4,
+              };
+              return (
+                (levelOrder[a.level] || 5) - (levelOrder[b.level] || 5) ||
+                a.name.localeCompare(b.name)
+              );
+            default:
+              return a.name.localeCompare(b.name);
+          }
+        });
+      }
+
+      // Display ESL strategies
+      function displayStrategies() {
+        const container = document.getElementById("strategiesContainer");
+
+        if (filteredData.length === 0) {
+          container.innerHTML =
+            '<div class="no-results">No ESL strategies found matching your search criteria.</div>';
+          return;
+        }
+
+        const html = filteredData
+          .map(
+            (strategy) => `
+          <article class="strategy-card">
+            <h2>${strategy.name}</h2>
+            <div class="strategy-meta">
+              ${
+                strategy.category
+                  ? `<span class="category-badge">${strategy.category}</span>`
+                  : ""
+              }
+              ${
+                strategy.level
+                  ? `<span class="level-badge ${strategy.level}">${
+                      strategy.level.charAt(0).toUpperCase() +
+                      strategy.level.slice(1).replace("-", " ")
+                    }</span>`
+                  : ""
+              }
+              ${
+                strategy.grade_levels
+                  ? `<span>Grades: ${strategy.grade_levels}</span>`
+                  : ""
+              }
+              ${
+                strategy.time_required
+                  ? `<span>Time: ${strategy.time_required}</span>`
+                  : ""
+              }
+            </div>
+            <div class="description">
+              ${strategy.description}
+            </div>
+            ${
+              strategy.implementation_steps.length
+                ? `
+              <div class="implementation-steps">
+                <h4>Implementation Steps:</h4>
+                <ol>
+                  ${strategy.implementation_steps
+                    .map((step) => `<li>${step}</li>`)
+                    .join("")}
+                </ol>
+              </div>
+            `
+                : ""
+            }
+            ${
+              strategy.materials.length
+                ? `
+              <div class="materials-needed">
+                <h4>Materials Needed:</h4>
+                <div class="materials-list">
+                  ${strategy.materials
+                    .map(
+                      (material) =>
+                        `<span class="material-tag">${material}</span>`
+                    )
+                    .join("")}
+                </div>
+              </div>
+            `
+                : ""
+            }
+            ${
+              strategy.research_basis
+                ? `
+              <div class="research-basis">
+                <p><strong>Research Basis:</strong> ${strategy.research_basis}</p>
+              </div>
+            `
+                : ""
+            }
+          </article>
+        `
+          )
+          .join("");
+
+        container.innerHTML = html;
+      }
+
+      // Update strategy count display
+      function updateCount() {
+        const countElement = document.getElementById("strategyCount");
+        const total = strategiesData.length;
+        const showing = filteredData.length;
+
+        if (showing === total) {
+          countElement.textContent = `Showing all ${total} strateg${
+            total !== 1 ? "ies" : "y"
+          }`;
+        } else {
+          countElement.textContent = `Found ${showing} of ${total} strateg${
+            total !== 1 ? "ies" : "y"
+          }`;
+        }
+      }
+
+      // Search functionality
+      function searchStrategies(query) {
+        const searchTerm = query.trim().toLowerCase();
+
+        if (!searchTerm) {
+          filteredData = [...strategiesData];
+        } else {
+          filteredData = strategiesData.filter(
+            (strategy) =>
+              strategy.name.toLowerCase().includes(searchTerm) ||
+              strategy.description.toLowerCase().includes(searchTerm) ||
+              strategy.category.toLowerCase().includes(searchTerm) ||
+              strategy.implementation_steps.some((step) =>
+                step.toLowerCase().includes(searchTerm)
+              ) ||
+              strategy.materials.some((material) =>
+                material.toLowerCase().includes(searchTerm)
+              ) ||
+              strategy.research_basis.toLowerCase().includes(searchTerm)
+          );
+        }
+
+        // Apply current filters
+        applyCategoryFilter();
+        applyLevelFilter();
+
+        // Apply current sort
+        const sortValue = document.getElementById("sortSelect").value;
+        sortStrategies(sortValue);
+
+        displayStrategies();
+        updateCount();
+      }
+
+      // Apply category filter
+      function applyCategoryFilter() {
+        const categoryFilter = document.getElementById("categoryFilter").value;
+
+        if (categoryFilter !== "all") {
+          filteredData = filteredData.filter(
+            (strategy) => strategy.category === categoryFilter
+          );
+        }
+      }
+
+      // Apply level filter
+      function applyLevelFilter() {
+        const levelFilter = document.getElementById("levelFilter").value;
+
+        if (levelFilter !== "all") {
+          filteredData = filteredData.filter(
+            (strategy) => strategy.level === levelFilter
+          );
+        }
+      }
+
+      // Apply all current filters
+      function applyAllFilters() {
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.trim()
+          .toLowerCase();
+
+        if (searchTerm) {
+          filteredData = strategiesData.filter(
+            (strategy) =>
+              strategy.name.toLowerCase().includes(searchTerm) ||
+              strategy.description.toLowerCase().includes(searchTerm) ||
+              strategy.category.toLowerCase().includes(searchTerm) ||
+              strategy.implementation_steps.some((step) =>
+                step.toLowerCase().includes(searchTerm)
+              ) ||
+              strategy.materials.some((material) =>
+                material.toLowerCase().includes(searchTerm)
+              ) ||
+              strategy.research_basis.toLowerCase().includes(searchTerm)
+          );
+        } else {
+          filteredData = [...strategiesData];
+        }
+
+        applyCategoryFilter();
+        applyLevelFilter();
+
+        const sortValue = document.getElementById("sortSelect").value;
+        sortStrategies(sortValue);
+        displayStrategies();
+        updateCount();
+      }
+
+      // Debounce function for search
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      // Initialize everything
+      document.addEventListener("DOMContentLoaded", function () {
+        loadESLStrategies();
+
+        // Search functionality with debouncing
+        const searchInput = document.getElementById("searchInput");
+        const debouncedSearch = debounce(
+          (query) => searchStrategies(query),
+          300
+        );
+
+        searchInput.addEventListener("input", (e) => {
+          debouncedSearch(e.target.value);
+        });
+
+        // Sort functionality
+        document
+          .getElementById("sortSelect")
+          .addEventListener("change", (e) => {
+            sortStrategies(e.target.value);
+            displayStrategies();
+          });
+
+        // Category filter functionality
+        document
+          .getElementById("categoryFilter")
+          .addEventListener("change", (e) => {
+            applyAllFilters();
+          });
+
+        // Level filter functionality
+        document
+          .getElementById("levelFilter")
+          .addEventListener("change", (e) => {
+            applyAllFilters();
+          });
+      });
+    </script>
   </body>
 </html>
