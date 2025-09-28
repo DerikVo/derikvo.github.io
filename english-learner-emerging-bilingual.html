@@ -63,8 +63,7 @@
       }
 
       .sort-select,
-      .category-filter,
-      .level-filter {
+      .category-filter {
         padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 1.5);
         border: 1px solid var(--color-border);
         border-radius: var(--border-radius);
@@ -77,8 +76,7 @@
       }
 
       .sort-select:focus,
-      .category-filter:focus,
-      .level-filter:focus {
+      .category-filter:focus {
         border-color: var(--color-primary);
         outline: none;
       }
@@ -364,17 +362,9 @@
             <option value="name-asc">Strategy Name A-Z</option>
             <option value="name-desc">Strategy Name Z-A</option>
             <option value="category-asc">Category A-Z</option>
-            <option value="level-asc">Proficiency Level</option>
           </select>
           <select id="categoryFilter" class="category-filter">
             <option value="all">All Categories</option>
-          </select>
-          <select id="levelFilter" class="level-filter">
-            <option value="all">All Levels</option>
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-            <option value="all-levels">All Levels</option>
           </select>
         </div>
       </div>
@@ -424,7 +414,6 @@
                   name: (row.name || "").trim(),
                   description: (row.description || "").trim(),
                   category: (row.category || "").trim(),
-                  level: (row.level || "").trim().toLowerCase(),
                   implementation_steps: (row.implementation_steps || "")
                     .split(";")
                     .map((step) => step.trim())
@@ -433,8 +422,6 @@
                     .split(";")
                     .map((material) => material.trim())
                     .filter((material) => material),
-                  grade_levels: (row.grade_levels || "").trim(),
-                  time_required: (row.time_required || "").trim(),
                   research_basis: (row.research_basis || "").trim(),
                 }))
                 .filter((strategy) => strategy.name && strategy.description)
@@ -468,7 +455,7 @@
             <strong>To set up your ESL strategies database:</strong><br>
             1. Create a folder called "Data" in your website directory<br>
             2. Save your strategies as "esl-strategies.csv" in that folder<br>
-            3. Use columns: name, description, category, level, implementation_steps, materials, grade_levels, time_required, research_basis</div>`;
+            3. Use columns: name, description, category, implementation_steps, materials, research_basis</div>`;
         }
       }
 
@@ -508,17 +495,6 @@
                 a.category.localeCompare(b.category) ||
                 a.name.localeCompare(b.name)
               );
-            case "level-asc":
-              const levelOrder = {
-                beginner: 1,
-                intermediate: 2,
-                advanced: 3,
-                "all-levels": 4,
-              };
-              return (
-                (levelOrder[a.level] || 5) - (levelOrder[b.level] || 5) ||
-                a.name.localeCompare(b.name)
-              );
             default:
               return a.name.localeCompare(b.name);
           }
@@ -544,24 +520,6 @@
               ${
                 strategy.category
                   ? `<span class="category-badge">${strategy.category}</span>`
-                  : ""
-              }
-              ${
-                strategy.level
-                  ? `<span class="level-badge ${strategy.level}">${
-                      strategy.level.charAt(0).toUpperCase() +
-                      strategy.level.slice(1).replace("-", " ")
-                    }</span>`
-                  : ""
-              }
-              ${
-                strategy.grade_levels
-                  ? `<span>Grades: ${strategy.grade_levels}</span>`
-                  : ""
-              }
-              ${
-                strategy.time_required
-                  ? `<span>Time: ${strategy.time_required}</span>`
                   : ""
               }
             </div>
@@ -657,7 +615,6 @@
 
         // Apply current filters
         applyCategoryFilter();
-        applyLevelFilter();
 
         // Apply current sort
         const sortValue = document.getElementById("sortSelect").value;
@@ -762,13 +719,6 @@
         // Category filter functionality
         document
           .getElementById("categoryFilter")
-          .addEventListener("change", (e) => {
-            applyAllFilters();
-          });
-
-        // Level filter functionality
-        document
-          .getElementById("levelFilter")
           .addEventListener("change", (e) => {
             applyAllFilters();
           });
