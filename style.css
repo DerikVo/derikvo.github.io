@@ -37,12 +37,15 @@ body {
   line-height: 1.6;
   margin: 0;
   transition: background-color 0.3s, color 0.3s;
+  overflow-x: hidden;
 }
 
 .container {
   max-width: 1100px;
   margin: auto;
   padding: 0 2rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 h1,
 h2,
@@ -79,6 +82,8 @@ nav .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  position: relative;
 }
 nav .logo {
   color: var(--color-primary);
@@ -86,13 +91,19 @@ nav .logo {
   font-family: var(--font-heading);
   font-size: 1.8rem;
   font-weight: 700;
+  order: 1;
 }
+
 nav ul {
   list-style: none;
   display: flex;
   align-items: center;
   margin: 0;
   padding: 0;
+  flex-wrap: wrap;
+  order: 3;
+  margin-left: auto;
+  margin-right: calc(var(--spacing-unit) * 2);
 }
 nav ul li a {
   color: var(--color-text-secondary);
@@ -138,6 +149,137 @@ nav ul li a:hover {
   cursor: pointer;
 }
 
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  padding: var(--spacing-unit);
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-text-secondary);
+}
+
+.mobile-menu-toggle:hover .menu-icon {
+  color: var(--color-primary);
+}
+
+/* Theme Toggle Button */
+.theme-toggle-button {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  cursor: pointer;
+  padding: var(--spacing-unit);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: calc(var(--spacing-unit) * 2);
+  order: 4;
+}
+
+.toggle-icon {
+  height: 20px;
+  width: 20px;
+  color: var(--color-text-secondary);
+}
+
+/* Mobile Navigation Styles */
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: flex;
+    order: 2;
+    margin-left: auto;
+    margin-right: calc(var(--spacing-unit) * 2);
+  }
+
+  nav .container {
+    padding: calc(var(--spacing-unit) * 2) 1rem;
+    gap: 0;
+  }
+
+  nav .logo {
+    font-size: 1.4rem;
+    order: 1;
+  }
+
+  .theme-toggle-button {
+    margin-left: 0;
+    order: 3;
+  }
+
+  nav ul {
+    flex-direction: column;
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    order: 4;
+    flex-basis: 100%;
+    margin-top: calc(var(--spacing-unit) * 2);
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  nav ul.active {
+    max-height: 600px;
+    border-top: 1px solid var(--color-border);
+    padding-top: calc(var(--spacing-unit) * 2);
+  }
+
+  nav ul li {
+    width: 100%;
+    text-align: left;
+  }
+
+  nav ul li a {
+    display: block;
+    padding: calc(var(--spacing-unit) * 2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  nav ul li:last-child a {
+    border-bottom: none;
+  }
+
+  .dropdown-content {
+    position: static;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    min-width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+
+  .dropdown.active .dropdown-content {
+    max-height: 400px;
+  }
+
+  .dropdown-content a {
+    padding-left: calc(var(--spacing-unit) * 4);
+    background-color: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.85rem;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+}
+
 /* Hero Section */
 .hero {
   background: var(--color-surface);
@@ -163,6 +305,26 @@ nav ul li a:hover {
   box-shadow: var(--shadow-md);
 }
 
+/* Mobile Hero Adjustments */
+@media (max-width: 768px) {
+  .hero {
+    padding: calc(var(--spacing-unit) * 3) 0;
+  }
+
+  .hero-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-picture {
+    max-width: 180px;
+  }
+
+  .hero-text {
+    min-width: 100%;
+  }
+}
+
 /* Philosophy Section */
 .philosophy-section {
   display: flex;
@@ -176,7 +338,16 @@ nav ul li a:hover {
   padding: calc(var(--spacing-unit) * 3);
   border-radius: var(--border-radius);
   flex: 1;
-  min-width: 300px;
+  min-width: 280px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .philosophy-card {
+    min-width: 100%;
+  }
 }
 
 /* General Content Sections */
@@ -186,13 +357,90 @@ nav ul li a:hover {
   margin-bottom: calc(var(--spacing-unit) * 2);
   border-radius: var(--border-radius);
   border: 1px solid var(--color-border);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
+
+.content-section * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ensure inputs, selects, and text areas are responsive */
+input,
+select,
+textarea,
+button {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Prevent iframes from overflowing */
+iframe {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .content-section {
+    padding: calc(var(--spacing-unit) * 2);
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    word-wrap: break-word;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    word-wrap: break-word;
+  }
+
+  /* Fix search input centering on mobile */
+  .search-container {
+    padding: 0 1rem;
+  }
+
+  .search-container input {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Ensure form elements don't overflow */
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+    width: 100%;
+  }
+
+  /* Make sure select dropdowns fit */
+  select {
+    max-width: 100%;
+  }
+
+  /* Responsive blockquotes */
+  blockquote {
+    padding-left: calc(var(--spacing-unit) * 2);
+    padding-right: calc(var(--spacing-unit) * 2);
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: calc(var(--spacing-unit) * 3);
   padding: calc(var(--spacing-unit) * 3) 0;
 }
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -202,6 +450,9 @@ nav ul li a:hover {
   text-decoration: none;
   color: var(--color-text-primary);
   transition: transform 0.3s, box-shadow 0.3s;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
 }
 .card:hover {
   transform: translateY(-5px);
@@ -210,6 +461,7 @@ nav ul li a:hover {
 .card h3 {
   margin-top: 0;
   color: var(--color-primary);
+  word-wrap: break-word;
 }
 
 /* Journal & Reflections */
@@ -253,4 +505,20 @@ footer {
 }
 .hidden {
   display: none;
+}
+/* Presentation Container Responsiveness */
+.presentation-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 59.375%; /* 16:9.5 aspect ratio (569/960) */
+  height: 0;
+  overflow: hidden;
+}
+
+.presentation-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
