@@ -4,8 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EdTech Tools - Derik Vo</title>
+    <link rel="stylesheet" href="style.css" />
     <script>
-      // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+      // Theme initialization - moved before stylesheet to prevent flash
       if (
         localStorage.getItem("color-theme") === "dark" ||
         (!("color-theme" in localStorage) &&
@@ -16,8 +17,25 @@
         document.documentElement.classList.remove("dark");
       }
     </script>
-    <link rel="stylesheet" href="style.css" />
     <style>
+      /* Prevent flash of unstyled content */
+      html {
+        background-color: #ffffff;
+      }
+
+      html.dark {
+        background-color: #111827;
+      }
+
+      body {
+        background-color: var(--color-background, #ffffff);
+        transition: background-color 0.3s ease;
+      }
+
+      .dark body {
+        background-color: var(--color-background, #111827);
+      }
+
       /* Additional styles specific to the EdTech tools system that extend your existing CSS */
       .controls {
         background: var(--color-surface);
@@ -205,6 +223,48 @@
         color: var(--color-text-secondary);
       }
 
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 2rem 0;
+        gap: 10px;
+      }
+
+      .pagination button {
+        padding: 8px 12px;
+        border: 1px solid var(--color-border);
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        font-family: var(--font-body);
+      }
+
+      .pagination button:hover:not(:disabled) {
+        background: var(--color-surface);
+        border-color: var(--color-primary);
+      }
+
+      .pagination button:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      .pagination button.active {
+        background: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+      }
+
+      .page-info {
+        color: var(--color-text-secondary);
+        font-size: 14px;
+        margin: 0 10px;
+      }
+
       /* Responsive design for tool-specific elements */
       @media (max-width: 768px) {
         .search-row {
@@ -253,13 +313,12 @@
               </div>
             </li>
             <li><a href="reflections.html">Reflections</a></li>
-            <!-- <li><a href="journal.html">Journal</a></li> -->
             <li class="dropdown">
               <a href="#" class="dropbtn">Resources ▼</a>
               <div class="dropdown-content">
                 <a href="ed-tech-tools.html">EdTech Tools</a>
                 <a href="english-learner-emerging-bilingual.html"
-                  >ESL/Bilingual</a
+                  >ELD/Bilingual</a
                 >
                 <a href="reading-resource-list.html">Reading List</a>
                 <a href="acronym-dictionary.html">Acronyms</a>
@@ -341,6 +400,15 @@
       <div id="toolsContainer">
         <div class="loading">Loading EdTech tools...</div>
       </div>
+
+      <div id="pagination" class="pagination" style="display: none">
+        <button id="prevBtn">← Previous</button>
+        <div id="pageNumbers"></div>
+        <div class="page-info">
+          <span id="pageInfo"></span>
+        </div>
+        <button id="nextBtn">Next →</button>
+      </div>
     </main>
 
     <footer>
@@ -354,6 +422,9 @@
     <script>
       let toolsData = [];
       let filteredData = [];
+      let currentPage = 1;
+      let itemsPerPage = 5;
+      let isSearchActive = false;
 
       // Load EdTech tools from CSV
       async function loadEdTechTools() {
@@ -405,8 +476,10 @@
               filteredData = [...toolsData];
               populateCategoryFilter();
               sortTools("name-asc");
+              currentPage = 1;
               displayTools();
               updateCount();
+              updatePagination();
             },
             error: function (error) {
               console.error("Error parsing CSV:", error);
@@ -472,17 +545,36 @@
         });
       }
 
-      // Display EdTech tools
+      // Display EdTech tools with pagination
       function displayTools() {
         const container = document.getElementById("toolsContainer");
 
         if (filteredData.length === 0) {
           container.innerHTML =
             '<div class="no-results">No EdTech tools found matching your search criteria.</div>';
+          document.getElementById("pagination").style.display = "none";
           return;
         }
 
-        const html = filteredData
+        // Calculate pagination only when not searching
+        let pageData;
+        if (isSearchActive) {
+          // Show all results when searching
+          pageData = filteredData;
+          document.getElementById("pagination").style.display = "none";
+        } else {
+          // Use pagination when browsing
+          const startIndex = (currentPage - 1) * itemsPerPage;
+          const endIndex = startIndex + itemsPerPage;
+          pageData = filteredData.slice(startIndex, endIndex);
+
+          // Show/hide pagination based on total pages
+          const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+          document.getElementById("pagination").style.display =
+            totalPages > 1 ? "flex" : "none";
+        }
+
+        const html = pageData
           .map(
             (tool) => `
           <article class="tool-card">
@@ -534,84 +626,82 @@
         container.innerHTML = html;
       }
 
-      // Update tool count display
+      // Update tool count display with pagination awareness
       function updateCount() {
         const countElement = document.getElementById("toolCount");
         const total = toolsData.length;
         const showing = filteredData.length;
 
-        if (showing === total) {
-          countElement.textContent = `Showing all ${total} tool${
-            total !== 1 ? "s" : ""
-          }`;
+        if (isSearchActive) {
+          if (showing === total) {
+            countElement.textContent = `Showing all ${total} tool${
+              total !== 1 ? "s" : ""
+            }`;
+          } else {
+            countElement.textContent = `Found ${showing} of ${total} tool${
+              total !== 1 ? "s" : ""
+            }`;
+          }
         } else {
-          countElement.textContent = `Found ${showing} of ${total} tool${
-            total !== 1 ? "s" : ""
-          }`;
+          const startIndex = (currentPage - 1) * itemsPerPage + 1;
+          const endIndex = Math.min(currentPage * itemsPerPage, showing);
+          if (showing <= itemsPerPage) {
+            countElement.textContent = `Showing all ${showing} tool${
+              showing !== 1 ? "s" : ""
+            }`;
+          } else {
+            countElement.textContent = `Showing ${startIndex}-${endIndex} of ${showing} tool${
+              showing !== 1 ? "s" : ""
+            }`;
+          }
         }
       }
 
-      // Search functionality
-      function searchTools(query) {
-        const searchTerm = query.trim().toLowerCase();
+      // Update pagination controls
+      function updatePagination() {
+        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const pageNumbers = document.getElementById("pageNumbers");
+        const pageInfo = document.getElementById("pageInfo");
 
-        if (!searchTerm) {
-          filteredData = [...toolsData];
-        } else {
-          filteredData = toolsData.filter(
-            (tool) =>
-              tool.name.toLowerCase().includes(searchTerm) ||
-              tool.description.toLowerCase().includes(searchTerm) ||
-              tool.category.toLowerCase().includes(searchTerm) ||
-              tool.features.some((feature) =>
-                feature.toLowerCase().includes(searchTerm)
-              ) ||
-              tool.subjects.toLowerCase().includes(searchTerm)
-          );
+        // Update buttons
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = currentPage >= totalPages;
+
+        // Update page info
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+        // Generate page numbers (show max 5 pages)
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + 4);
+
+        if (endPage - startPage < 4) {
+          startPage = Math.max(1, endPage - 4);
         }
 
-        // Apply current filters
-        applyCategoryFilter();
-        applyCostFilter();
-
-        // Apply current sort
-        const sortValue = document.getElementById("sortSelect").value;
-        sortTools(sortValue);
-
-        displayTools();
-        updateCount();
-      }
-
-      // Apply category filter
-      function applyCategoryFilter() {
-        const categoryFilter = document.getElementById("categoryFilter").value;
-
-        if (categoryFilter !== "all") {
-          filteredData = filteredData.filter(
-            (tool) => tool.category === categoryFilter
-          );
+        let pageNumbersHtml = "";
+        for (let i = startPage; i <= endPage; i++) {
+          pageNumbersHtml += `
+            <button class="page-btn ${
+              i === currentPage ? "active" : ""
+            }" data-page="${i}">
+              ${i}
+            </button>
+          `;
         }
-      }
 
-      // Apply cost filter
-      function applyCostFilter() {
-        const costFilter = document.getElementById("costFilter").value;
+        pageNumbers.innerHTML = pageNumbersHtml;
 
-        if (costFilter !== "all") {
-          filteredData = filteredData.filter(
-            (tool) => tool.cost === costFilter
-          );
-        }
-      }
-
-      // Filter by category
-      function filterByCategory(category) {
-        applyAllFilters();
-      }
-
-      // Filter by cost
-      function filterByCost(cost) {
-        applyAllFilters();
+        // Add event listeners to page buttons
+        pageNumbers.querySelectorAll(".page-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            currentPage = parseInt(e.target.dataset.page);
+            displayTools();
+            updateCount();
+            updatePagination();
+          });
+        });
       }
 
       // Apply all current filters
@@ -620,9 +710,18 @@
           .getElementById("searchInput")
           .value.trim()
           .toLowerCase();
+        const categoryFilter = document.getElementById("categoryFilter").value;
+        const costFilter = document.getElementById("costFilter").value;
 
+        // Determine if search is active
+        isSearchActive = searchTerm.length > 0;
+
+        // Start with all data
+        filteredData = [...toolsData];
+
+        // Apply search filter if there's a search term
         if (searchTerm) {
-          filteredData = toolsData.filter(
+          filteredData = filteredData.filter(
             (tool) =>
               tool.name.toLowerCase().includes(searchTerm) ||
               tool.description.toLowerCase().includes(searchTerm) ||
@@ -632,17 +731,30 @@
               ) ||
               tool.subjects.toLowerCase().includes(searchTerm)
           );
-        } else {
-          filteredData = [...toolsData];
         }
 
-        applyCategoryFilter();
-        applyCostFilter();
+        // Apply category filter
+        if (categoryFilter !== "all") {
+          filteredData = filteredData.filter(
+            (tool) => tool.category === categoryFilter
+          );
+        }
+
+        // Apply cost filter
+        if (costFilter !== "all") {
+          filteredData = filteredData.filter(
+            (tool) => tool.cost === costFilter
+          );
+        }
+
+        // Reset to page 1 when filters change
+        currentPage = 1;
 
         const sortValue = document.getElementById("sortSelect").value;
         sortTools(sortValue);
         displayTools();
         updateCount();
+        updatePagination();
       }
 
       // Debounce function for search
@@ -664,10 +776,10 @@
 
         // Search functionality with debouncing
         const searchInput = document.getElementById("searchInput");
-        const debouncedSearch = debounce((query) => searchTools(query), 300);
+        const debouncedSearch = debounce(() => applyAllFilters(), 300);
 
         searchInput.addEventListener("input", (e) => {
-          debouncedSearch(e.target.value);
+          debouncedSearch();
         });
 
         // Sort functionality
@@ -682,15 +794,35 @@
         document
           .getElementById("categoryFilter")
           .addEventListener("change", (e) => {
-            filterByCategory(e.target.value);
+            applyAllFilters();
           });
 
         // Cost filter functionality
         document
           .getElementById("costFilter")
           .addEventListener("change", (e) => {
-            filterByCost(e.target.value);
+            applyAllFilters();
           });
+
+        // Pagination event listeners
+        document.getElementById("prevBtn").addEventListener("click", () => {
+          if (currentPage > 1) {
+            currentPage--;
+            displayTools();
+            updateCount();
+            updatePagination();
+          }
+        });
+
+        document.getElementById("nextBtn").addEventListener("click", () => {
+          const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+          if (currentPage < totalPages) {
+            currentPage++;
+            displayTools();
+            updateCount();
+            updatePagination();
+          }
+        });
       });
     </script>
   </body>
