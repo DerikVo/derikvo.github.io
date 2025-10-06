@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ESL Strategies - Derik Vo</title>
+    <title>ELD Strategies - Derik Vo</title>
     <link rel="stylesheet" href="style.css" />
     <script>
       // Theme initialization - moved before stylesheet to prevent flash
@@ -36,7 +36,7 @@
         background-color: var(--color-background, #111827);
       }
 
-      /* ESL Strategies specific styles extending your existing CSS */
+      /* ELD Strategies specific styles extending your existing CSS */
       .controls {
         background: var(--color-surface);
         border: 1px solid var(--color-border);
@@ -415,7 +415,7 @@
 
       <div id="strategyCount" class="strategy-count"></div>
       <div id="strategiesContainer">
-        <div class="loading">Loading ESL strategies...</div>
+        <div class="loading">Loading ESD strategies...</div>
       </div>
 
       <div id="pagination" class="pagination" style="display: none">
@@ -443,11 +443,11 @@
       let itemsPerPage = 5;
       let isSearchActive = false;
 
-      // Load ESL strategies from CSV
-      async function loadESLStrategies() {
+      // Load ELD strategies from CSV
+      async function loadELDStrategies() {
         try {
-          console.log("Loading ESL strategies from CSV...");
-          const response = await fetch("Data/esl-strategies.csv");
+          console.log("Loading ELD strategies from CSV...");
+          const response = await fetch("Data/eld-strategies.csv");
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -487,7 +487,7 @@
 
               if (strategiesData.length === 0) {
                 document.getElementById("strategiesContainer").innerHTML =
-                  '<div class="no-results">No valid ESL strategies found in CSV file. Check console for details.</div>';
+                  '<div class="no-results">No valid ELD strategies found in CSV file. Check console for details.</div>';
                 return;
               }
 
@@ -509,10 +509,10 @@
           console.error("Error loading CSV file:", error);
           document.getElementById(
             "strategiesContainer"
-          ).innerHTML = `<div class="no-results">Error loading Data/esl-strategies.csv: ${error.message}<br><br>
-            <strong>To set up your ESL strategies database:</strong><br>
+          ).innerHTML = `<div class="no-results">Error loading Data/eld-strategies.csv: ${error.message}<br><br>
+            <strong>To set up your ELD strategies database:</strong><br>
             1. Create a folder called "Data" in your website directory<br>
-            2. Save your strategies as "esl-strategies.csv" in that folder<br>
+            2. Save your strategies as "eld-strategies.csv" in that folder<br>
             3. Use columns: name, description, category, implementation_steps, materials, research_basis</div>`;
         }
       }
@@ -559,13 +559,13 @@
         });
       }
 
-      // Display ESL strategies with pagination
+      // Display ELD strategies with pagination
       function displayStrategies() {
         const container = document.getElementById("strategiesContainer");
 
         if (filteredData.length === 0) {
           container.innerHTML =
-            '<div class="no-results">No ESL strategies found matching your search criteria.</div>';
+            '<div class="no-results">No ELD strategies found matching your search criteria.</div>';
           document.getElementById("pagination").style.display = "none";
           return;
         }
@@ -797,7 +797,7 @@
 
       // Initialize everything
       document.addEventListener("DOMContentLoaded", function () {
-        loadESLStrategies();
+        loadELDStrategies();
 
         // Search functionality with debouncing
         const searchInput = document.getElementById("searchInput");

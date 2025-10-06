@@ -391,7 +391,7 @@
       async function loadStandards() {
         try {
           console.log("Loading Common Core standards from CSV...");
-          const response = await fetch("data/ccss.csv");
+          const response = await fetch("Data/ccss.csv");
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
