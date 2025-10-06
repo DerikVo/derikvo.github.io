@@ -3,10 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ESL Strategies - Derik Vo</title>
+    <title>Common Core Standards Search - Derik Vo</title>
     <link rel="stylesheet" href="style.css" />
     <script>
-      // Theme initialization - moved before stylesheet to prevent flash
       if (
         localStorage.getItem("color-theme") === "dark" ||
         (!("color-theme" in localStorage) &&
@@ -18,25 +17,19 @@
       }
     </script>
     <style>
-      /* Prevent flash of unstyled content */
       html {
         background-color: #ffffff;
       }
-
       html.dark {
         background-color: #111827;
       }
-
       body {
         background-color: var(--color-background, #ffffff);
         transition: background-color 0.3s ease;
       }
-
       .dark body {
         background-color: var(--color-background, #111827);
       }
-
-      /* ESL Strategies specific styles extending your existing CSS */
       .controls {
         background: var(--color-surface);
         border: 1px solid var(--color-border);
@@ -47,14 +40,12 @@
         flex-direction: column;
         gap: calc(var(--spacing-unit) * 2);
       }
-
       .search-row {
         display: flex;
         gap: calc(var(--spacing-unit) * 2);
         flex-wrap: wrap;
         align-items: center;
       }
-
       .search-input {
         flex: 1;
         min-width: 250px;
@@ -68,20 +59,18 @@
         color: var(--color-text-primary);
         font-family: var(--font-body);
       }
-
       .search-input:focus {
         border-color: var(--color-primary);
       }
-
       .filter-controls {
         display: flex;
         gap: calc(var(--spacing-unit) * 2);
         flex-wrap: wrap;
         align-items: center;
       }
-
       .sort-select,
-      .category-filter {
+      .category-filter,
+      .grade-filter {
         padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 1.5);
         border: 1px solid var(--color-border);
         border-radius: var(--border-radius);
@@ -92,21 +81,19 @@
         cursor: pointer;
         transition: border-color 0.3s ease;
       }
-
       .sort-select:focus,
-      .category-filter:focus {
+      .category-filter:focus,
+      .grade-filter:focus {
         border-color: var(--color-primary);
         outline: none;
       }
-
-      .strategy-count {
+      .standards-count {
         color: var(--color-text-secondary);
         font-size: 0.9rem;
         margin-bottom: calc(var(--spacing-unit) * 2);
         font-style: italic;
       }
-
-      .strategy-card {
+      .standard-card {
         background: var(--color-surface);
         border: 1px solid var(--color-border);
         border-radius: var(--border-radius);
@@ -115,13 +102,11 @@
         transition: all 0.3s ease;
         box-shadow: var(--shadow-sm);
       }
-
-      .strategy-card:hover {
+      .standard-card:hover {
         box-shadow: var(--shadow-md);
         transform: translateY(-2px);
       }
-
-      .strategy-card h2 {
+      .standard-card h2 {
         font-family: var(--font-heading);
         font-size: 1.5rem;
         margin-top: 0;
@@ -129,8 +114,7 @@
         color: var(--color-text-primary);
         line-height: 1.3;
       }
-
-      .strategy-meta {
+      .standard-meta {
         color: var(--color-text-secondary);
         font-size: 0.9rem;
         margin-bottom: calc(var(--spacing-unit) * 2);
@@ -139,7 +123,6 @@
         gap: calc(var(--spacing-unit) * 2);
         flex-wrap: wrap;
       }
-
       .category-badge {
         background: var(--color-primary);
         color: white;
@@ -149,81 +132,53 @@
         font-weight: 700;
         font-family: var(--font-body);
       }
-
-      .strategy-card .description {
+      .grade-badge {
+        background: var(--color-accent);
+        color: white;
+        padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit));
+        border-radius: var(--border-radius);
+        font-size: 0.8rem;
+        font-weight: 700;
+        font-family: var(--font-body);
+      }
+      .standard-card .description {
         margin-bottom: calc(var(--spacing-unit) * 2);
         line-height: 1.7;
         text-align: justify;
       }
-
-      .implementation-steps {
+      .standard-details {
         background: var(--color-background);
         border: 1px solid var(--color-border);
         border-radius: var(--border-radius);
         padding: calc(var(--spacing-unit) * 2);
         margin: calc(var(--spacing-unit) * 2) 0;
       }
-
-      .implementation-steps h4 {
+      .standard-details h4 {
         margin-top: 0;
         margin-bottom: calc(var(--spacing-unit));
         color: var(--color-text-primary);
         font-size: 1rem;
       }
-
-      .implementation-steps ol {
-        margin: 0;
-        padding-left: calc(var(--spacing-unit) * 2);
+      .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: calc(var(--spacing-unit) * 2);
       }
-
-      .implementation-steps li {
-        margin-bottom: calc(var(--spacing-unit) * 0.5);
-        line-height: 1.6;
-      }
-
-      .materials-needed {
-        background: var(--color-surface);
-        border-left: 4px solid var(--color-primary);
-        padding: calc(var(--spacing-unit) * 1.5);
-        margin: calc(var(--spacing-unit) * 2) 0;
-        border-radius: 0 var(--border-radius) var(--border-radius) 0;
-      }
-
-      .materials-needed h4 {
-        margin-top: 0;
-        margin-bottom: calc(var(--spacing-unit));
-        color: var(--color-primary);
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        font-weight: 700;
-      }
-
-      .materials-list {
+      .detail-item {
         display: flex;
-        flex-wrap: wrap;
-        gap: calc(var(--spacing-unit));
+        flex-direction: column;
+        gap: calc(var(--spacing-unit) * 0.5);
       }
-
-      .material-tag {
-        background: var(--color-primary);
-        color: white;
-        padding: calc(var(--spacing-unit) * 0.3) calc(var(--spacing-unit) * 0.8);
-        border-radius: calc(var(--border-radius) * 2);
+      .detail-label {
         font-size: 0.8rem;
-        font-weight: 500;
+        color: var(--color-text-secondary);
+        font-weight: 600;
+        text-transform: uppercase;
       }
-
-      .strategy-card a {
-        color: var(--color-primary);
-        text-decoration: none;
-        border-bottom: 1px solid transparent;
-        transition: border-color 0.3s ease;
+      .detail-value {
+        font-size: 0.9rem;
+        color: var(--color-text-primary);
       }
-
-      .strategy-card a:hover {
-        border-bottom-color: var(--color-primary);
-      }
-
       .no-results {
         text-align: center;
         padding: calc(var(--spacing-unit) * 4);
@@ -233,13 +188,11 @@
         border-radius: var(--border-radius);
         border: 2px dashed var(--color-border);
       }
-
       .loading {
         text-align: center;
         padding: calc(var(--spacing-unit) * 4);
         color: var(--color-text-secondary);
       }
-
       .pagination {
         display: flex;
         justify-content: center;
@@ -247,7 +200,6 @@
         margin: 2rem 0;
         gap: 10px;
       }
-
       .pagination button {
         padding: 8px 12px;
         border: 1px solid var(--color-border);
@@ -259,56 +211,45 @@
         transition: all 0.3s ease;
         font-family: var(--font-body);
       }
-
       .pagination button:hover:not(:disabled) {
         background: var(--color-surface);
         border-color: var(--color-primary);
       }
-
       .pagination button:disabled {
         cursor: not-allowed;
         opacity: 0.5;
       }
-
       .pagination button.active {
         background: var(--color-primary);
         color: white;
         border-color: var(--color-primary);
       }
-
       .page-info {
         color: var(--color-text-secondary);
         font-size: 14px;
         margin: 0 10px;
       }
-
-      /* Responsive design for strategy-specific elements */
       @media (max-width: 768px) {
         .search-row {
           flex-direction: column;
         }
-
         .search-input {
           min-width: 100%;
         }
-
         .filter-controls {
           justify-content: space-between;
           width: 100%;
         }
-
-        .strategy-card {
+        .standard-card {
           padding: calc(var(--spacing-unit) * 2);
         }
-
-        .strategy-meta {
+        .standard-meta {
           flex-direction: column;
           align-items: flex-start;
           gap: calc(var(--spacing-unit));
         }
-
-        .materials-list {
-          gap: calc(var(--spacing-unit) * 0.5);
+        .details-grid {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -385,10 +326,10 @@
     </header>
 
     <main class="container">
-      <h1>English Learner/Emerging Bilingual Strategies</h1>
+      <h1>Common Core Standards Search</h1>
       <p class="subtitle">
-        Research-based strategies and techniques for supporting multilingual
-        learners in the classroom.
+        Search and browse Common Core State Standards by keyword, category, or
+        grade level
       </p>
 
       <div class="controls">
@@ -397,25 +338,29 @@
             type="text"
             id="searchInput"
             class="search-input"
-            placeholder="Search strategies by name, description, or implementation steps..."
+            placeholder="Search standards by ID, description, category, or grade..."
             autocomplete="off"
           />
         </div>
         <div class="filter-controls">
           <select id="sortSelect" class="sort-select">
-            <option value="name-asc">Strategy Name A-Z</option>
-            <option value="name-desc">Strategy Name Z-A</option>
+            <option value="id-asc">Standard ID A-Z</option>
+            <option value="id-desc">Standard ID Z-A</option>
+            <option value="grade-asc">Grade Level</option>
             <option value="category-asc">Category A-Z</option>
           </select>
           <select id="categoryFilter" class="category-filter">
             <option value="all">All Categories</option>
           </select>
+          <select id="gradeFilter" class="grade-filter">
+            <option value="all">All Grades</option>
+          </select>
         </div>
       </div>
 
-      <div id="strategyCount" class="strategy-count"></div>
-      <div id="strategiesContainer">
-        <div class="loading">Loading ESL strategies...</div>
+      <div id="standardsCount" class="standards-count"></div>
+      <div id="standardsContainer">
+        <div class="loading">Loading Common Core standards...</div>
       </div>
 
       <div id="pagination" class="pagination" style="display: none">
@@ -437,17 +382,16 @@
     <script src="script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
-      let strategiesData = [];
+      let standardsData = [];
       let filteredData = [];
       let currentPage = 1;
-      let itemsPerPage = 5;
+      let itemsPerPage = 10;
       let isSearchActive = false;
 
-      // Load ESL strategies from CSV
-      async function loadESLStrategies() {
+      async function loadStandards() {
         try {
-          console.log("Loading ESL strategies from CSV...");
-          const response = await fetch("Data/esl-strategies.csv");
+          console.log("Loading Common Core standards from CSV...");
+          const response = await fetch("data/ccss.csv");
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -460,129 +404,122 @@
             header: true,
             skipEmptyLines: true,
             dynamicTyping: false,
-            delimitersToGuess: [",", "\t", "|", ";"],
             complete: function (results) {
               console.log("Parse results:", results);
 
-              // Clean and process the data
-              strategiesData = results.data
+              standardsData = results.data
                 .map((row) => ({
-                  name: (row.name || "").trim(),
+                  id: (row.id || "").trim(),
+                  content_type: (row.content_type || "").trim(),
+                  category_id: (row.category_id || "").trim(),
+                  category_name: (row.category_name || "").trim(),
+                  grade_id: (row.grade_id || "").trim(),
+                  grade_name: (row.grade_name || "").trim(),
+                  item: (row.item || "").trim(),
                   description: (row.description || "").trim(),
-                  category: (row.category || "").trim(),
-                  implementation_steps: (row.implementation_steps || "")
-                    .split(";")
-                    .map((step) => step.trim())
-                    .filter((step) => step),
-                  materials: (row.materials || "")
-                    .split(";")
-                    .map((material) => material.trim())
-                    .filter((material) => material),
-                  research_basis: (row.research_basis || "").trim(),
                 }))
-                .filter((strategy) => strategy.name && strategy.description)
-                .sort((a, b) => a.name.localeCompare(b.name)); // Sort by name A-Z initially
+                .filter((standard) => standard.id && standard.description);
 
-              console.log("Processed strategies data:", strategiesData);
+              console.log("Processed standards:", standardsData.length);
 
-              if (strategiesData.length === 0) {
-                document.getElementById("strategiesContainer").innerHTML =
-                  '<div class="no-results">No valid ESL strategies found in CSV file. Check console for details.</div>';
+              if (standardsData.length === 0) {
+                document.getElementById("standardsContainer").innerHTML =
+                  '<div class="no-results">No valid standards found in CSV file.</div>';
                 return;
               }
 
-              filteredData = [...strategiesData];
-              populateCategoryFilter();
-              sortStrategies("name-asc");
+              filteredData = [...standardsData];
+              populateFilters();
+              sortStandards("id-asc");
               currentPage = 1;
-              displayStrategies();
+              displayStandards();
               updateCount();
               updatePagination();
             },
             error: function (error) {
               console.error("Error parsing CSV:", error);
-              document.getElementById("strategiesContainer").innerHTML =
+              document.getElementById("standardsContainer").innerHTML =
                 '<div class="no-results">Error parsing CSV file. Check console for details.</div>';
             },
           });
         } catch (error) {
           console.error("Error loading CSV file:", error);
           document.getElementById(
-            "strategiesContainer"
-          ).innerHTML = `<div class="no-results">Error loading Data/esl-strategies.csv: ${error.message}<br><br>
-            <strong>To set up your ESL strategies database:</strong><br>
-            1. Create a folder called "Data" in your website directory<br>
-            2. Save your strategies as "esl-strategies.csv" in that folder<br>
-            3. Use columns: name, description, category, implementation_steps, materials, research_basis</div>`;
+            "standardsContainer"
+          ).innerHTML = `<div class="no-results">Error loading data/ccss.csv: ${error.message}</div>`;
         }
       }
 
-      // Populate category filter dropdown
-      function populateCategoryFilter() {
+      function populateFilters() {
         const categories = [
-          ...new Set(
-            strategiesData
-              .map((strategy) => strategy.category)
-              .filter((cat) => cat)
-          ),
+          ...new Set(standardsData.map((s) => s.content_type).filter((c) => c)),
         ].sort();
-        const categoryFilter = document.getElementById("categoryFilter");
+        const grades = [
+          ...new Set(standardsData.map((s) => s.grade_name).filter((g) => g)),
+        ].sort();
 
-        // Clear existing options except "All Categories"
+        const categoryFilter = document.getElementById("categoryFilter");
         categoryFilter.innerHTML =
           '<option value="all">All Categories</option>';
-
-        categories.forEach((category) => {
+        categories.forEach((cat) => {
           const option = document.createElement("option");
-          option.value = category;
-          option.textContent = category;
+          option.value = cat;
+          option.textContent = cat;
           categoryFilter.appendChild(option);
+        });
+
+        const gradeFilter = document.getElementById("gradeFilter");
+        gradeFilter.innerHTML = '<option value="all">All Grades</option>';
+        grades.forEach((grade) => {
+          const option = document.createElement("option");
+          option.value = grade;
+          option.textContent = grade;
+          gradeFilter.appendChild(option);
         });
       }
 
-      // Sort strategies based on selected criteria
-      function sortStrategies(criteria) {
+      function sortStandards(criteria) {
         filteredData.sort((a, b) => {
           switch (criteria) {
-            case "name-asc":
-              return a.name.localeCompare(b.name);
-            case "name-desc":
-              return b.name.localeCompare(a.name);
+            case "id-asc":
+              return a.id.localeCompare(b.id);
+            case "id-desc":
+              return b.id.localeCompare(a.id);
+            case "grade-asc":
+              return (
+                a.grade_name.localeCompare(b.grade_name) ||
+                a.id.localeCompare(b.id)
+              );
             case "category-asc":
               return (
-                a.category.localeCompare(b.category) ||
-                a.name.localeCompare(b.name)
+                a.content_type.localeCompare(b.content_type) ||
+                a.id.localeCompare(b.id)
               );
             default:
-              return a.name.localeCompare(b.name);
+              return a.id.localeCompare(b.id);
           }
         });
       }
 
-      // Display ESL strategies with pagination
-      function displayStrategies() {
-        const container = document.getElementById("strategiesContainer");
+      function displayStandards() {
+        const container = document.getElementById("standardsContainer");
 
         if (filteredData.length === 0) {
           container.innerHTML =
-            '<div class="no-results">No ESL strategies found matching your search criteria.</div>';
+            '<div class="no-results">No standards found matching your search criteria.</div>';
           document.getElementById("pagination").style.display = "none";
           return;
         }
 
-        // Calculate pagination only when not searching
         let pageData;
         if (isSearchActive) {
-          // Show all results when searching
           pageData = filteredData;
           document.getElementById("pagination").style.display = "none";
         } else {
-          // Use pagination when browsing
           const startIndex = (currentPage - 1) * itemsPerPage;
           const endIndex = startIndex + itemsPerPage;
           pageData = filteredData.slice(startIndex, endIndex);
 
-          // Show/hide pagination based on total pages
           const totalPages = Math.ceil(filteredData.length / itemsPerPage);
           document.getElementById("pagination").style.display =
             totalPages > 1 ? "flex" : "none";
@@ -590,99 +527,109 @@
 
         const html = pageData
           .map(
-            (strategy) => `
-          <article class="strategy-card">
-            <h2>${strategy.name}</h2>
-            <div class="strategy-meta">
-              ${
-                strategy.category
-                  ? `<span class="category-badge">${strategy.category}</span>`
-                  : ""
-              }
-            </div>
-            <div class="description">
-              ${strategy.description}
-            </div>
-            ${
-              strategy.implementation_steps.length
-                ? `
-              <div class="implementation-steps">
-                <h4>Implementation Steps:</h4>
-                <ol>
-                  ${strategy.implementation_steps
-                    .map((step) => `<li>${step}</li>`)
-                    .join("")}
-                </ol>
+            (standard) => `
+            <article class="standard-card">
+              <h2>${escapeHtml(standard.id)}</h2>
+              <div class="standard-meta">
+                ${
+                  standard.content_type
+                    ? `<span class="category-badge">${escapeHtml(
+                        standard.content_type
+                      )}</span>`
+                    : ""
+                }
+                ${
+                  standard.grade_name
+                    ? `<span class="grade-badge">${escapeHtml(
+                        standard.grade_name
+                      )}</span>`
+                    : ""
+                }
               </div>
-            `
-                : ""
-            }
-            ${
-              strategy.materials.length
-                ? `
-              <div class="materials-needed">
-                <h4>Materials Needed:</h4>
-                <div class="materials-list">
-                  ${strategy.materials
-                    .map(
-                      (material) =>
-                        `<span class="material-tag">${material}</span>`
-                    )
-                    .join("")}
+              <div class="description">${escapeHtml(standard.description)}</div>
+              <div class="standard-details">
+                <h4>Standard Details</h4>
+                <div class="details-grid">
+                  ${
+                    standard.category_name
+                      ? `
+                    <div class="detail-item">
+                      <span class="detail-label">Category</span>
+                      <span class="detail-value">${escapeHtml(
+                        standard.category_name
+                      )}</span>
+                    </div>
+                  `
+                      : ""
+                  }
+                  ${
+                    standard.grade_id
+                      ? `
+                    <div class="detail-item">
+                      <span class="detail-label">Grade ID</span>
+                      <span class="detail-value">${escapeHtml(
+                        standard.grade_id
+                      )}</span>
+                    </div>
+                  `
+                      : ""
+                  }
+                  ${
+                    standard.category_id
+                      ? `
+                    <div class="detail-item">
+                      <span class="detail-label">Category ID</span>
+                      <span class="detail-value">${escapeHtml(
+                        standard.category_id
+                      )}</span>
+                    </div>
+                  `
+                      : ""
+                  }
+                  ${
+                    standard.item
+                      ? `
+                    <div class="detail-item">
+                      <span class="detail-label">Item</span>
+                      <span class="detail-value">${escapeHtml(
+                        standard.item
+                      )}</span>
+                    </div>
+                  `
+                      : ""
+                  }
                 </div>
               </div>
-            `
-                : ""
-            }
-            ${
-              strategy.research_basis
-                ? `
-              <div class="research-basis">
-                <p><strong>Research Basis:</strong> ${strategy.research_basis}</p>
-              </div>
-            `
-                : ""
-            }
-          </article>
-        `
+            </article>
+          `
           )
           .join("");
 
         container.innerHTML = html;
       }
 
-      // Update strategy count display with pagination awareness
       function updateCount() {
-        const countElement = document.getElementById("strategyCount");
-        const total = strategiesData.length;
+        const countElement = document.getElementById("standardsCount");
+        const total = standardsData.length;
         const showing = filteredData.length;
 
         if (isSearchActive) {
           if (showing === total) {
-            countElement.textContent = `Showing all ${total} strateg${
-              total !== 1 ? "ies" : "y"
-            }`;
+            countElement.textContent = `Showing all ${total} standards`;
           } else {
-            countElement.textContent = `Found ${showing} of ${total} strateg${
-              total !== 1 ? "ies" : "y"
-            }`;
+            countElement.textContent = `Found ${showing} of ${total} standards`;
           }
         } else {
           const startIndex = (currentPage - 1) * itemsPerPage + 1;
           const endIndex = Math.min(currentPage * itemsPerPage, showing);
           if (showing <= itemsPerPage) {
-            countElement.textContent = `Showing all ${showing} strateg${
-              showing !== 1 ? "ies" : "y"
-            }`;
+            countElement.textContent = `Showing all ${showing} standards`;
           } else {
-            countElement.textContent = `Showing ${startIndex}-${endIndex} of ${showing} strateg${
-              showing !== 1 ? "ies" : "y"
-            }`;
+            countElement.textContent = `Showing ${startIndex}-${endIndex} of ${showing} standards`;
           }
         }
       }
 
-      // Update pagination controls
       function updatePagination() {
         const totalPages = Math.ceil(filteredData.length / itemsPerPage);
         const prevBtn = document.getElementById("prevBtn");
@@ -690,14 +637,11 @@
         const pageNumbers = document.getElementById("pageNumbers");
         const pageInfo = document.getElementById("pageInfo");
 
-        // Update buttons
         prevBtn.disabled = currentPage <= 1;
         nextBtn.disabled = currentPage >= totalPages;
 
-        // Update page info
         pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
 
-        // Generate page numbers (show max 5 pages)
         let startPage = Math.max(1, currentPage - 2);
         let endPage = Math.min(totalPages, startPage + 4);
 
@@ -707,82 +651,67 @@
 
         let pageNumbersHtml = "";
         for (let i = startPage; i <= endPage; i++) {
-          pageNumbersHtml += `
-            <button class="page-btn ${
-              i === currentPage ? "active" : ""
-            }" data-page="${i}">
-              ${i}
-            </button>
-          `;
+          pageNumbersHtml += `<button class="page-btn ${
+            i === currentPage ? "active" : ""
+          }" data-page="${i}">${i}</button>`;
         }
 
         pageNumbers.innerHTML = pageNumbersHtml;
 
-        // Add event listeners to page buttons
         pageNumbers.querySelectorAll(".page-btn").forEach((btn) => {
           btn.addEventListener("click", (e) => {
             currentPage = parseInt(e.target.dataset.page);
-            displayStrategies();
+            displayStandards();
             updateCount();
             updatePagination();
           });
         });
       }
 
-      // Apply all current filters
       function applyAllFilters() {
         const searchTerm = document
           .getElementById("searchInput")
           .value.trim()
           .toLowerCase();
         const categoryFilter = document.getElementById("categoryFilter").value;
+        const gradeFilter = document.getElementById("gradeFilter").value;
 
-        // Determine if search is active
         isSearchActive = searchTerm.length > 0;
 
-        // Start with all data
-        filteredData = [...strategiesData];
+        filteredData = [...standardsData];
 
-        // Apply search filter if there's a search term
         if (searchTerm) {
           filteredData = filteredData.filter(
-            (strategy) =>
-              strategy.name.toLowerCase().includes(searchTerm) ||
-              strategy.description.toLowerCase().includes(searchTerm) ||
-              strategy.category.toLowerCase().includes(searchTerm) ||
-              strategy.implementation_steps.some((step) =>
-                step.toLowerCase().includes(searchTerm)
-              ) ||
-              strategy.materials.some((material) =>
-                material.toLowerCase().includes(searchTerm)
-              ) ||
-              strategy.research_basis.toLowerCase().includes(searchTerm)
+            (standard) =>
+              standard.id.toLowerCase().includes(searchTerm) ||
+              standard.description.toLowerCase().includes(searchTerm) ||
+              standard.content_type.toLowerCase().includes(searchTerm) ||
+              standard.category_name.toLowerCase().includes(searchTerm) ||
+              standard.grade_name.toLowerCase().includes(searchTerm)
           );
         }
 
-        // Apply category filter
         if (categoryFilter !== "all") {
           filteredData = filteredData.filter(
-            (strategy) => strategy.category === categoryFilter
+            (s) => s.content_type === categoryFilter
           );
         }
 
-        // Reset to page 1 when filters change
+        if (gradeFilter !== "all") {
+          filteredData = filteredData.filter(
+            (s) => s.grade_name === gradeFilter
+          );
+        }
+
         currentPage = 1;
 
         const sortValue = document.getElementById("sortSelect").value;
-        sortStrategies(sortValue);
-        displayStrategies();
+        sortStandards(sortValue);
+        displayStandards();
         updateCount();
         updatePagination();
       }
 
-      // Search functionality - simplified to use applyAllFilters
-      function searchStrategies(query) {
-        applyAllFilters();
-      }
-
-      // Debounce function for search
       function debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -795,41 +724,43 @@
         };
       }
 
-      // Initialize everything
+      function escapeHtml(unsafe) {
+        if (unsafe === null || unsafe === undefined) return "";
+        return unsafe
+          .toString()
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
       document.addEventListener("DOMContentLoaded", function () {
-        loadESLStrategies();
+        loadStandards();
 
-        // Search functionality with debouncing
         const searchInput = document.getElementById("searchInput");
-        const debouncedSearch = debounce(
-          (query) => searchStrategies(query),
-          300
-        );
+        const debouncedSearch = debounce(() => applyAllFilters(), 300);
 
-        searchInput.addEventListener("input", (e) => {
-          debouncedSearch(e.target.value);
-        });
+        searchInput.addEventListener("input", () => debouncedSearch());
 
-        // Sort functionality
         document
           .getElementById("sortSelect")
           .addEventListener("change", (e) => {
-            sortStrategies(e.target.value);
-            displayStrategies();
+            sortStandards(e.target.value);
+            displayStandards();
           });
 
-        // Category filter functionality
         document
           .getElementById("categoryFilter")
-          .addEventListener("change", (e) => {
-            applyAllFilters();
-          });
+          .addEventListener("change", () => applyAllFilters());
+        document
+          .getElementById("gradeFilter")
+          .addEventListener("change", () => applyAllFilters());
 
-        // Pagination event listeners
         document.getElementById("prevBtn").addEventListener("click", () => {
           if (currentPage > 1) {
             currentPage--;
-            displayStrategies();
+            displayStandards();
             updateCount();
             updatePagination();
           }
@@ -839,7 +770,7 @@
           const totalPages = Math.ceil(filteredData.length / itemsPerPage);
           if (currentPage < totalPages) {
             currentPage++;
-            displayStrategies();
+            displayStandards();
             updateCount();
             updatePagination();
           }
