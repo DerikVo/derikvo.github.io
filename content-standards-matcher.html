@@ -18,6 +18,7 @@
       }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder@1.3.3"></script>
     <style>
       /* Prevent flash of unstyled content */
       html {
@@ -537,6 +538,7 @@
           this.model = null;
           this.isModelLoaded = false;
           this.useFallbackEmbedding = false;
+          this.embeddingDimension = 512; // Universal Sentence Encoder uses 512 dimensions
           this.loadStandardsData();
           this.loadEmbeddingModel();
         }
@@ -550,24 +552,32 @@
 
             this.standards = data.standards;
 
-            // DEBUG: Check embedding dimensions
+            // Get the actual embedding dimension from the data
+            if (data.embedding_dimension) {
+              this.embeddingDimension = data.embedding_dimension;
+            } else if (
+              this.standards.length > 0 &&
+              this.standards[0].embedding
+            ) {
+              this.embeddingDimension = this.standards[0].embedding.length;
+            }
+
+            console.log(
+              `Using embedding dimension: ${this.embeddingDimension}`
+            );
             console.log(`Total standards: ${this.standards.length}`);
+
             if (this.standards.length > 0) {
               console.log(
                 `First standard embedding length: ${this.standards[0].embedding.length}`
-              );
-              console.log(
-                `First standard embedding sample: ${this.standards[0].embedding.slice(
-                  0,
-                  5
-                )}`
               );
             }
 
             // Filter out any standards with wrong embedding dimensions
             const validStandards = this.standards.filter(
               (standard) =>
-                standard.embedding && standard.embedding.length === 384
+                standard.embedding &&
+                standard.embedding.length === this.embeddingDimension
             );
 
             if (validStandards.length !== this.standards.length) {
@@ -589,7 +599,7 @@
             this.isLoaded = true;
 
             updateStatus(
-              `Ready | ${this.standards.length} standards loaded`,
+              `Ready | ${this.standards.length} standards loaded (${this.embeddingDimension}D)`,
               "ready"
             );
             document.getElementById("matchButton").disabled = false;
@@ -622,6 +632,15 @@
             const embeddings = await this.model.embed([text]);
             const embeddingArray = await embeddings.array();
             embeddings.dispose();
+
+            // If dimensions don't match, we need to handle this
+            if (embeddingArray[0].length !== this.embeddingDimension) {
+              console.warn(
+                `Model embedding dimension (${embeddingArray[0].length}) doesn't match standards dimension (${this.embeddingDimension}). Using fallback.`
+              );
+              return this.generateFallbackEmbedding(text);
+            }
+
             return embeddingArray[0];
           } else {
             // Fallback to optimized hashing method
@@ -632,7 +651,7 @@
         generateFallbackEmbedding(text) {
           // Improved semantic-aware hashing as backup
           const words = text.toLowerCase().split(/\s+/);
-          const embedding = new Array(384).fill(0);
+          const embedding = new Array(this.embeddingDimension).fill(0);
 
           words.forEach((word, position) => {
             const wordHash = this.stringHash(word);
@@ -641,7 +660,7 @@
             // Better semantic distribution
             for (let i = 0; i < 6; i++) {
               const combinedHash = this.stringHash(wordHash + posHash + i);
-              const index = Math.abs(combinedHash) % 384;
+              const index = Math.abs(combinedHash) % this.embeddingDimension;
               embedding[index] += 1 / (position + 1); // Position weighting
             }
           });
@@ -674,10 +693,10 @@
 
           const userEmbedding = await this.generateEmbedding(userText);
 
-          // Ensure user embedding is the right shape (384 dimensions)
-          if (userEmbedding.length !== 384) {
+          // Ensure user embedding is the right shape
+          if (userEmbedding.length !== this.embeddingDimension) {
             throw new Error(
-              `User embedding has wrong dimension: ${userEmbedding.length} (expected 384)`
+              `User embedding has wrong dimension: ${userEmbedding.length} (expected ${this.embeddingDimension})`
             );
           }
 
@@ -812,7 +831,7 @@
           document.getElementById("matchButton").textContent =
             "Find Matching Standards";
           updateStatus(
-            `Ready | ${matcher.standards.length} standards loaded`,
+            `Ready | ${matcher.standards.length} standards loaded (${matcher.embeddingDimension}D)`,
             "ready"
           );
         }
