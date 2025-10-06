@@ -514,20 +514,50 @@
             const data = await response.json();
 
             this.standards = data.standards;
-            this.isLoaded = true;
+
+            // DEBUG: Check embedding dimensions
+            console.log(`Total standards: ${this.standards.length}`);
+            if (this.standards.length > 0) {
+              console.log(
+                `First standard embedding length: ${this.standards[0].embedding.length}`
+              );
+              console.log(
+                `First standard embedding sample: ${this.standards[0].embedding.slice(
+                  0,
+                  5
+                )}`
+              );
+            }
+
+            // Filter out any standards with wrong embedding dimensions
+            const validStandards = this.standards.filter(
+              (standard) =>
+                standard.embedding && standard.embedding.length === 384
+            );
+
+            if (validStandards.length !== this.standards.length) {
+              console.warn(
+                `Filtered out ${
+                  this.standards.length - validStandards.length
+                } standards with invalid embeddings`
+              );
+              this.standards = validStandards;
+            }
 
             const embeddingsArray = this.standards.map((s) => s.embedding);
             this.embeddingsTensor = tf.tensor2d(embeddingsArray);
+
+            console.log(
+              `Embeddings tensor shape: ${this.embeddingsTensor.shape}`
+            );
+
+            this.isLoaded = true;
 
             updateStatus(
               `Ready | ${this.standards.length} standards loaded`,
               "ready"
             );
             document.getElementById("matchButton").disabled = false;
-
-            console.log(
-              `Loaded ${this.standards.length} standards with embeddings`
-            );
           } catch (error) {
             console.error("Error loading standards data:", error);
             updateStatus("Error loading standards data", "error");
@@ -579,16 +609,31 @@
           }
 
           const userEmbedding = await this.generateEmbedding(userText);
+
+          // Ensure user embedding is the right shape (384 dimensions)
+          if (userEmbedding.length !== 384) {
+            throw new Error(
+              `User embedding has wrong dimension: ${userEmbedding.length} (expected 384)`
+            );
+          }
+
           const userTensor = tf.tensor1d(userEmbedding);
 
           try {
-            const normalizedUser = userTensor.div(userTensor.norm());
+            // Normalize user tensor
+            const userNorm = userTensor.norm();
+            const normalizedUser = userTensor.div(userNorm);
+
+            // Normalize standards tensor along axis 1 (each standard's embedding)
+            const standardsNorm = this.embeddingsTensor.norm(2, 1);
             const normalizedStandards = this.embeddingsTensor.div(
-              this.embeddingsTensor.norm(2, 1)
+              standardsNorm.expandDims(1)
             );
 
+            // Calculate cosine similarity
             const similarities = normalizedStandards
-              .dot(normalizedUser)
+              .matMul(normalizedUser.expandDims(1))
+              .squeeze()
               .dataSync();
 
             const matchesWithScores = this.standards.map((standard, index) => ({
@@ -693,11 +738,11 @@
         } catch (error) {
           console.error("Matching error:", error);
           document.getElementById("standardsContainer").innerHTML = `
-        <div class="no-results">
-          <h3>Error</h3>
-          <p>${error.message}</p>
-        </div>
-      `;
+            <div class="no-results">
+              <h3>Error</h3>
+              <p>${error.message}</p>
+            </div>
+          `;
         } finally {
           document.getElementById("matchButton").disabled = false;
           document.getElementById("matchButton").textContent =
@@ -733,10 +778,10 @@
 
         if (filteredData.length === 0) {
           container.innerHTML = `
-        <div class="no-results">
-          No matching standards found. Try adjusting your content or confidence threshold.
-        </div>
-      `;
+            <div class="no-results">
+              No matching standards found. Try adjusting your content or confidence threshold.
+            </div>
+          `;
           document.getElementById("pagination").style.display = "none";
           return;
         }
@@ -758,77 +803,77 @@
         const html = pageData
           .map(
             (standard) => `
-        <article class="standard-card">
-          <h2>${escapeHtml(standard.id)}</h2>
-          <div class="standard-meta">
-            <span class="confidence-badge">${standard.confidence_percentage.toFixed(
-              1
-            )}% Match</span>
-            ${
-              standard.content_type
-                ? `<span class="category-badge">${escapeHtml(
-                    standard.content_type
-                  )}</span>`
-                : ""
-            }
-            ${
-              standard.grade_name
-                ? `<span>Grade: ${escapeHtml(standard.grade_name)}</span>`
-                : ""
-            }
-          </div>
-          <div class="description">
-            ${escapeHtml(standard.description)}
-          </div>
-          <div class="standard-details">
-            <h4>Standard Details</h4>
-            <div class="details-grid">
-              ${
-                standard.category_name
-                  ? `
-                <div class="detail-item">
-                  <span class="detail-label">Category</span>
-                  <span class="detail-value">${escapeHtml(
-                    standard.category_name
-                  )}</span>
-                </div>
-              `
-                  : ""
-              }
-              ${
-                standard.grade_id
-                  ? `
-                <div class="detail-item">
-                  <span class="detail-label">Grade ID</span>
-                  <span class="detail-value">${escapeHtml(
-                    standard.grade_id
-                  )}</span>
-                </div>
-              `
-                  : ""
-              }
-              ${
-                standard.category_id
-                  ? `
-                <div class="detail-item">
-                  <span class="detail-label">Category ID</span>
-                  <span class="detail-value">${escapeHtml(
-                    standard.category_id
-                  )}</span>
-                </div>
-              `
-                  : ""
-              }
-              <div class="detail-item">
-                <span class="detail-label">Similarity Score</span>
-                <span class="detail-value">${standard.similarity_score.toFixed(
-                  4
-                )}</span>
+            <article class="standard-card">
+              <h2>${escapeHtml(standard.id)}</h2>
+              <div class="standard-meta">
+                <span class="confidence-badge">${standard.confidence_percentage.toFixed(
+                  1
+                )}% Match</span>
+                ${
+                  standard.content_type
+                    ? `<span class="category-badge">${escapeHtml(
+                        standard.content_type
+                      )}</span>`
+                    : ""
+                }
+                ${
+                  standard.grade_name
+                    ? `<span>Grade: ${escapeHtml(standard.grade_name)}</span>`
+                    : ""
+                }
               </div>
-            </div>
-          </div>
-        </article>
-      `
+              <div class="description">
+                ${escapeHtml(standard.description)}
+              </div>
+              <div class="standard-details">
+                <h4>Standard Details</h4>
+                <div class="details-grid">
+                  ${
+                    standard.category_name
+                      ? `
+                    <div class="detail-item">
+                      <span class="detail-label">Category</span>
+                      <span class="detail-value">${escapeHtml(
+                        standard.category_name
+                      )}</span>
+                    </div>
+                  `
+                      : ""
+                  }
+                  ${
+                    standard.grade_id
+                      ? `
+                    <div class="detail-item">
+                      <span class="detail-label">Grade ID</span>
+                      <span class="detail-value">${escapeHtml(
+                        standard.grade_id
+                      )}</span>
+                    </div>
+                  `
+                      : ""
+                  }
+                  ${
+                    standard.category_id
+                      ? `
+                    <div class="detail-item">
+                      <span class="detail-label">Category ID</span>
+                      <span class="detail-value">${escapeHtml(
+                        standard.category_id
+                      )}</span>
+                    </div>
+                  `
+                      : ""
+                  }
+                  <div class="detail-item">
+                    <span class="detail-label">Similarity Score</span>
+                    <span class="detail-value">${standard.similarity_score.toFixed(
+                      4
+                    )}</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          `
           )
           .join("");
 
@@ -878,12 +923,12 @@
         let pageNumbersHtml = "";
         for (let i = startPage; i <= endPage; i++) {
           pageNumbersHtml += `
-        <button class="page-btn ${
-          i === currentPage ? "active" : ""
-        }" data-page="${i}">
-          ${i}
-        </button>
-      `;
+            <button class="page-btn ${
+              i === currentPage ? "active" : ""
+            }" data-page="${i}">
+              ${i}
+            </button>
+          `;
         }
 
         pageNumbers.innerHTML = pageNumbersHtml;
