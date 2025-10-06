@@ -6,7 +6,6 @@
     <title>Content Standards Matcher - Derik Vo</title>
     <link rel="stylesheet" href="style.css" />
     <script>
-      // Theme initialization
       if (
         localStorage.getItem("color-theme") === "dark" ||
         (!("color-theme" in localStorage) &&
@@ -17,8 +16,6 @@
         document.documentElement.classList.remove("dark");
       }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder@1.3.3"></script>
     <style>
       html {
         background-color: #ffffff;
@@ -239,42 +236,6 @@
         padding: calc(var(--spacing-unit) * 4);
         color: var(--color-text-secondary);
       }
-      .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 2rem 0;
-        gap: 10px;
-      }
-      .pagination button {
-        padding: 8px 12px;
-        border: 1px solid var(--color-border);
-        background: var(--color-background);
-        color: var(--color-text-primary);
-        border-radius: var(--border-radius);
-        cursor: pointer;
-        font-size: 14px;
-        transition: all 0.3s ease;
-        font-family: var(--font-body);
-      }
-      .pagination button:hover:not(:disabled) {
-        background: var(--color-surface);
-        border-color: var(--color-primary);
-      }
-      .pagination button:disabled {
-        cursor: not-allowed;
-        opacity: 0.5;
-      }
-      .pagination button.active {
-        background: var(--color-primary);
-        color: white;
-        border-color: var(--color-primary);
-      }
-      .page-info {
-        color: var(--color-text-secondary);
-        font-size: 14px;
-        margin: 0 10px;
-      }
       @media (max-width: 768px) {
         .search-row {
           flex-direction: column;
@@ -374,8 +335,8 @@
     <main class="container">
       <h1>Content Standards Matcher</h1>
       <p class="subtitle">
-        AI-powered tool to match educational content with Common Core standards
-        using semantic analysis
+        Intelligent tool to match educational content with Common Core standards
+        using TF-IDF semantic analysis
       </p>
 
       <div class="system-status">
@@ -398,11 +359,12 @@
             <option value="3">3 Results</option>
             <option value="5" selected>5 Results</option>
             <option value="10">10 Results</option>
+            <option value="20">20 Results</option>
           </select>
           <select id="confidenceFilter" class="confidence-filter">
             <option value="0.0">Any Confidence</option>
-            <option value="0.3" selected>30%+ Confidence</option>
-            <option value="0.5">50%+ Confidence</option>
+            <option value="0.3">30%+ Confidence</option>
+            <option value="0.5" selected>50%+ Confidence</option>
             <option value="0.7">70%+ Confidence</option>
           </select>
           <select id="sortSelect" class="sort-select">
@@ -423,15 +385,6 @@
           Enter content above and click "Find Matching Standards" to see results
         </div>
       </div>
-
-      <div id="pagination" class="pagination" style="display: none">
-        <button id="prevBtn">← Previous</button>
-        <div id="pageNumbers"></div>
-        <div class="page-info">
-          <span id="pageInfo"></span>
-        </div>
-        <button id="nextBtn">Next →</button>
-      </div>
     </main>
 
     <footer>
@@ -442,51 +395,17 @@
 
     <script src="script.js"></script>
     <script>
-      let standardsData = [];
       let filteredData = [];
-      let currentPage = 1;
-      let itemsPerPage = 5;
       let isSearchActive = false;
 
-      class ClientStandardsMatcher {
+      class TFIDFMatcher {
         constructor() {
           this.standards = [];
-          this.embeddingsTensor = null;
-          this.isLoaded = false;
-          this.model = null;
-          this.isModelLoaded = false;
+          this.vocabulary = {};
+          this.idfValues = [];
           this.embeddingDimension = 512;
-          this.initializeModel();
-        }
-
-        async initializeModel() {
-          try {
-            updateStatus("Loading AI model...", "loading");
-
-            let attempts = 0;
-            while (typeof use === "undefined" && attempts < 50) {
-              await new Promise((resolve) => setTimeout(resolve, 100));
-              attempts++;
-            }
-
-            if (typeof use !== "undefined") {
-              this.model = await use.load();
-              this.isModelLoaded = true;
-              console.log("Universal Sentence Encoder loaded successfully");
-            } else {
-              throw new Error("USE library not available");
-            }
-
-            await this.loadStandardsData();
-          } catch (error) {
-            console.error("Error loading model:", error);
-            console.warn("Falling back to keyword-based matching");
-            updateStatus(
-              "Using simplified matching (model unavailable)",
-              "ready"
-            );
-            await this.loadStandardsData();
-          }
+          this.isLoaded = false;
+          this.loadStandardsData();
         }
 
         async loadStandardsData() {
@@ -497,102 +416,66 @@
             const data = await response.json();
 
             this.standards = data.standards;
+            this.vocabulary = data.vocabulary || {};
+            this.idfValues = data.idf_values || [];
 
             if (data.embedding_dimension) {
               this.embeddingDimension = data.embedding_dimension;
-            } else if (
-              this.standards.length > 0 &&
-              this.standards[0].embedding
-            ) {
-              this.embeddingDimension = this.standards[0].embedding.length;
             }
 
             console.log(`Loaded ${this.standards.length} standards`);
+            console.log(
+              `Vocabulary size: ${Object.keys(this.vocabulary).length}`
+            );
             console.log(`Embedding dimension: ${this.embeddingDimension}`);
 
-            const validStandards = this.standards.filter(
-              (standard) =>
-                standard.embedding &&
-                standard.embedding.length === this.embeddingDimension &&
-                !standard.embedding.every((val) => val === 0)
-            );
-
-            if (validStandards.length !== this.standards.length) {
-              console.warn(
-                `Filtered out ${
-                  this.standards.length - validStandards.length
-                } standards with invalid embeddings`
-              );
-              this.standards = validStandards;
-            }
-
-            const embeddingsArray = this.standards.map((s) => s.embedding);
-            this.embeddingsTensor = tf.tensor2d(embeddingsArray);
-
-            console.log(
-              `Embeddings tensor shape: [${this.embeddingsTensor.shape}]`
-            );
-
             this.isLoaded = true;
-
-            const modelStatus = this.isModelLoaded
-              ? "AI model ready"
-              : "Keyword matching ready";
-
             updateStatus(
-              `${modelStatus} | ${this.standards.length} standards loaded`,
+              `Ready | ${this.standards.length} standards loaded (TF-IDF)`,
               "ready"
             );
-
             document.getElementById("matchButton").disabled = false;
           } catch (error) {
             console.error("Error loading standards data:", error);
             updateStatus("Error loading standards data", "error");
-            throw error;
           }
         }
 
-        async generateEmbedding(text) {
-          if (this.isModelLoaded && this.model) {
-            try {
-              const embeddings = await this.model.embed([text]);
-              const embeddingArray = await embeddings.array();
-              embeddings.dispose();
-
-              if (embeddingArray[0].length !== this.embeddingDimension) {
-                console.warn(
-                  `Model embedding dimension (${embeddingArray[0].length}) doesn't match standards (${this.embeddingDimension})`
-                );
-                return this.generateKeywordEmbedding(text);
-              }
-
-              return embeddingArray[0];
-            } catch (error) {
-              console.error("Error generating embedding:", error);
-              return this.generateKeywordEmbedding(text);
-            }
-          } else {
-            return this.generateKeywordEmbedding(text);
-          }
-        }
-
-        generateKeywordEmbedding(text) {
-          const words = text
+        tokenize(text) {
+          return text
             .toLowerCase()
-            .split(/\W+/)
+            .replace(/[^\w\s]/g, " ")
+            .split(/\s+/)
             .filter((word) => word.length > 2);
-          const embedding = new Array(this.embeddingDimension).fill(0);
-          const wordFrequency = new Map();
+        }
 
-          words.forEach((word) => {
-            wordFrequency.set(word, (wordFrequency.get(word) || 0) + 1);
+        generateNgrams(tokens, n) {
+          const ngrams = [];
+          for (let i = 0; i <= tokens.length - n; i++) {
+            ngrams.push(tokens.slice(i, i + n).join(" "));
+          }
+          return ngrams;
+        }
+
+        generateTFIDFEmbedding(text) {
+          const embedding = new Array(this.embeddingDimension).fill(0);
+
+          const tokens = this.tokenize(text);
+          const unigrams = tokens;
+          const bigrams = this.generateNgrams(tokens, 2);
+          const allTerms = [...unigrams, ...bigrams];
+
+          const termFreq = {};
+          allTerms.forEach((term) => {
+            termFreq[term] = (termFreq[term] || 0) + 1;
           });
 
-          wordFrequency.forEach((freq, word) => {
-            for (let i = 0; i < 8; i++) {
-              const index =
-                Math.abs(this.stringHash(word + i)) % this.embeddingDimension;
-              embedding[index] += freq / Math.sqrt(words.length);
+          Object.entries(termFreq).forEach(([term, freq]) => {
+            if (term in this.vocabulary) {
+              const index = this.vocabulary[term];
+              const tf = freq / allTerms.length;
+              const idf = this.idfValues[index] || 1.0;
+              embedding[index] = tf * idf;
             }
           });
 
@@ -602,17 +485,25 @@
           return norm > 0 ? embedding.map((val) => val / norm) : embedding;
         }
 
-        stringHash(str) {
-          let hash = 0;
-          for (let i = 0; i < str.length; i++) {
-            const char = str.charCodeAt(i);
-            hash = (hash << 5) - hash + char;
-            hash = hash & hash;
+        cosineSimilarity(vec1, vec2) {
+          let dotProduct = 0;
+          let norm1 = 0;
+          let norm2 = 0;
+
+          for (let i = 0; i < vec1.length; i++) {
+            dotProduct += vec1[i] * vec2[i];
+            norm1 += vec1[i] * vec1[i];
+            norm2 += vec2[i] * vec2[i];
           }
-          return hash;
+
+          norm1 = Math.sqrt(norm1);
+          norm2 = Math.sqrt(norm2);
+
+          if (norm1 === 0 || norm2 === 0) return 0;
+          return dotProduct / (norm1 * norm2);
         }
 
-        async findMatches(userText, topK = 5, minConfidence = 0.0) {
+        findMatches(userText, topK = 5, minConfidence = 0.0) {
           if (!this.isLoaded) {
             throw new Error("Standards data not loaded yet");
           }
@@ -623,87 +514,65 @@
 
           console.log(
             "Finding matches for:",
-            userText.substring(0, 50) + "..."
+            userText.substring(0, 80) + "..."
           );
 
-          const userEmbedding = await this.generateEmbedding(userText);
+          const userEmbedding = this.generateTFIDFEmbedding(userText);
 
-          if (userEmbedding.length !== this.embeddingDimension) {
-            throw new Error(
-              `User embedding has wrong dimension: ${userEmbedding.length} (expected ${this.embeddingDimension})`
+          const matchesWithScores = this.standards.map((standard) => {
+            const similarity = this.cosineSimilarity(
+              userEmbedding,
+              standard.embedding
             );
-          }
-
-          const userTensor = tf.tensor1d(userEmbedding);
-
-          try {
-            const userNorm = userTensor.norm();
-            const userNormValue = userNorm.dataSync()[0];
-
-            if (userNormValue === 0) {
-              throw new Error("User embedding has zero norm");
-            }
-
-            const normalizedUser = userTensor.div(userNorm);
-
-            const standardsNorm = this.embeddingsTensor.norm(2, 1, true);
-            const normalizedStandards = this.embeddingsTensor.div(
-              standardsNorm.add(1e-8)
-            );
-
-            const similarities = normalizedStandards
-              .matMul(normalizedUser.expandDims(1))
-              .squeeze()
-              .dataSync();
-
-            console.log("Similarity stats:", {
-              min: Math.min(...similarities).toFixed(4),
-              max: Math.max(...similarities).toFixed(4),
-              mean: (
-                similarities.reduce((a, b) => a + b, 0) / similarities.length
-              ).toFixed(4),
-            });
-
-            const matchesWithScores = this.standards.map((standard, index) => ({
+            return {
               ...standard,
-              similarity_score: similarities[index],
+              similarity_score: similarity,
               confidence_percentage: Math.max(
                 0,
-                Math.min(100, similarities[index] * 100)
+                Math.min(100, similarity * 100)
               ),
-            }));
+            };
+          });
 
-            const filteredMatches = matchesWithScores
-              .filter((match) => match.similarity_score >= minConfidence)
-              .sort((a, b) => b.similarity_score - a.similarity_score)
-              .slice(0, topK);
+          console.log("Similarity stats:", {
+            min: Math.min(
+              ...matchesWithScores.map((m) => m.similarity_score)
+            ).toFixed(4),
+            max: Math.max(
+              ...matchesWithScores.map((m) => m.similarity_score)
+            ).toFixed(4),
+            mean: (
+              matchesWithScores.reduce(
+                (sum, m) => sum + m.similarity_score,
+                0
+              ) / matchesWithScores.length
+            ).toFixed(4),
+          });
 
-            console.log(`Returning ${filteredMatches.length} filtered matches`);
+          const filteredMatches = matchesWithScores
+            .filter((match) => match.similarity_score >= minConfidence)
+            .sort((a, b) => b.similarity_score - a.similarity_score)
+            .slice(0, topK);
 
-            if (filteredMatches.length > 0) {
-              console.log("Top match:", {
-                id: filteredMatches[0].id,
-                score: filteredMatches[0].similarity_score.toFixed(4),
-                confidence:
-                  filteredMatches[0].confidence_percentage.toFixed(1) + "%",
-              });
-            }
+          console.log(`Returning ${filteredMatches.length} filtered matches`);
 
-            return filteredMatches;
-          } finally {
-            userTensor.dispose();
+          if (filteredMatches.length > 0) {
+            console.log("Top 3 matches:");
+            filteredMatches.slice(0, 3).forEach((match, i) => {
+              console.log(
+                `${i + 1}. ${match.id}: ${(
+                  match.similarity_score * 100
+                ).toFixed(1)}%`
+              );
+            });
           }
-        }
 
-        dispose() {
-          if (this.embeddingsTensor) {
-            this.embeddingsTensor.dispose();
-          }
+          return filteredMatches;
         }
       }
 
       document.addEventListener("DOMContentLoaded", function () {
-        const matcher = new ClientStandardsMatcher();
+        const matcher = new TFIDFMatcher();
 
         document.getElementById("matchButton").addEventListener("click", () => {
           matchStandards(matcher);
@@ -721,25 +590,6 @@
           if (filteredData.length > 0) {
             sortStandards();
             displayStandards();
-          }
-        });
-
-        document.getElementById("prevBtn").addEventListener("click", () => {
-          if (currentPage > 1) {
-            currentPage--;
-            displayStandards();
-            updateCount();
-            updatePagination();
-          }
-        });
-
-        document.getElementById("nextBtn").addEventListener("click", () => {
-          const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-          if (currentPage < totalPages) {
-            currentPage++;
-            displayStandards();
-            updateCount();
-            updatePagination();
           }
         });
       });
@@ -765,40 +615,26 @@
 
         console.log("STARTING MATCH");
         console.log("User input:", userText);
-        console.log(
-          "Searching for",
-          resultsCount,
-          "results with min confidence",
-          minConfidence
-        );
+        console.log("Parameters:", { resultsCount, minConfidence });
 
         updateStatus("Finding matching standards...", "loading");
         document.getElementById("matchButton").disabled = true;
         document.getElementById("matchButton").textContent = "Matching...";
 
         try {
-          const matches = await matcher.findMatches(
+          const matches = matcher.findMatches(
             userText,
             resultsCount,
             minConfidence
           );
           filteredData = matches;
           isSearchActive = true;
-          currentPage = 1;
           sortStandards();
           displayStandards();
           updateCount();
-          updatePagination();
 
           console.log("MATCH COMPLETE");
           console.log(`Found ${matches.length} matches`);
-          matches.forEach((match, index) => {
-            console.log(
-              `${index + 1}. ${match.id}: ${match.similarity_score.toFixed(
-                4
-              )} (${match.confidence_percentage.toFixed(1)}%)`
-            );
-          });
         } catch (error) {
           console.error("Matching error:", error);
           document.getElementById("standardsContainer").innerHTML = `
@@ -812,7 +648,7 @@
           document.getElementById("matchButton").textContent =
             "Find Matching Standards";
           updateStatus(
-            `Ready | ${matcher.standards.length} standards loaded`,
+            `Ready | ${matcher.standards.length} standards loaded (TF-IDF)`,
             "ready"
           );
         }
@@ -843,28 +679,13 @@
         if (filteredData.length === 0) {
           container.innerHTML = `
             <div class="no-results">
-              No matching standards found. Try adjusting your content or confidence threshold.
+              No matching standards found. Try adjusting your content or lowering the confidence threshold.
             </div>
           `;
-          document.getElementById("pagination").style.display = "none";
           return;
         }
 
-        let pageData;
-        if (isSearchActive) {
-          pageData = filteredData;
-          document.getElementById("pagination").style.display = "none";
-        } else {
-          const startIndex = (currentPage - 1) * itemsPerPage;
-          const endIndex = startIndex + itemsPerPage;
-          pageData = filteredData.slice(startIndex, endIndex);
-
-          const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-          document.getElementById("pagination").style.display =
-            totalPages > 1 ? "flex" : "none";
-        }
-
-        const html = pageData
+        const html = filteredData
           .map(
             (standard) => `
             <article class="standard-card">
@@ -946,59 +767,13 @@
         const countElement = document.getElementById("standardsCount");
         const showing = filteredData.length;
 
-        if (isSearchActive) {
+        if (showing === 0) {
+          countElement.textContent = "";
+        } else {
           countElement.textContent = `Found ${showing} matching standard${
             showing !== 1 ? "s" : ""
           }`;
-        } else if (showing <= itemsPerPage) {
-          countElement.textContent = `Showing all ${showing} matching standard${
-            showing !== 1 ? "s" : ""
-          }`;
-        } else {
-          const startIndex = (currentPage - 1) * itemsPerPage + 1;
-          const endIndex = Math.min(currentPage * itemsPerPage, showing);
-          countElement.textContent = `Showing ${startIndex}-${endIndex} of ${showing} matching standard${
-            showing !== 1 ? "s" : ""
-          }`;
         }
-      }
-
-      function updatePagination() {
-        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-        const prevBtn = document.getElementById("prevBtn");
-        const nextBtn = document.getElementById("nextBtn");
-        const pageNumbers = document.getElementById("pageNumbers");
-        const pageInfo = document.getElementById("pageInfo");
-
-        prevBtn.disabled = currentPage <= 1;
-        nextBtn.disabled = currentPage >= totalPages;
-
-        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-
-        let startPage = Math.max(1, currentPage - 2);
-        let endPage = Math.min(totalPages, startPage + 4);
-
-        if (endPage - startPage < 4) {
-          startPage = Math.max(1, endPage - 4);
-        }
-
-        let pageNumbersHtml = "";
-        for (let i = startPage; i <= endPage; i++) {
-          pageNumbersHtml += `<button class="page-btn ${
-            i === currentPage ? "active" : ""
-          }" data-page="${i}">${i}</button>`;
-        }
-
-        pageNumbers.innerHTML = pageNumbersHtml;
-
-        pageNumbers.querySelectorAll(".page-btn").forEach((btn) => {
-          btn.addEventListener("click", (e) => {
-            currentPage = parseInt(e.target.dataset.page);
-            displayStandards();
-            updateCount();
-            updatePagination();
-          });
-        });
       }
 
       function updateStatus(message, type) {
