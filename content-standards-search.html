@@ -480,8 +480,13 @@
     <script>
       let filteredData = [];
       let currentPage = 1;
-      const standardsPerPage = 10; // Can be made configurable later
+      let standardsPerPage = 25; // Default to match the initial selected value
       let allStandards = []; // Store all standards for filtering
+
+      // Function to get current page size from dropdown
+      function getCurrentPageSize() {
+        return parseInt(document.getElementById("resultsCount").value);
+      }
 
       // English stop words for better matching
       const STOP_WORDS = new Set([
@@ -838,6 +843,18 @@
               matchStandards(matcher);
             }
           });
+
+        // Add event listener for results count dropdown
+        document
+          .getElementById("resultsCount")
+          .addEventListener("change", () => {
+            if (filteredData.length > 0) {
+              currentPage = 1; // Reset to first page when changing page size
+              displayStandards();
+              updatePagination();
+              updateCount();
+            }
+          });
       });
 
       async function matchStandards(matcher) {
@@ -927,6 +944,7 @@
 
       function displayStandards() {
         const container = document.getElementById("standardsContainer");
+        const currentPageSize = getCurrentPageSize(); // Get current page size
 
         if (filteredData.length === 0) {
           container.innerHTML = `
@@ -937,11 +955,11 @@
           return;
         }
 
-        // Calculate pagination
-        const totalPages = Math.ceil(filteredData.length / standardsPerPage);
-        const startIndex = (currentPage - 1) * standardsPerPage;
+        // Calculate pagination using current page size
+        const totalPages = Math.ceil(filteredData.length / currentPageSize);
+        const startIndex = (currentPage - 1) * currentPageSize;
         const endIndex = Math.min(
-          startIndex + standardsPerPage,
+          startIndex + currentPageSize,
           filteredData.length
         );
         const currentStandards = filteredData.slice(startIndex, endIndex);
@@ -1028,13 +1046,15 @@
         const paginationContainer = document.getElementById(
           "paginationContainer"
         );
+        const currentPageSize = getCurrentPageSize(); // Get current page size
 
-        if (filteredData.length <= standardsPerPage) {
+        const totalPages = Math.ceil(filteredData.length / currentPageSize);
+
+        if (totalPages <= 1) {
           paginationContainer.style.display = "none";
           return;
         }
 
-        const totalPages = Math.ceil(filteredData.length / standardsPerPage);
         paginationContainer.style.display = "flex";
 
         let paginationHTML = "";
@@ -1107,9 +1127,9 @@
         `;
 
         // Page info
-        const startItem = (currentPage - 1) * standardsPerPage + 1;
+        const startItem = (currentPage - 1) * currentPageSize + 1;
         const endItem = Math.min(
-          currentPage * standardsPerPage,
+          currentPage * currentPageSize,
           filteredData.length
         );
 
@@ -1123,7 +1143,8 @@
       }
 
       function changePage(page) {
-        const totalPages = Math.ceil(filteredData.length / standardsPerPage);
+        const currentPageSize = getCurrentPageSize(); // Get current page size
+        const totalPages = Math.ceil(filteredData.length / currentPageSize);
 
         if (page < 1 || page > totalPages) return;
 
@@ -1141,11 +1162,12 @@
       function updateCount() {
         const countElement = document.getElementById("standardsCount");
         const total = filteredData.length;
+        const currentPageSize = getCurrentPageSize(); // Get current page size
 
         if (total === 0) {
           countElement.textContent = "";
         } else {
-          const totalPages = Math.ceil(total / standardsPerPage);
+          const totalPages = Math.ceil(total / currentPageSize);
           const selectedGrade = document.getElementById("gradeFilter").value;
           const gradeText =
             selectedGrade !== "all" ? ` for ${selectedGrade}` : "";
