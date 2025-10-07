@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Common Core Standards Search - Derik Vo</title>
+    <title>Content Standards Matcher - Derik Vo</title>
     <link rel="stylesheet" href="style.css" />
     <script>
       if (
@@ -69,8 +69,8 @@
         align-items: center;
       }
       .sort-select,
-      .category-filter,
-      .grade-filter {
+      .results-count,
+      .confidence-filter {
         padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 1.5);
         border: 1px solid var(--color-border);
         border-radius: var(--border-radius);
@@ -81,11 +81,48 @@
         cursor: pointer;
         transition: border-color 0.3s ease;
       }
-      .sort-select:focus,
-      .category-filter:focus,
-      .grade-filter:focus {
-        border-color: var(--color-primary);
-        outline: none;
+      .match-button {
+        background: var(--color-primary);
+        color: white;
+        border: none;
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-family: var(--font-body);
+        font-size: 1rem;
+      }
+      .match-button:hover {
+        background: var(--color-primary-dark, #0056b3);
+      }
+      .match-button:disabled {
+        background: var(--color-text-secondary);
+        cursor: not-allowed;
+      }
+      .system-status {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: calc(var(--spacing-unit) * 2);
+        margin: calc(var(--spacing-unit) * 2) 0;
+        display: flex;
+        align-items: center;
+        gap: calc(var(--spacing-unit));
+      }
+      .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .status-ready {
+        background: #4ade80;
+      }
+      .status-loading {
+        background: #f59e0b;
+      }
+      .status-error {
+        background: #ef4444;
       }
       .standards-count {
         color: var(--color-text-secondary);
@@ -123,7 +160,7 @@
         gap: calc(var(--spacing-unit) * 2);
         flex-wrap: wrap;
       }
-      .category-badge {
+      .confidence-badge {
         background: var(--color-primary);
         color: white;
         padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit));
@@ -132,7 +169,7 @@
         font-weight: 700;
         font-family: var(--font-body);
       }
-      .grade-badge {
+      .category-badge {
         background: var(--color-accent);
         color: white;
         padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit));
@@ -193,42 +230,6 @@
         padding: calc(var(--spacing-unit) * 4);
         color: var(--color-text-secondary);
       }
-      .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 2rem 0;
-        gap: 10px;
-      }
-      .pagination button {
-        padding: 8px 12px;
-        border: 1px solid var(--color-border);
-        background: var(--color-background);
-        color: var(--color-text-primary);
-        border-radius: var(--border-radius);
-        cursor: pointer;
-        font-size: 14px;
-        transition: all 0.3s ease;
-        font-family: var(--font-body);
-      }
-      .pagination button:hover:not(:disabled) {
-        background: var(--color-surface);
-        border-color: var(--color-primary);
-      }
-      .pagination button:disabled {
-        cursor: not-allowed;
-        opacity: 0.5;
-      }
-      .pagination button.active {
-        background: var(--color-primary);
-        color: white;
-        border-color: var(--color-primary);
-      }
-      .page-info {
-        color: var(--color-text-secondary);
-        font-size: 14px;
-        margin: 0 10px;
-      }
       @media (max-width: 768px) {
         .search-row {
           flex-direction: column;
@@ -284,8 +285,8 @@
                 >
                 <a href="reading-resource-list.html">Reading List</a>
                 <a href="acronym-dictionary.html">Acronyms</a>
-                <a href="content-standards-search.html"
-                  >Content Standards Search</a
+                <a href="content-standards-matcher.html"
+                  >Content Standards Matcher</a
                 >
               </div>
             </li>
@@ -326,50 +327,57 @@
     </header>
 
     <main class="container">
-      <h1>Common Core Standards Search</h1>
+      <h1>Content Standards Matcher</h1>
       <p class="subtitle">
-        Search and browse Common Core State Standards by keyword, category, or
-        grade level
+        Match educational content and essays with Common Core standards using
+        advanced BM25 retrieval
       </p>
+
+      <div class="system-status">
+        <div class="status-indicator status-loading"></div>
+        <span id="status-text">Loading standards data...</span>
+      </div>
 
       <div class="controls">
         <div class="search-row">
-          <input
-            type="text"
+          <textarea
             id="searchInput"
             class="search-input"
-            placeholder="Search standards by ID, description, category, or grade..."
+            rows="8"
+            placeholder="Enter your educational content or essay here... This tool works best with full paragraphs or complete assignments. For essays, paste the entire text for comprehensive standard matching."
             autocomplete="off"
-          />
+          ></textarea>
         </div>
         <div class="filter-controls">
+          <select id="resultsCount" class="results-count">
+            <option value="3">3 Results</option>
+            <option value="5" selected>5 Results</option>
+            <option value="10">10 Results</option>
+            <option value="20">20 Results</option>
+          </select>
+          <select id="confidenceFilter" class="confidence-filter">
+            <option value="0.0">Any Confidence</option>
+            <option value="0.1">10%+ Confidence</option>
+            <option value="0.2" selected>20%+ Confidence</option>
+            <option value="0.3">30%+ Confidence</option>
+          </select>
           <select id="sortSelect" class="sort-select">
-            <option value="id-asc">Standard ID A-Z</option>
-            <option value="id-desc">Standard ID Z-A</option>
-            <option value="grade-asc">Grade Level</option>
-            <option value="category-asc">Category A-Z</option>
+            <option value="confidence-desc">Highest Confidence First</option>
+            <option value="confidence-asc">Lowest Confidence First</option>
+            <option value="name-asc">Standard Name A-Z</option>
+            <option value="name-desc">Standard Name Z-A</option>
           </select>
-          <select id="categoryFilter" class="category-filter">
-            <option value="all">All Categories</option>
-          </select>
-          <select id="gradeFilter" class="grade-filter">
-            <option value="all">All Grades</option>
-          </select>
+          <button id="matchButton" class="match-button" disabled>
+            Find Matching Standards
+          </button>
         </div>
       </div>
 
       <div id="standardsCount" class="standards-count"></div>
       <div id="standardsContainer">
-        <div class="loading">Loading Common Core standards...</div>
-      </div>
-
-      <div id="pagination" class="pagination" style="display: none">
-        <button id="prevBtn">← Previous</button>
-        <div id="pageNumbers"></div>
-        <div class="page-info">
-          <span id="pageInfo"></span>
+        <div class="loading">
+          Enter content above and click "Find Matching Standards" to see results
         </div>
-        <button id="nextBtn">Next →</button>
       </div>
     </main>
 
@@ -380,123 +388,347 @@
     </footer>
 
     <script src="script.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
-      let standardsData = [];
       let filteredData = [];
-      let currentPage = 1;
-      let itemsPerPage = 10;
-      let isSearchActive = false;
 
-      async function loadStandards() {
-        try {
-          console.log("Loading Common Core standards from CSV...");
-          const response = await fetch("Data/ccss.csv");
+      // English stop words for better matching
+      const STOP_WORDS = new Set([
+        "a",
+        "an",
+        "and",
+        "are",
+        "as",
+        "at",
+        "be",
+        "by",
+        "for",
+        "from",
+        "has",
+        "he",
+        "in",
+        "is",
+        "it",
+        "its",
+        "of",
+        "on",
+        "that",
+        "the",
+        "to",
+        "was",
+        "will",
+        "with",
+        "the",
+        "this",
+        "but",
+        "they",
+        "have",
+        "had",
+        "what",
+        "when",
+        "where",
+        "who",
+        "which",
+        "why",
+        "how",
+      ]);
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+      class BM25StandardsMatcher {
+        constructor() {
+          this.standards = [];
+          this.isLoaded = false;
+          this.avgDocLength = 0;
+          this.docFreq = new Map();
+          this.k1 = 1.5; // BM25 parameter
+          this.b = 0.75; // BM25 parameter
+          this.loadStandardsData();
+        }
+
+        async loadStandardsData() {
+          try {
+            updateStatus("Loading standards data...", "loading");
+
+            const response = await fetch("standards_data.json");
+            const data = await response.json();
+
+            this.standards = data.standards.map((standard) => ({
+              ...standard,
+              tokens: this.tokenize(standard.description),
+              length: 0,
+            }));
+
+            // Calculate document lengths and build document frequency index
+            let totalLength = 0;
+            const termDocCount = new Map();
+
+            this.standards.forEach((standard) => {
+              standard.length = standard.tokens.length;
+              totalLength += standard.length;
+
+              // Count document frequency for each term
+              const uniqueTerms = new Set(standard.tokens);
+              uniqueTerms.forEach((term) => {
+                termDocCount.set(term, (termDocCount.get(term) || 0) + 1);
+              });
+            });
+
+            this.avgDocLength = totalLength / this.standards.length;
+            this.docFreq = termDocCount;
+
+            console.log(`✅ Loaded ${this.standards.length} standards`);
+            console.log(
+              `📊 Average document length: ${this.avgDocLength.toFixed(
+                1
+              )} words`
+            );
+            console.log(
+              `📚 Vocabulary size: ${this.docFreq.size} unique terms`
+            );
+
+            this.isLoaded = true;
+            updateStatus(
+              `Ready | ${this.standards.length} standards loaded (BM25)`,
+              "ready"
+            );
+            document.getElementById("matchButton").disabled = false;
+          } catch (error) {
+            console.error("Error loading standards data:", error);
+            updateStatus("Error loading standards data", "error");
+          }
+        }
+
+        tokenize(text) {
+          return text
+            .toLowerCase()
+            .replace(/[^\w\s]/g, " ")
+            .split(/\s+/)
+            .filter((word) => word.length > 2 && !STOP_WORDS.has(word));
+        }
+
+        calculateIDF(term) {
+          const N = this.standards.length;
+          const df = this.docFreq.get(term) || 0;
+          return Math.log((N - df + 0.5) / (df + 0.5) + 1);
+        }
+
+        calculateBM25Score(queryTokens, standard) {
+          let score = 0;
+          const docLength = standard.length;
+          const termFreq = new Map();
+
+          // Calculate term frequency in document
+          standard.tokens.forEach((term) => {
+            termFreq.set(term, (termFreq.get(term) || 0) + 1);
+          });
+
+          // Calculate BM25 score
+          queryTokens.forEach((queryTerm) => {
+            const tf = termFreq.get(queryTerm) || 0;
+            if (tf === 0) return;
+
+            const idf = this.calculateIDF(queryTerm);
+            const numerator = tf * (this.k1 + 1);
+            const denominator =
+              tf +
+              this.k1 * (1 - this.b + this.b * (docLength / this.avgDocLength));
+
+            score += idf * (numerator / denominator);
+          });
+
+          return score;
+        }
+
+        chunkText(text, chunkSize = 200) {
+          const words = text.split(/\s+/);
+          const chunks = [];
+
+          for (let i = 0; i < words.length; i += chunkSize) {
+            chunks.push(words.slice(i, i + chunkSize).join(" "));
           }
 
-          const csvText = await response.text();
-          console.log("CSV loaded, parsing...");
+          return chunks.length > 0 ? chunks : [text];
+        }
 
-          Papa.parse(csvText, {
-            header: true,
-            skipEmptyLines: true,
-            dynamicTyping: false,
-            complete: function (results) {
-              console.log("Parse results:", results);
+        findMatches(userText, topK = 5, minConfidence = 0.0) {
+          if (!this.isLoaded) {
+            throw new Error("Standards data not loaded yet");
+          }
 
-              standardsData = results.data
-                .map((row) => ({
-                  id: (row.id || "").trim(),
-                  content_type: (row.content_type || "").trim(),
-                  category_id: (row.category_id || "").trim(),
-                  category_name: (row.category_name || "").trim(),
-                  grade_id: (row.grade_id || "").trim(),
-                  grade_name: (row.grade_name || "").trim(),
-                  item: (row.item || "").trim(),
-                  description: (row.description || "").trim(),
-                }))
-                .filter((standard) => standard.id && standard.description);
+          if (!userText.trim()) {
+            throw new Error("Please enter some text");
+          }
 
-              console.log("Processed standards:", standardsData.length);
+          console.log(
+            "🔍 Finding matches for text of length:",
+            userText.length
+          );
 
-              if (standardsData.length === 0) {
-                document.getElementById("standardsContainer").innerHTML =
-                  '<div class="no-results">No valid standards found in CSV file.</div>';
-                return;
-              }
+          // For long text (essays), process in chunks and aggregate scores
+          const chunks = this.chunkText(userText, 150);
+          console.log(`📄 Processing ${chunks.length} chunk(s)`);
 
-              filteredData = [...standardsData];
-              populateFilters();
-              sortStandards("id-asc");
-              currentPage = 1;
-              displayStandards();
-              updateCount();
-              updatePagination();
-            },
-            error: function (error) {
-              console.error("Error parsing CSV:", error);
-              document.getElementById("standardsContainer").innerHTML =
-                '<div class="no-results">Error parsing CSV file. Check console for details.</div>';
-            },
+          const aggregatedScores = new Map();
+
+          chunks.forEach((chunk, idx) => {
+            const queryTokens = this.tokenize(chunk);
+            console.log(
+              `  Chunk ${idx + 1}: ${queryTokens.length} meaningful terms`
+            );
+
+            this.standards.forEach((standard, standardIdx) => {
+              const score = this.calculateBM25Score(queryTokens, standard);
+              const currentScore = aggregatedScores.get(standardIdx) || 0;
+              aggregatedScores.set(standardIdx, currentScore + score);
+            });
           });
-        } catch (error) {
-          console.error("Error loading CSV file:", error);
-          document.getElementById(
-            "standardsContainer"
-          ).innerHTML = `<div class="no-results">Error loading data/ccss.csv: ${error.message}</div>`;
+
+          // Normalize scores by number of chunks and convert to matches
+          const matchesWithScores = this.standards.map((standard, idx) => {
+            const rawScore = aggregatedScores.get(idx) || 0;
+            const normalizedScore = rawScore / chunks.length;
+
+            // Convert BM25 score to approximate percentage (BM25 scores typically range 0-15)
+            const percentage = Math.min(100, (normalizedScore / 15) * 100);
+
+            return {
+              ...standard,
+              similarity_score: normalizedScore,
+              confidence_percentage: Math.max(0, percentage),
+            };
+          });
+
+          console.log("📈 Score statistics:", {
+            min: Math.min(
+              ...matchesWithScores.map((m) => m.similarity_score)
+            ).toFixed(2),
+            max: Math.max(
+              ...matchesWithScores.map((m) => m.similarity_score)
+            ).toFixed(2),
+            avg: (
+              matchesWithScores.reduce((s, m) => s + m.similarity_score, 0) /
+              matchesWithScores.length
+            ).toFixed(2),
+          });
+
+          const filteredMatches = matchesWithScores
+            .filter((match) => match.confidence_percentage >= minConfidence)
+            .sort((a, b) => b.similarity_score - a.similarity_score)
+            .slice(0, topK);
+
+          console.log(`✅ Returning ${filteredMatches.length} matches`);
+
+          if (filteredMatches.length > 0) {
+            console.log("🏆 Top 3 matches:");
+            filteredMatches.slice(0, 3).forEach((match, i) => {
+              console.log(
+                `  ${i + 1}. ${match.id}: ${match.confidence_percentage.toFixed(
+                  1
+                )}% (score: ${match.similarity_score.toFixed(2)})`
+              );
+            });
+          }
+
+          return filteredMatches;
         }
       }
 
-      function populateFilters() {
-        const categories = [
-          ...new Set(standardsData.map((s) => s.content_type).filter((c) => c)),
-        ].sort();
-        const grades = [
-          ...new Set(standardsData.map((s) => s.grade_name).filter((g) => g)),
-        ].sort();
+      document.addEventListener("DOMContentLoaded", function () {
+        const matcher = new BM25StandardsMatcher();
 
-        const categoryFilter = document.getElementById("categoryFilter");
-        categoryFilter.innerHTML =
-          '<option value="all">All Categories</option>';
-        categories.forEach((cat) => {
-          const option = document.createElement("option");
-          option.value = cat;
-          option.textContent = cat;
-          categoryFilter.appendChild(option);
+        document.getElementById("matchButton").addEventListener("click", () => {
+          matchStandards(matcher);
         });
 
-        const gradeFilter = document.getElementById("gradeFilter");
-        gradeFilter.innerHTML = '<option value="all">All Grades</option>';
-        grades.forEach((grade) => {
-          const option = document.createElement("option");
-          option.value = grade;
-          option.textContent = grade;
-          gradeFilter.appendChild(option);
+        document
+          .getElementById("searchInput")
+          .addEventListener("keydown", (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+              matchStandards(matcher);
+            }
+          });
+
+        document.getElementById("sortSelect").addEventListener("change", () => {
+          if (filteredData.length > 0) {
+            sortStandards();
+            displayStandards();
+          }
         });
+      });
+
+      async function matchStandards(matcher) {
+        const userText = document.getElementById("searchInput").value.trim();
+        const resultsCount = parseInt(
+          document.getElementById("resultsCount").value
+        );
+        const minConfidence =
+          parseFloat(document.getElementById("confidenceFilter").value) * 100;
+
+        if (!userText) {
+          alert("Please enter some educational content to match.");
+          return;
+        }
+
+        if (!matcher.isLoaded) {
+          alert("Standards data is still loading. Please wait a moment.");
+          return;
+        }
+
+        console.log("=== MATCHING STARTED ===");
+        console.log(
+          `Input length: ${userText.length} characters, ${
+            userText.split(/\s+/).length
+          } words`
+        );
+
+        updateStatus("Finding matching standards...", "loading");
+        document.getElementById("matchButton").disabled = true;
+        document.getElementById("matchButton").textContent = "Matching...";
+
+        try {
+          const matches = matcher.findMatches(
+            userText,
+            resultsCount,
+            minConfidence
+          );
+          filteredData = matches;
+          sortStandards();
+          displayStandards();
+          updateCount();
+
+          console.log("=== MATCHING COMPLETE ===");
+        } catch (error) {
+          console.error("Matching error:", error);
+          document.getElementById("standardsContainer").innerHTML = `
+            <div class="no-results">
+              <h3>Error</h3>
+              <p>${error.message}</p>
+            </div>
+          `;
+        } finally {
+          document.getElementById("matchButton").disabled = false;
+          document.getElementById("matchButton").textContent =
+            "Find Matching Standards";
+          updateStatus(
+            `Ready | ${matcher.standards.length} standards loaded (BM25)`,
+            "ready"
+          );
+        }
       }
 
-      function sortStandards(criteria) {
+      function sortStandards() {
+        const sortValue = document.getElementById("sortSelect").value;
+
         filteredData.sort((a, b) => {
-          switch (criteria) {
-            case "id-asc":
+          switch (sortValue) {
+            case "confidence-desc":
+              return b.confidence_percentage - a.confidence_percentage;
+            case "confidence-asc":
+              return a.confidence_percentage - b.confidence_percentage;
+            case "name-asc":
               return a.id.localeCompare(b.id);
-            case "id-desc":
+            case "name-desc":
               return b.id.localeCompare(a.id);
-            case "grade-asc":
-              return (
-                a.grade_name.localeCompare(b.grade_name) ||
-                a.id.localeCompare(b.id)
-              );
-            case "category-asc":
-              return (
-                a.content_type.localeCompare(b.content_type) ||
-                a.id.localeCompare(b.id)
-              );
             default:
-              return a.id.localeCompare(b.id);
+              return b.confidence_percentage - a.confidence_percentage;
           }
         });
       }
@@ -505,32 +737,23 @@
         const container = document.getElementById("standardsContainer");
 
         if (filteredData.length === 0) {
-          container.innerHTML =
-            '<div class="no-results">No standards found matching your search criteria.</div>';
-          document.getElementById("pagination").style.display = "none";
+          container.innerHTML = `
+            <div class="no-results">
+              No matching standards found. Try lowering the confidence threshold or entering more detailed content.
+            </div>
+          `;
           return;
         }
 
-        let pageData;
-        if (isSearchActive) {
-          pageData = filteredData;
-          document.getElementById("pagination").style.display = "none";
-        } else {
-          const startIndex = (currentPage - 1) * itemsPerPage;
-          const endIndex = startIndex + itemsPerPage;
-          pageData = filteredData.slice(startIndex, endIndex);
-
-          const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-          document.getElementById("pagination").style.display =
-            totalPages > 1 ? "flex" : "none";
-        }
-
-        const html = pageData
+        const html = filteredData
           .map(
             (standard) => `
             <article class="standard-card">
               <h2>${escapeHtml(standard.id)}</h2>
               <div class="standard-meta">
+                <span class="confidence-badge">${standard.confidence_percentage.toFixed(
+                  1
+                )}% Match</span>
                 ${
                   standard.content_type
                     ? `<span class="category-badge">${escapeHtml(
@@ -540,9 +763,7 @@
                 }
                 ${
                   standard.grade_name
-                    ? `<span class="grade-badge">${escapeHtml(
-                        standard.grade_name
-                      )}</span>`
+                    ? `<span>Grade: ${escapeHtml(standard.grade_name)}</span>`
                     : ""
                 }
               </div>
@@ -586,18 +807,12 @@
                   `
                       : ""
                   }
-                  ${
-                    standard.item
-                      ? `
-                    <div class="detail-item">
-                      <span class="detail-label">Item</span>
-                      <span class="detail-value">${escapeHtml(
-                        standard.item
-                      )}</span>
-                    </div>
-                  `
-                      : ""
-                  }
+                  <div class="detail-item">
+                    <span class="detail-label">BM25 Score</span>
+                    <span class="detail-value">${standard.similarity_score.toFixed(
+                      3
+                    )}</span>
+                  </div>
                 </div>
               </div>
             </article>
@@ -610,118 +825,39 @@
 
       function updateCount() {
         const countElement = document.getElementById("standardsCount");
-        const total = standardsData.length;
         const showing = filteredData.length;
 
-        if (isSearchActive) {
-          if (showing === total) {
-            countElement.textContent = `Showing all ${total} standards`;
-          } else {
-            countElement.textContent = `Found ${showing} of ${total} standards`;
-          }
+        if (showing === 0) {
+          countElement.textContent = "";
         } else {
-          const startIndex = (currentPage - 1) * itemsPerPage + 1;
-          const endIndex = Math.min(currentPage * itemsPerPage, showing);
-          if (showing <= itemsPerPage) {
-            countElement.textContent = `Showing all ${showing} standards`;
-          } else {
-            countElement.textContent = `Showing ${startIndex}-${endIndex} of ${showing} standards`;
-          }
+          countElement.textContent = `Found ${showing} matching standard${
+            showing !== 1 ? "s" : ""
+          }`;
         }
       }
 
-      function updatePagination() {
-        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-        const prevBtn = document.getElementById("prevBtn");
-        const nextBtn = document.getElementById("nextBtn");
-        const pageNumbers = document.getElementById("pageNumbers");
-        const pageInfo = document.getElementById("pageInfo");
+      function updateStatus(message, type) {
+        const statusElement = document.getElementById("status-text");
+        const indicator = document.querySelector(".status-indicator");
 
-        prevBtn.disabled = currentPage <= 1;
-        nextBtn.disabled = currentPage >= totalPages;
+        statusElement.textContent = message;
+        indicator.classList.remove(
+          "status-ready",
+          "status-loading",
+          "status-error"
+        );
 
-        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-
-        let startPage = Math.max(1, currentPage - 2);
-        let endPage = Math.min(totalPages, startPage + 4);
-
-        if (endPage - startPage < 4) {
-          startPage = Math.max(1, endPage - 4);
+        switch (type) {
+          case "ready":
+            indicator.classList.add("status-ready");
+            break;
+          case "loading":
+            indicator.classList.add("status-loading");
+            break;
+          case "error":
+            indicator.classList.add("status-error");
+            break;
         }
-
-        let pageNumbersHtml = "";
-        for (let i = startPage; i <= endPage; i++) {
-          pageNumbersHtml += `<button class="page-btn ${
-            i === currentPage ? "active" : ""
-          }" data-page="${i}">${i}</button>`;
-        }
-
-        pageNumbers.innerHTML = pageNumbersHtml;
-
-        pageNumbers.querySelectorAll(".page-btn").forEach((btn) => {
-          btn.addEventListener("click", (e) => {
-            currentPage = parseInt(e.target.dataset.page);
-            displayStandards();
-            updateCount();
-            updatePagination();
-          });
-        });
-      }
-
-      function applyAllFilters() {
-        const searchTerm = document
-          .getElementById("searchInput")
-          .value.trim()
-          .toLowerCase();
-        const categoryFilter = document.getElementById("categoryFilter").value;
-        const gradeFilter = document.getElementById("gradeFilter").value;
-
-        isSearchActive = searchTerm.length > 0;
-
-        filteredData = [...standardsData];
-
-        if (searchTerm) {
-          filteredData = filteredData.filter(
-            (standard) =>
-              standard.id.toLowerCase().includes(searchTerm) ||
-              standard.description.toLowerCase().includes(searchTerm) ||
-              standard.content_type.toLowerCase().includes(searchTerm) ||
-              standard.category_name.toLowerCase().includes(searchTerm) ||
-              standard.grade_name.toLowerCase().includes(searchTerm)
-          );
-        }
-
-        if (categoryFilter !== "all") {
-          filteredData = filteredData.filter(
-            (s) => s.content_type === categoryFilter
-          );
-        }
-
-        if (gradeFilter !== "all") {
-          filteredData = filteredData.filter(
-            (s) => s.grade_name === gradeFilter
-          );
-        }
-
-        currentPage = 1;
-
-        const sortValue = document.getElementById("sortSelect").value;
-        sortStandards(sortValue);
-        displayStandards();
-        updateCount();
-        updatePagination();
-      }
-
-      function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-          const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-          };
-          clearTimeout(timeout);
-          timeout = setTimeout(later, wait);
-        };
       }
 
       function escapeHtml(unsafe) {
@@ -734,48 +870,6 @@
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#039;");
       }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        loadStandards();
-
-        const searchInput = document.getElementById("searchInput");
-        const debouncedSearch = debounce(() => applyAllFilters(), 300);
-
-        searchInput.addEventListener("input", () => debouncedSearch());
-
-        document
-          .getElementById("sortSelect")
-          .addEventListener("change", (e) => {
-            sortStandards(e.target.value);
-            displayStandards();
-          });
-
-        document
-          .getElementById("categoryFilter")
-          .addEventListener("change", () => applyAllFilters());
-        document
-          .getElementById("gradeFilter")
-          .addEventListener("change", () => applyAllFilters());
-
-        document.getElementById("prevBtn").addEventListener("click", () => {
-          if (currentPage > 1) {
-            currentPage--;
-            displayStandards();
-            updateCount();
-            updatePagination();
-          }
-        });
-
-        document.getElementById("nextBtn").addEventListener("click", () => {
-          const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-          if (currentPage < totalPages) {
-            currentPage++;
-            displayStandards();
-            updateCount();
-            updatePagination();
-          }
-        });
-      });
     </script>
   </body>
 </html>
