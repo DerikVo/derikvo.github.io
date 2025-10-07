@@ -70,7 +70,8 @@
       }
       .sort-select,
       .results-count,
-      .confidence-filter {
+      .confidence-filter,
+      .grade-filter {
         padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 1.5);
         border: 1px solid var(--color-border);
         border-radius: var(--border-radius);
@@ -423,6 +424,25 @@
             <option value="0.2">20%+ Confidence</option>
             <option value="0.3">30%+ Confidence</option>
           </select>
+          <select id="gradeFilter" class="grade-filter">
+            <option value="all" selected>All Grades</option>
+            <option value="K">Kindergarten</option>
+            <option value="1">Grade 1</option>
+            <option value="2">Grade 2</option>
+            <option value="3">Grade 3</option>
+            <option value="4">Grade 4</option>
+            <option value="5">Grade 5</option>
+            <option value="6">Grade 6</option>
+            <option value="7">Grade 7</option>
+            <option value="8">Grade 8</option>
+            <option value="9">Grade 9</option>
+            <option value="10">Grade 10</option>
+            <option value="11">Grade 11</option>
+            <option value="12">Grade 12</option>
+            <option value="K-5">Grades K-5</option>
+            <option value="6-8">Grades 6-8</option>
+            <option value="9-12">Grades 9-12</option>
+          </select>
           <select id="sortSelect" class="sort-select">
             <option value="confidence-desc">Highest Confidence First</option>
             <option value="confidence-asc">Lowest Confidence First</option>
@@ -461,6 +481,7 @@
       let filteredData = [];
       let currentPage = 1;
       const standardsPerPage = 10; // Can be made configurable later
+      let allStandards = []; // Store all standards for filtering
 
       // English stop words for better matching
       const STOP_WORDS = new Set([
@@ -526,6 +547,9 @@
               tokens: this.tokenize(standard.description),
               length: 0,
             }));
+
+            // Store all standards for filtering
+            allStandards = this.standards;
 
             // Calculate document lengths and build document frequency index
             let totalLength = 0;
@@ -619,7 +643,12 @@
           return chunks.length > 0 ? chunks : [text];
         }
 
-        findMatches(userText, topK = 25, minConfidence = 0.0) {
+        findMatches(
+          userText,
+          topK = 25,
+          minConfidence = 0.0,
+          selectedGrade = "all"
+        ) {
           if (!this.isLoaded) {
             throw new Error("Standards data not loaded yet");
           }
@@ -633,6 +662,18 @@
             userText.length
           );
 
+          // Apply grade filter first to reduce the search space
+          let standardsToSearch = this.standards;
+          if (selectedGrade !== "all") {
+            standardsToSearch = this.filterStandardsByGrade(
+              this.standards,
+              selectedGrade
+            );
+            console.log(
+              `📚 Filtered to ${standardsToSearch.length} standards for grade: ${selectedGrade}`
+            );
+          }
+
           // For long text (essays), process in chunks and aggregate scores
           const chunks = this.chunkText(userText, 150);
           console.log(`📄 Processing ${chunks.length} chunk(s)`);
@@ -645,7 +686,7 @@
               `  Chunk ${idx + 1}: ${queryTokens.length} meaningful terms`
             );
 
-            this.standards.forEach((standard, standardIdx) => {
+            standardsToSearch.forEach((standard, standardIdx) => {
               const score = this.calculateBM25Score(queryTokens, standard);
               const currentScore = aggregatedScores.get(standardIdx) || 0;
               aggregatedScores.set(standardIdx, currentScore + score);
@@ -653,7 +694,7 @@
           });
 
           // Normalize scores by number of chunks and convert to matches
-          const matchesWithScores = this.standards.map((standard, idx) => {
+          const matchesWithScores = standardsToSearch.map((standard, idx) => {
             const rawScore = aggregatedScores.get(idx) || 0;
             const normalizedScore = rawScore / chunks.length;
 
@@ -700,6 +741,69 @@
 
           return filteredMatches;
         }
+
+        filterStandardsByGrade(standards, gradeFilter) {
+          if (gradeFilter === "all") {
+            return standards;
+          }
+
+          return standards.filter((standard) => {
+            const gradeName = standard.grade_name;
+            const minGrade = standard.min_grade;
+            const maxGrade = standard.max_grade;
+
+            // Handle single grades
+            if (gradeFilter === gradeName) {
+              return true;
+            }
+
+            // Handle grade ranges like "K-5", "6-8", "9-12"
+            if (gradeFilter.includes("-")) {
+              const [rangeStart, rangeEnd] = gradeFilter
+                .split("-")
+                .map((g) => (g === "K" ? 0 : parseInt(g)));
+
+              // Check if standard falls within the grade range
+              if (minGrade !== undefined && maxGrade !== undefined) {
+                const standardMin = minGrade === "K" ? 0 : parseInt(minGrade);
+                const standardMax = maxGrade === "K" ? 0 : parseInt(maxGrade);
+
+                // Check for overlap between standard grade range and filter range
+                return !(standardMax < rangeStart || standardMin > rangeEnd);
+              }
+
+              // Fallback: check grade_name if it's a range
+              if (gradeName && gradeName.includes("-")) {
+                const [standardStart, standardEnd] = gradeName
+                  .split("-")
+                  .map((g) => (g === "K" ? 0 : parseInt(g)));
+                return !(standardEnd < rangeStart || standardStart > rangeEnd);
+              }
+            }
+
+            // Handle single grade filters (like "1", "2", etc.)
+            const filterGrade = gradeFilter === "K" ? 0 : parseInt(gradeFilter);
+
+            if (minGrade !== undefined && maxGrade !== undefined) {
+              const standardMin = minGrade === "K" ? 0 : parseInt(minGrade);
+              const standardMax = maxGrade === "K" ? 0 : parseInt(maxGrade);
+              return filterGrade >= standardMin && filterGrade <= standardMax;
+            }
+
+            // Fallback: check if grade_name matches
+            if (gradeName) {
+              if (gradeName.includes("-")) {
+                const [start, end] = gradeName
+                  .split("-")
+                  .map((g) => (g === "K" ? 0 : parseInt(g)));
+                return filterGrade >= start && filterGrade <= end;
+              }
+              return gradeName === gradeFilter;
+            }
+
+            return false;
+          });
+        }
       }
 
       document.addEventListener("DOMContentLoaded", function () {
@@ -725,6 +829,15 @@
             updatePagination();
           }
         });
+
+        document
+          .getElementById("gradeFilter")
+          .addEventListener("change", () => {
+            if (filteredData.length > 0) {
+              // If we already have results, re-run the search with the new grade filter
+              matchStandards(matcher);
+            }
+          });
       });
 
       async function matchStandards(matcher) {
@@ -734,6 +847,7 @@
         );
         const minConfidence =
           parseFloat(document.getElementById("confidenceFilter").value) * 100;
+        const selectedGrade = document.getElementById("gradeFilter").value;
 
         if (!userText) {
           alert("Please enter some educational content to match.");
@@ -751,6 +865,7 @@
             userText.split(/\s+/).length
           } words`
         );
+        console.log(`Grade filter: ${selectedGrade}`);
 
         updateStatus("Finding matching standards...", "loading");
         document.getElementById("matchButton").disabled = true;
@@ -760,7 +875,8 @@
           const matches = matcher.findMatches(
             userText,
             resultsCount,
-            minConfidence
+            minConfidence,
+            selectedGrade
           );
           filteredData = matches;
           currentPage = 1; // Reset to first page for new search
@@ -815,7 +931,7 @@
         if (filteredData.length === 0) {
           container.innerHTML = `
             <div class="no-results">
-              No matching standards found. Try lowering the confidence threshold or entering more detailed content.
+              No matching standards found. Try lowering the confidence threshold, selecting a different grade level, or entering more detailed content.
             </div>
           `;
           return;
@@ -1030,9 +1146,12 @@
           countElement.textContent = "";
         } else {
           const totalPages = Math.ceil(total / standardsPerPage);
+          const selectedGrade = document.getElementById("gradeFilter").value;
+          const gradeText =
+            selectedGrade !== "all" ? ` for ${selectedGrade}` : "";
           countElement.textContent = `Found ${total} matching standard${
             total !== 1 ? "s" : ""
-          }${totalPages > 1 ? ` (${totalPages} pages)` : ""}`;
+          }${gradeText}${totalPages > 1 ? ` (${totalPages} pages)` : ""}`;
         }
       }
 
