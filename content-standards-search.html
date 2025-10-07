@@ -230,6 +230,53 @@
         padding: calc(var(--spacing-unit) * 4);
         color: var(--color-text-secondary);
       }
+
+      /* Pagination Styles */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: calc(var(--spacing-unit));
+        margin: calc(var(--spacing-unit) * 3) 0;
+        flex-wrap: wrap;
+      }
+      .pagination-button {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-primary);
+        padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 1.5);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        min-width: 40px;
+        text-align: center;
+      }
+      .pagination-button:hover:not(:disabled) {
+        background: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+      }
+      .pagination-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .pagination-button.active {
+        background: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+      }
+      .pagination-info {
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+        margin: 0 calc(var(--spacing-unit) * 2);
+      }
+      .pagination-ellipsis {
+        color: var(--color-text-secondary);
+        padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 0.5);
+      }
+
       @media (max-width: 768px) {
         .search-row {
           flex-direction: column;
@@ -251,6 +298,18 @@
         }
         .details-grid {
           grid-template-columns: 1fr;
+        }
+        .pagination {
+          gap: calc(var(--spacing-unit) * 0.5);
+        }
+        .pagination-button {
+          padding: calc(var(--spacing-unit) * 0.8) calc(var(--spacing-unit));
+          min-width: 35px;
+          font-size: 0.8rem;
+        }
+        .pagination-info {
+          margin: 0 calc(var(--spacing-unit));
+          font-size: 0.8rem;
         }
       }
     </style>
@@ -350,10 +409,10 @@
         </div>
         <div class="filter-controls">
           <select id="resultsCount" class="results-count">
-            <option value="3">3 Results</option>
-            <option value="5" selected>5 Results</option>
             <option value="10">10 Results</option>
-            <option value="20">20 Results</option>
+            <option value="25" selected>25 Results</option>
+            <option value="50">50 Results</option>
+            <option value="100">100 Results</option>
           </select>
           <select id="confidenceFilter" class="confidence-filter">
             <option value="0.0">Any Confidence</option>
@@ -379,6 +438,13 @@
           Enter content above and click "Find Matching Standards" to see results
         </div>
       </div>
+
+      <!-- Pagination Container -->
+      <div
+        id="paginationContainer"
+        class="pagination"
+        style="display: none"
+      ></div>
     </main>
 
     <footer>
@@ -390,6 +456,8 @@
     <script src="script.js"></script>
     <script>
       let filteredData = [];
+      let currentPage = 1;
+      const standardsPerPage = 10; // Can be made configurable later
 
       // English stop words for better matching
       const STOP_WORDS = new Set([
@@ -548,7 +616,7 @@
           return chunks.length > 0 ? chunks : [text];
         }
 
-        findMatches(userText, topK = 5, minConfidence = 0.0) {
+        findMatches(userText, topK = 25, minConfidence = 0.0) {
           if (!this.isLoaded) {
             throw new Error("Standards data not loaded yet");
           }
@@ -649,7 +717,9 @@
         document.getElementById("sortSelect").addEventListener("change", () => {
           if (filteredData.length > 0) {
             sortStandards();
+            currentPage = 1; // Reset to first page when sorting changes
             displayStandards();
+            updatePagination();
           }
         });
       });
@@ -690,8 +760,10 @@
             minConfidence
           );
           filteredData = matches;
+          currentPage = 1; // Reset to first page for new search
           sortStandards();
           displayStandards();
+          updatePagination();
           updateCount();
 
           console.log("=== MATCHING COMPLETE ===");
@@ -703,6 +775,7 @@
               <p>${error.message}</p>
             </div>
           `;
+          document.getElementById("paginationContainer").style.display = "none";
         } finally {
           document.getElementById("matchButton").disabled = false;
           document.getElementById("matchButton").textContent =
@@ -745,7 +818,16 @@
           return;
         }
 
-        const html = filteredData
+        // Calculate pagination
+        const totalPages = Math.ceil(filteredData.length / standardsPerPage);
+        const startIndex = (currentPage - 1) * standardsPerPage;
+        const endIndex = Math.min(
+          startIndex + standardsPerPage,
+          filteredData.length
+        );
+        const currentStandards = filteredData.slice(startIndex, endIndex);
+
+        const html = currentStandards
           .map(
             (standard) => `
             <article class="standard-card">
@@ -823,16 +905,131 @@
         container.innerHTML = html;
       }
 
+      function updatePagination() {
+        const paginationContainer = document.getElementById(
+          "paginationContainer"
+        );
+
+        if (filteredData.length <= standardsPerPage) {
+          paginationContainer.style.display = "none";
+          return;
+        }
+
+        const totalPages = Math.ceil(filteredData.length / standardsPerPage);
+        paginationContainer.style.display = "flex";
+
+        let paginationHTML = "";
+
+        // Previous button
+        paginationHTML += `
+          <button class="pagination-button" 
+                  onclick="changePage(${currentPage - 1})" 
+                  ${currentPage === 1 ? "disabled" : ""}>
+            Previous
+          </button>
+        `;
+
+        // Page numbers
+        const maxVisiblePages = 5;
+        let startPage = Math.max(
+          1,
+          currentPage - Math.floor(maxVisiblePages / 2)
+        );
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+        // Adjust start page if we're near the end
+        if (endPage - startPage + 1 < maxVisiblePages) {
+          startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        // First page and ellipsis if needed
+        if (startPage > 1) {
+          paginationHTML += `
+            <button class="pagination-button" onclick="changePage(1)">1</button>
+            ${
+              startPage > 2
+                ? '<span class="pagination-ellipsis">...</span>'
+                : ""
+            }
+          `;
+        }
+
+        // Page numbers
+        for (let i = startPage; i <= endPage; i++) {
+          paginationHTML += `
+            <button class="pagination-button ${
+              i === currentPage ? "active" : ""
+            }" 
+                    onclick="changePage(${i})">
+              ${i}
+            </button>
+          `;
+        }
+
+        // Last page and ellipsis if needed
+        if (endPage < totalPages) {
+          paginationHTML += `
+            ${
+              endPage < totalPages - 1
+                ? '<span class="pagination-ellipsis">...</span>'
+                : ""
+            }
+            <button class="pagination-button" onclick="changePage(${totalPages})">${totalPages}</button>
+          `;
+        }
+
+        // Next button
+        paginationHTML += `
+          <button class="pagination-button" 
+                  onclick="changePage(${currentPage + 1})" 
+                  ${currentPage === totalPages ? "disabled" : ""}>
+            Next
+          </button>
+        `;
+
+        // Page info
+        const startItem = (currentPage - 1) * standardsPerPage + 1;
+        const endItem = Math.min(
+          currentPage * standardsPerPage,
+          filteredData.length
+        );
+
+        paginationHTML += `
+          <div class="pagination-info">
+            Showing ${startItem}-${endItem} of ${filteredData.length} standards
+          </div>
+        `;
+
+        paginationContainer.innerHTML = paginationHTML;
+      }
+
+      function changePage(page) {
+        const totalPages = Math.ceil(filteredData.length / standardsPerPage);
+
+        if (page < 1 || page > totalPages) return;
+
+        currentPage = page;
+        displayStandards();
+        updatePagination();
+
+        // Scroll to top of results
+        document.getElementById("standardsContainer").scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+
       function updateCount() {
         const countElement = document.getElementById("standardsCount");
-        const showing = filteredData.length;
+        const total = filteredData.length;
 
-        if (showing === 0) {
+        if (total === 0) {
           countElement.textContent = "";
         } else {
-          countElement.textContent = `Found ${showing} matching standard${
-            showing !== 1 ? "s" : ""
-          }`;
+          const totalPages = Math.ceil(total / standardsPerPage);
+          countElement.textContent = `Found ${total} matching standard${
+            total !== 1 ? "s" : ""
+          }${totalPages > 1 ? ` (${totalPages} pages)` : ""}`;
         }
       }
 
