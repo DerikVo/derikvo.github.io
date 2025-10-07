@@ -69,7 +69,6 @@
         align-items: center;
       }
       .sort-select,
-      .results-count,
       .confidence-filter,
       .grade-filter {
         padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 1.5);
@@ -286,8 +285,15 @@
           min-width: 100%;
         }
         .filter-controls {
-          justify-content: space-between;
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .filter-controls > * {
           width: 100%;
+        }
+        .match-button {
+          width: 100%;
+          margin-top: calc(var(--spacing-unit));
         }
         .standard-card {
           padding: calc(var(--spacing-unit) * 2);
@@ -412,12 +418,6 @@
           ></textarea>
         </div>
         <div class="filter-controls">
-          <select id="resultsCount" class="results-count">
-            <option value="10">10 Results</option>
-            <option value="25" selected>25 Results</option>
-            <option value="50">50 Results</option>
-            <option value="100">100 Results</option>
-          </select>
           <select id="confidenceFilter" class="confidence-filter">
             <option value="0.0" selected>Any Confidence</option>
             <option value="0.1">10%+ Confidence</option>
@@ -480,13 +480,8 @@
     <script>
       let filteredData = [];
       let currentPage = 1;
-      let standardsPerPage = 25; // Default to match the initial selected value
-      let allStandards = []; // Store all standards for filtering
-
-      // Function to get current page size from dropdown
-      function getCurrentPageSize() {
-        return parseInt(document.getElementById("resultsCount").value);
-      }
+      const standardsPerPage = 10; // Fixed page size - always show 10 results per page
+      let allStandards = [];
 
       // English stop words for better matching
       const STOP_WORDS = new Set([
@@ -535,8 +530,8 @@
           this.isLoaded = false;
           this.avgDocLength = 0;
           this.docFreq = new Map();
-          this.k1 = 1.5; // BM25 parameter
-          this.b = 0.75; // BM25 parameter
+          this.k1 = 1.5;
+          this.b = 0.75;
           this.loadStandardsData();
         }
 
@@ -553,10 +548,8 @@
               length: 0,
             }));
 
-            // Store all standards for filtering
             allStandards = this.standards;
 
-            // Calculate document lengths and build document frequency index
             let totalLength = 0;
             const termDocCount = new Map();
 
@@ -564,7 +557,6 @@
               standard.length = standard.tokens.length;
               totalLength += standard.length;
 
-              // Count document frequency for each term
               const uniqueTerms = new Set(standard.tokens);
               uniqueTerms.forEach((term) => {
                 termDocCount.set(term, (termDocCount.get(term) || 0) + 1);
@@ -575,15 +567,6 @@
             this.docFreq = termDocCount;
 
             console.log(`✅ Loaded ${this.standards.length} standards`);
-            console.log(
-              `📊 Average document length: ${this.avgDocLength.toFixed(
-                1
-              )} words`
-            );
-            console.log(
-              `📚 Vocabulary size: ${this.docFreq.size} unique terms`
-            );
-
             this.isLoaded = true;
             updateStatus(
               `Ready | ${this.standards.length} standards loaded (BM25)`,
@@ -615,12 +598,10 @@
           const docLength = standard.length;
           const termFreq = new Map();
 
-          // Calculate term frequency in document
           standard.tokens.forEach((term) => {
             termFreq.set(term, (termFreq.get(term) || 0) + 1);
           });
 
-          // Calculate BM25 score
           queryTokens.forEach((queryTerm) => {
             const tf = termFreq.get(queryTerm) || 0;
             if (tf === 0) return;
@@ -650,7 +631,7 @@
 
         findMatches(
           userText,
-          topK = 25,
+          topK = 100,
           minConfidence = 0.0,
           selectedGrade = "all"
         ) {
@@ -667,7 +648,6 @@
             userText.length
           );
 
-          // Apply grade filter first to reduce the search space
           let standardsToSearch = this.standards;
           if (selectedGrade !== "all") {
             standardsToSearch = this.filterStandardsByGrade(
@@ -679,7 +659,6 @@
             );
           }
 
-          // For long text (essays), process in chunks and aggregate scores
           const chunks = this.chunkText(userText, 150);
           console.log(`📄 Processing ${chunks.length} chunk(s)`);
 
@@ -687,10 +666,6 @@
 
           chunks.forEach((chunk, idx) => {
             const queryTokens = this.tokenize(chunk);
-            console.log(
-              `  Chunk ${idx + 1}: ${queryTokens.length} meaningful terms`
-            );
-
             standardsToSearch.forEach((standard, standardIdx) => {
               const score = this.calculateBM25Score(queryTokens, standard);
               const currentScore = aggregatedScores.get(standardIdx) || 0;
@@ -698,12 +673,9 @@
             });
           });
 
-          // Normalize scores by number of chunks and convert to matches
           const matchesWithScores = standardsToSearch.map((standard, idx) => {
             const rawScore = aggregatedScores.get(idx) || 0;
             const normalizedScore = rawScore / chunks.length;
-
-            // Convert BM25 score to approximate percentage (BM25 scores typically range 0-15)
             const percentage = Math.min(100, (normalizedScore / 15) * 100);
 
             return {
@@ -713,71 +685,36 @@
             };
           });
 
-          console.log("📈 Score statistics:", {
-            min: Math.min(
-              ...matchesWithScores.map((m) => m.similarity_score)
-            ).toFixed(2),
-            max: Math.max(
-              ...matchesWithScores.map((m) => m.similarity_score)
-            ).toFixed(2),
-            avg: (
-              matchesWithScores.reduce((s, m) => s + m.similarity_score, 0) /
-              matchesWithScores.length
-            ).toFixed(2),
-          });
-
           const filteredMatches = matchesWithScores
             .filter((match) => match.confidence_percentage >= minConfidence)
             .sort((a, b) => b.similarity_score - a.similarity_score)
             .slice(0, topK);
 
           console.log(`✅ Returning ${filteredMatches.length} matches`);
-
-          if (filteredMatches.length > 0) {
-            console.log("🏆 Top 3 matches:");
-            filteredMatches.slice(0, 3).forEach((match, i) => {
-              console.log(
-                `  ${i + 1}. ${match.id}: ${match.confidence_percentage.toFixed(
-                  1
-                )}% (score: ${match.similarity_score.toFixed(2)})`
-              );
-            });
-          }
-
           return filteredMatches;
         }
 
         filterStandardsByGrade(standards, gradeFilter) {
-          if (gradeFilter === "all") {
-            return standards;
-          }
+          if (gradeFilter === "all") return standards;
 
           return standards.filter((standard) => {
             const gradeName = standard.grade_name;
             const minGrade = standard.min_grade;
             const maxGrade = standard.max_grade;
 
-            // Handle single grades
-            if (gradeFilter === gradeName) {
-              return true;
-            }
+            if (gradeFilter === gradeName) return true;
 
-            // Handle grade ranges like "K-5", "6-8", "9-12"
             if (gradeFilter.includes("-")) {
               const [rangeStart, rangeEnd] = gradeFilter
                 .split("-")
                 .map((g) => (g === "K" ? 0 : parseInt(g)));
 
-              // Check if standard falls within the grade range
               if (minGrade !== undefined && maxGrade !== undefined) {
                 const standardMin = minGrade === "K" ? 0 : parseInt(minGrade);
                 const standardMax = maxGrade === "K" ? 0 : parseInt(maxGrade);
-
-                // Check for overlap between standard grade range and filter range
                 return !(standardMax < rangeStart || standardMin > rangeEnd);
               }
 
-              // Fallback: check grade_name if it's a range
               if (gradeName && gradeName.includes("-")) {
                 const [standardStart, standardEnd] = gradeName
                   .split("-")
@@ -786,7 +723,6 @@
               }
             }
 
-            // Handle single grade filters (like "1", "2", etc.)
             const filterGrade = gradeFilter === "K" ? 0 : parseInt(gradeFilter);
 
             if (minGrade !== undefined && maxGrade !== undefined) {
@@ -795,7 +731,6 @@
               return filterGrade >= standardMin && filterGrade <= standardMax;
             }
 
-            // Fallback: check if grade_name matches
             if (gradeName) {
               if (gradeName.includes("-")) {
                 const [start, end] = gradeName
@@ -829,7 +764,7 @@
         document.getElementById("sortSelect").addEventListener("change", () => {
           if (filteredData.length > 0) {
             sortStandards();
-            currentPage = 1; // Reset to first page when sorting changes
+            currentPage = 1;
             displayStandards();
             updatePagination();
           }
@@ -839,29 +774,13 @@
           .getElementById("gradeFilter")
           .addEventListener("change", () => {
             if (filteredData.length > 0) {
-              // If we already have results, re-run the search with the new grade filter
               matchStandards(matcher);
-            }
-          });
-
-        // Add event listener for results count dropdown
-        document
-          .getElementById("resultsCount")
-          .addEventListener("change", () => {
-            if (filteredData.length > 0) {
-              currentPage = 1; // Reset to first page when changing page size
-              displayStandards();
-              updatePagination();
-              updateCount();
             }
           });
       });
 
       async function matchStandards(matcher) {
         const userText = document.getElementById("searchInput").value.trim();
-        const resultsCount = parseInt(
-          document.getElementById("resultsCount").value
-        );
         const minConfidence =
           parseFloat(document.getElementById("confidenceFilter").value) * 100;
         const selectedGrade = document.getElementById("gradeFilter").value;
@@ -876,14 +795,6 @@
           return;
         }
 
-        console.log("=== MATCHING STARTED ===");
-        console.log(
-          `Input length: ${userText.length} characters, ${
-            userText.split(/\s+/).length
-          } words`
-        );
-        console.log(`Grade filter: ${selectedGrade}`);
-
         updateStatus("Finding matching standards...", "loading");
         document.getElementById("matchButton").disabled = true;
         document.getElementById("matchButton").textContent = "Matching...";
@@ -891,18 +802,16 @@
         try {
           const matches = matcher.findMatches(
             userText,
-            resultsCount,
+            100,
             minConfidence,
             selectedGrade
           );
           filteredData = matches;
-          currentPage = 1; // Reset to first page for new search
+          currentPage = 1;
           sortStandards();
           displayStandards();
           updatePagination();
           updateCount();
-
-          console.log("=== MATCHING COMPLETE ===");
         } catch (error) {
           console.error("Matching error:", error);
           document.getElementById("standardsContainer").innerHTML = `
@@ -944,7 +853,6 @@
 
       function displayStandards() {
         const container = document.getElementById("standardsContainer");
-        const currentPageSize = getCurrentPageSize(); // Get current page size
 
         if (filteredData.length === 0) {
           container.innerHTML = `
@@ -955,11 +863,10 @@
           return;
         }
 
-        // Calculate pagination using current page size
-        const totalPages = Math.ceil(filteredData.length / currentPageSize);
-        const startIndex = (currentPage - 1) * currentPageSize;
+        const totalPages = Math.ceil(filteredData.length / standardsPerPage);
+        const startIndex = (currentPage - 1) * standardsPerPage;
         const endIndex = Math.min(
-          startIndex + currentPageSize,
+          startIndex + standardsPerPage,
           filteredData.length
         );
         const currentStandards = filteredData.slice(startIndex, endIndex);
@@ -1046,9 +953,7 @@
         const paginationContainer = document.getElementById(
           "paginationContainer"
         );
-        const currentPageSize = getCurrentPageSize(); // Get current page size
-
-        const totalPages = Math.ceil(filteredData.length / currentPageSize);
+        const totalPages = Math.ceil(filteredData.length / standardsPerPage);
 
         if (totalPages <= 1) {
           paginationContainer.style.display = "none";
@@ -1068,20 +973,18 @@
           </button>
         `;
 
-        // Page numbers
-        const maxVisiblePages = 5;
+        // Page numbers - show fewer on mobile
+        const maxVisiblePages = window.innerWidth <= 768 ? 3 : 5;
         let startPage = Math.max(
           1,
           currentPage - Math.floor(maxVisiblePages / 2)
         );
         let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
-        // Adjust start page if we're near the end
         if (endPage - startPage + 1 < maxVisiblePages) {
           startPage = Math.max(1, endPage - maxVisiblePages + 1);
         }
 
-        // First page and ellipsis if needed
         if (startPage > 1) {
           paginationHTML += `
             <button class="pagination-button" onclick="changePage(1)">1</button>
@@ -1093,7 +996,6 @@
           `;
         }
 
-        // Page numbers
         for (let i = startPage; i <= endPage; i++) {
           paginationHTML += `
             <button class="pagination-button ${
@@ -1105,7 +1007,6 @@
           `;
         }
 
-        // Last page and ellipsis if needed
         if (endPage < totalPages) {
           paginationHTML += `
             ${
@@ -1127,9 +1028,9 @@
         `;
 
         // Page info
-        const startItem = (currentPage - 1) * currentPageSize + 1;
+        const startItem = (currentPage - 1) * standardsPerPage + 1;
         const endItem = Math.min(
-          currentPage * currentPageSize,
+          currentPage * standardsPerPage,
           filteredData.length
         );
 
@@ -1143,8 +1044,7 @@
       }
 
       function changePage(page) {
-        const currentPageSize = getCurrentPageSize(); // Get current page size
-        const totalPages = Math.ceil(filteredData.length / currentPageSize);
+        const totalPages = Math.ceil(filteredData.length / standardsPerPage);
 
         if (page < 1 || page > totalPages) return;
 
@@ -1152,7 +1052,6 @@
         displayStandards();
         updatePagination();
 
-        // Scroll to top of results
         document.getElementById("standardsContainer").scrollIntoView({
           behavior: "smooth",
           block: "start",
@@ -1162,12 +1061,11 @@
       function updateCount() {
         const countElement = document.getElementById("standardsCount");
         const total = filteredData.length;
-        const currentPageSize = getCurrentPageSize(); // Get current page size
 
         if (total === 0) {
           countElement.textContent = "";
         } else {
-          const totalPages = Math.ceil(total / currentPageSize);
+          const totalPages = Math.ceil(total / standardsPerPage);
           const selectedGrade = document.getElementById("gradeFilter").value;
           const gradeText =
             selectedGrade !== "all" ? ` for ${selectedGrade}` : "";
