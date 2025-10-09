@@ -24,7 +24,6 @@ ADA,Americans with Disabilities Act,Civil rights law prohibiting discrimination 
 CAASPP,California Assessment of Student Performance & Progress,California's statewide assessment system measuring student progress toward mastering state standards in English language arts and mathematics
 SELPA,Special Education Local Plan Area,Regional consortium of school districts that work together to provide special education services and ensure compliance with state and federal requirements
 SAI,Specialized Academic Instruction,Specially designed instruction provided by qualified special education teachers to address the unique needs of students with disabilities
-BIP,Behavior Intervention Plan,Written plan outlining specific strategies and interventions to address challenging behaviors typically based on results of a functional behavioral assessment
 PECS,Picture Exchange Communication System,Alternative communication method using pictures that allows non-speaking individuals to initiate communication and make requests
 AU,Autism,Developmental disability significantly affecting verbal and nonverbal communication and social interaction generally evident before age three
 ID,Intellectual Disability,Significantly below-average intellectual functioning existing concurrently with deficits in adaptive behavior manifested during the developmental period
@@ -41,7 +40,6 @@ OAH,Office of Administrative Hearings,State agency that conducts impartial due p
 ALJ,Administrative Law Judge,Impartial hearing officer who conducts due process hearings and makes binding decisions on special education disputes
 ADOS,Autism Diagnostic Observation Schedule,Standardized assessment tool used to diagnose autism spectrum disorders through structured activities and observations
 DTT,Discrete Trial Training,A method for teaching desired behaviors skills or tasks by breaking down the skill into small discrete steps that are taught in a highly structured and hierarchical manner with systematic rewards
-ADOS,Autism Diagnostic Observation Schedule,Standardized assessment tool used to diagnose autism spectrum disorders through structured activities and observations
 CARS,Childhood Autism Rating Scale,Diagnostic tool used to identify children with autism and distinguish them from children with other developmental delays
 PDA,Pathological Demand Avoidance,Profile of autism characterized by an extreme avoidance of everyday demands and expectations coupled with high levels of anxiety
 SPD,Sensory Processing Disorder,Condition that affects how the nervous system receives and responds to sensory information often co-occurring with autism
@@ -59,3 +57,19 @@ ESY,Extended School Year,Special education services provided beyond the normal s
 GE,General Education,Regular education classroom setting where students without disabilities typically receive instruction
 SDC,Special Day Class,Self-contained special education classroom for students who need intensive support
 RSP,Resource Specialist Program,Special education program providing support to students with disabilities in the general education setting
+ABA,Applied Behavior Analysis,Therapy based on the science of learning and behavior that applies understanding of how behavior works to increase helpful behaviors and decrease harmful behaviors or those affecting learning
+ADHD,Attention Deficit Hyperactivity Disorder,Neurodevelopmental disorder affecting attention span impulse control and activity level usually first diagnosed in childhood
+ASD,Autism Spectrum Disorder,Developmental disability significantly affecting verbal and nonverbal communication and social interaction
+ASL,American Sign Language,Visual language using hand gestures body language and facial expressions used by the deaf and hard of hearing community
+BD,Behavior Disorder,Condition characterized by patterns of disruptive or problematic behaviors that interfere with learning and social interactions
+CD,Cognitive Delay,Below-average intellectual functioning that affects a student's ability to learn and process information
+DD,Developmental Delay,Condition where a child does not reach developmental milestones at the expected times in areas such as physical movement communication cognitive or social and emotional skills
+DIBELS,Dynamic Indicators of Basic Early Literacy Skills,Standardized assessment tool used to measure early literacy skills and predict reading proficiency
+DSM,Diagnostic and Statistical Manual of Mental Disorders,Handbook used by health care professionals as the authoritative guide to the diagnosis of mental disorders
+EI,Early Intervention,Services and supports provided to infants and toddlers with developmental delays or disabilities and their families
+HI,Hearing Impaired,Having partial or complete hearing loss that adversely affects educational performance
+IDEA,Individuals with Disabilities Education Act,Federal law ensuring students with disabilities are provided with Free Appropriate Public Education tailored to their individual needs
+LD,Learning Disability,Neurological condition that affects the brain's ability to receive process store and respond to information
+ODD,Oppositional Defiant Disorder,Pattern of angry irritable mood argumentative defiant behavior or vindictiveness toward authority figures
+PBS,Positive Behavior Supports,System of interventions designed to improve quality of life and reduce problem behaviors through teaching appropriate alternative behaviors
+PDD,Pervasive Developmental Disorder,Group of disorders characterized by delays in the development of socialization and communication skills
