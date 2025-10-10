@@ -1,0 +1,37 @@
+# robots.txt for Derik Vo's Teaching Portfolio
+
+User-agent: *
+Allow: /
+
+# Allow indexing of main pages
+Allow: /index.html
+Allow: /coursework-phase1.html
+Allow: /coursework-phase2.html
+Allow: /coursework-phase3.html
+Allow: /coursework-phase4.html
+Allow: /coursework-phase5.html
+Allow: /reflections.html
+Allow: /ed-tech-tools.html
+Allow: /english-learner-emerging-bilingual.html
+Allow: /reading-resource-list.html
+Allow: /acronym-dictionary.html
+Allow: /content-standards-search.html
+
+# Allow CSS and JS for proper rendering
+Allow: /style.css
+Allow: /script.js
+
+# Allow images for proper display
+Allow: /images/
+
+# Allow data files for tools to function
+Allow: /Data/
+
+# Disallow archived or work-in-progress content
+Disallow: /Archived/
+
+# Allow the Bingo game
+Allow: /Bingo/
+
+# Sitemap location
+Sitemap: https://derikvo.github.io/sitemap.xml

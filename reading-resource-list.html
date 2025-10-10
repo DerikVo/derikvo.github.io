@@ -3,7 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reading List - Derik Vo</title>
+    <title>Reading List - Educational Resources & Research - Derik Vo</title>
+
+    <!-- SEO Meta Tags -->
+    <meta
+      name="description"
+      content="Curated reading list and educational resources by Derik Vo. Explore books, articles, and research on teaching, equity, culturally responsive pedagogy, and special education."
+    />
+    <meta
+      name="keywords"
+      content="education books, teaching resources, educational research, reading list, pedagogy books, equity in education, culturally responsive teaching, special education resources, professional development, Derik Vo"
+    />
+    <meta name="author" content="Derik Vo" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph Meta Tags for Social Media -->
+    <meta
+      property="og:title"
+      content="Reading List - Educational Resources & Research - Derik Vo"
+    />
+    <meta
+      property="og:description"
+      content="Curated collection of books, articles, and research on teaching, equity, and culturally responsive pedagogy."
+    />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="twitter:title"
+      content="Reading List - Educational Resources & Research - Derik Vo"
+    />
+    <meta
+      name="twitter:description"
+      content="Curated collection of books, articles, and research on teaching, equity, and culturally responsive pedagogy."
+    />
+
     <script>
       if (
         localStorage.getItem("color-theme") === "dark" ||
@@ -16,6 +51,243 @@
       }
     </script>
     <link rel="stylesheet" href="style.css" />
+    <style>
+      html {
+        background-color: #ffffff;
+      }
+      html.dark {
+        background-color: #111827;
+      }
+      body {
+        background-color: var(--color-background, #ffffff);
+        transition: background-color 0.3s ease;
+      }
+      .dark body {
+        background-color: var(--color-background, #111827);
+      }
+
+      .controls {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: calc(var(--spacing-unit) * 3);
+        margin: calc(var(--spacing-unit) * 3) 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--spacing-unit) * 2);
+      }
+
+      .search-row {
+        display: flex;
+        gap: calc(var(--spacing-unit) * 2);
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-input {
+        flex: 1;
+        min-width: 250px;
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+        font-size: 1rem;
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        outline: none;
+        transition: border-color 0.3s ease;
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        font-family: var(--font-body);
+      }
+
+      .search-input:focus {
+        border-color: var(--color-primary);
+      }
+
+      .filter-controls {
+        display: flex;
+        gap: calc(var(--spacing-unit) * 2);
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .sort-select,
+      .type-filter,
+      .topic-filter {
+        padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 1.5);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+      }
+
+      .resource-count {
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: calc(var(--spacing-unit) * 2);
+        font-style: italic;
+      }
+
+      .resource-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: calc(var(--spacing-unit) * 3);
+        margin-bottom: calc(var(--spacing-unit) * 3);
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .resource-card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+      }
+
+      .resource-card h2 {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: calc(var(--spacing-unit) * 1);
+        color: var(--color-text-primary);
+        line-height: 1.3;
+      }
+
+      .resource-meta {
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: calc(var(--spacing-unit) * 2);
+        display: flex;
+        align-items: center;
+        gap: calc(var(--spacing-unit) * 2);
+        flex-wrap: wrap;
+      }
+
+      .type-badge {
+        background: var(--color-primary);
+        color: white;
+        padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit));
+        border-radius: var(--border-radius);
+        font-size: 0.8rem;
+        font-weight: 700;
+        font-family: var(--font-body);
+      }
+
+      .topic-badge {
+        background: var(--color-accent, #28a745);
+        color: white;
+        padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit));
+        border-radius: var(--border-radius);
+        font-size: 0.8rem;
+        font-weight: 700;
+        font-family: var(--font-body);
+      }
+
+      .resource-card .description {
+        margin-bottom: calc(var(--spacing-unit) * 2);
+        line-height: 1.7;
+        text-align: justify;
+      }
+
+      .resource-link {
+        display: inline-block;
+        margin-top: calc(var(--spacing-unit) * 2);
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+        background: var(--color-primary);
+        color: white;
+        text-decoration: none;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+      }
+
+      .resource-link:hover {
+        background: var(--color-primary-dark, #0056b3);
+      }
+
+      .no-results {
+        text-align: center;
+        padding: calc(var(--spacing-unit) * 4);
+        color: var(--color-text-secondary);
+        font-style: italic;
+        background: var(--color-surface);
+        border-radius: var(--border-radius);
+        border: 2px dashed var(--color-border);
+      }
+
+      .loading {
+        text-align: center;
+        padding: calc(var(--spacing-unit) * 4);
+        color: var(--color-text-secondary);
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 2rem 0;
+        gap: 10px;
+      }
+
+      .pagination button {
+        padding: 8px 12px;
+        border: 1px solid var(--color-border);
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        font-family: var(--font-body);
+      }
+
+      .pagination button:hover:not(:disabled) {
+        background: var(--color-surface);
+        border-color: var(--color-primary);
+      }
+
+      .pagination button:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      .pagination button.active {
+        background: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+      }
+
+      .page-info {
+        color: var(--color-text-secondary);
+        font-size: 14px;
+        margin: 0 10px;
+      }
+
+      @media (max-width: 768px) {
+        .search-row {
+          flex-direction: column;
+        }
+        .search-input {
+          min-width: 100%;
+        }
+        .filter-controls {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .filter-controls > * {
+          width: 100%;
+        }
+        .resource-card {
+          padding: calc(var(--spacing-unit) * 2);
+        }
+        .resource-meta {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: calc(var(--spacing-unit));
+        }
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -37,7 +309,6 @@
               </div>
             </li>
             <li><a href="reflections.html">Reflections</a></li>
-            <!-- <li><a href="journal.html">Journal</a></li> -->
             <li class="dropdown">
               <a href="#" class="dropbtn">Resources ▼</a>
               <div class="dropdown-content">
@@ -53,12 +324,18 @@
               </div>
             </li>
           </ul>
-          <button id="theme-toggle" type="button" class="theme-toggle-button">
+          <button
+            id="theme-toggle"
+            type="button"
+            class="theme-toggle-button"
+            aria-label="Toggle dark and light mode"
+          >
             <svg
               id="theme-toggle-dark-icon"
               class="toggle-icon hidden"
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path
                 d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
@@ -69,6 +346,7 @@
               class="toggle-icon hidden"
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path
                 d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
@@ -83,15 +361,50 @@
 
     <main class="container">
       <h1>Reading & Resource List</h1>
-      <div class="grid">
-        <div class="card">
-          <h3>Resource Title (e.g., Book Name)</h3>
-          <p>A brief description of the resource and why its recommend.</p>
+      <p class="subtitle">
+        Curated collection of books, articles, and research on teaching, equity,
+        and professional growth.
+      </p>
+
+      <div class="controls">
+        <div class="search-row">
+          <input
+            type="text"
+            id="searchInput"
+            class="search-input"
+            placeholder="Search by title, author, or description..."
+            autocomplete="off"
+          />
         </div>
-        <div class="card">
-          <h3>Another Resource</h3>
-          <p>Description for the second resource.</p>
+        <div class="filter-controls">
+          <select id="sortSelect" class="sort-select">
+            <option value="title-asc">Title A-Z</option>
+            <option value="title-desc">Title Z-A</option>
+            <option value="year-desc">Newest First</option>
+            <option value="year-asc">Oldest First</option>
+            <option value="author-asc">Author A-Z</option>
+          </select>
+          <select id="typeFilter" class="type-filter">
+            <option value="all">All Types</option>
+          </select>
+          <select id="topicFilter" class="topic-filter">
+            <option value="all">All Topics</option>
+          </select>
         </div>
+      </div>
+
+      <div id="resourceCount" class="resource-count"></div>
+      <div id="resourcesContainer">
+        <div class="loading">Loading reading resources...</div>
+      </div>
+
+      <div id="pagination" class="pagination" style="display: none">
+        <button id="prevBtn">← Previous</button>
+        <div id="pageNumbers"></div>
+        <div class="page-info">
+          <span id="pageInfo"></span>
+        </div>
+        <button id="nextBtn">Next →</button>
       </div>
     </main>
 
@@ -100,6 +413,347 @@
         <p>&copy; 2025 Derik Vo</p>
       </div>
     </footer>
+
     <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script>
+      let resourcesData = [];
+      let filteredData = [];
+      let currentPage = 1;
+      let itemsPerPage = 5;
+      let isSearchActive = false;
+
+      async function loadReadingResources() {
+        try {
+          console.log("Loading reading resources from CSV...");
+          const response = await fetch("Data/reading-resources.csv");
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const csvText = await response.text();
+          console.log("CSV loaded, parsing...");
+
+          Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            dynamicTyping: false,
+            delimitersToGuess: [",", "\t", "|", ";"],
+            complete: function (results) {
+              console.log("Parse results:", results);
+
+              resourcesData = results.data
+                .map((row) => ({
+                  title: (row.title || "").trim(),
+                  author: (row.author || "").trim(),
+                  year: (row.year || "").trim(),
+                  type: (row.type || "").trim().toLowerCase(),
+                  topic: (row.topic || "").trim(),
+                  description: (row.description || "").trim(),
+                  url: (row.url || "").trim(),
+                }))
+                .filter((resource) => resource.title && resource.description);
+
+              console.log("Processed resources data:", resourcesData);
+
+              if (resourcesData.length === 0) {
+                document.getElementById("resourcesContainer").innerHTML =
+                  '<div class="no-results">No valid reading resources found in CSV file.</div>';
+                return;
+              }
+
+              filteredData = [...resourcesData];
+              populateTypeFilter();
+              populateTopicFilter();
+              sortResources("title-asc");
+              currentPage = 1;
+              displayResources();
+              updateCount();
+              updatePagination();
+            },
+            error: function (error) {
+              console.error("Error parsing CSV:", error);
+              document.getElementById("resourcesContainer").innerHTML =
+                '<div class="no-results">Error parsing CSV file.</div>';
+            },
+          });
+        } catch (error) {
+          console.error("Error loading CSV file:", error);
+          document.getElementById(
+            "resourcesContainer"
+          ).innerHTML = `<div class="no-results">Error loading Data/reading-resources.csv: ${error.message}</div>`;
+        }
+      }
+
+      function populateTypeFilter() {
+        const types = [
+          ...new Set(resourcesData.map((r) => r.type).filter((t) => t)),
+        ].sort();
+        const typeFilter = document.getElementById("typeFilter");
+        typeFilter.innerHTML = '<option value="all">All Types</option>';
+        types.forEach((type) => {
+          const option = document.createElement("option");
+          option.value = type;
+          option.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+          typeFilter.appendChild(option);
+        });
+      }
+
+      function populateTopicFilter() {
+        const topics = [
+          ...new Set(resourcesData.map((r) => r.topic).filter((t) => t)),
+        ].sort();
+        const topicFilter = document.getElementById("topicFilter");
+        topicFilter.innerHTML = '<option value="all">All Topics</option>';
+        topics.forEach((topic) => {
+          const option = document.createElement("option");
+          option.value = topic;
+          option.textContent = topic;
+          topicFilter.appendChild(option);
+        });
+      }
+
+      function sortResources(criteria) {
+        filteredData.sort((a, b) => {
+          switch (criteria) {
+            case "title-asc":
+              return a.title.localeCompare(b.title);
+            case "title-desc":
+              return b.title.localeCompare(a.title);
+            case "year-desc":
+              return (b.year || "0").localeCompare(a.year || "0");
+            case "year-asc":
+              return (a.year || "0").localeCompare(b.year || "0");
+            case "author-asc":
+              return a.author.localeCompare(b.author);
+            default:
+              return a.title.localeCompare(b.title);
+          }
+        });
+      }
+
+      function displayResources() {
+        const container = document.getElementById("resourcesContainer");
+
+        if (filteredData.length === 0) {
+          container.innerHTML =
+            '<div class="no-results">No resources found matching your criteria.</div>';
+          document.getElementById("pagination").style.display = "none";
+          return;
+        }
+
+        let pageData;
+        if (isSearchActive) {
+          pageData = filteredData;
+          document.getElementById("pagination").style.display = "none";
+        } else {
+          const startIndex = (currentPage - 1) * itemsPerPage;
+          const endIndex = startIndex + itemsPerPage;
+          pageData = filteredData.slice(startIndex, endIndex);
+          const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+          document.getElementById("pagination").style.display =
+            totalPages > 1 ? "flex" : "none";
+        }
+
+        const html = pageData
+          .map(
+            (resource) => `
+          <article class="resource-card">
+            <h2>${resource.title}</h2>
+            <div class="resource-meta">
+              ${
+                resource.type
+                  ? `<span class="type-badge">${
+                      resource.type.charAt(0).toUpperCase() +
+                      resource.type.slice(1)
+                    }</span>`
+                  : ""
+              }
+              ${
+                resource.topic
+                  ? `<span class="topic-badge">${resource.topic}</span>`
+                  : ""
+              }
+              ${resource.author ? `<span>By ${resource.author}</span>` : ""}
+              ${resource.year ? `<span>${resource.year}</span>` : ""}
+            </div>
+            <div class="description">
+              <p>${resource.description}</p>
+            </div>
+            ${
+              resource.url
+                ? `<a href="${resource.url}" target="_blank" rel="noopener noreferrer" class="resource-link">View Resource</a>`
+                : ""
+            }
+          </article>
+        `
+          )
+          .join("");
+
+        container.innerHTML = html;
+      }
+
+      function updateCount() {
+        const countElement = document.getElementById("resourceCount");
+        const total = resourcesData.length;
+        const showing = filteredData.length;
+
+        if (isSearchActive) {
+          countElement.textContent =
+            showing === total
+              ? `Showing all ${total} resource${total !== 1 ? "s" : ""}`
+              : `Found ${showing} of ${total} resource${
+                  total !== 1 ? "s" : ""
+                }`;
+        } else {
+          const startIndex = (currentPage - 1) * itemsPerPage + 1;
+          const endIndex = Math.min(currentPage * itemsPerPage, showing);
+          if (showing <= itemsPerPage) {
+            countElement.textContent = `Showing all ${showing} resource${
+              showing !== 1 ? "s" : ""
+            }`;
+          } else {
+            countElement.textContent = `Showing ${startIndex}-${endIndex} of ${showing} resource${
+              showing !== 1 ? "s" : ""
+            }`;
+          }
+        }
+      }
+
+      function updatePagination() {
+        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const pageNumbers = document.getElementById("pageNumbers");
+        const pageInfo = document.getElementById("pageInfo");
+
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = currentPage >= totalPages;
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + 4);
+
+        if (endPage - startPage < 4) {
+          startPage = Math.max(1, endPage - 4);
+        }
+
+        let pageNumbersHtml = "";
+        for (let i = startPage; i <= endPage; i++) {
+          pageNumbersHtml += `
+            <button class="page-btn ${
+              i === currentPage ? "active" : ""
+            }" data-page="${i}">
+              ${i}
+            </button>
+          `;
+        }
+
+        pageNumbers.innerHTML = pageNumbersHtml;
+
+        pageNumbers.querySelectorAll(".page-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            currentPage = parseInt(e.target.dataset.page);
+            displayResources();
+            updateCount();
+            updatePagination();
+          });
+        });
+      }
+
+      function applyAllFilters() {
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.trim()
+          .toLowerCase();
+        const typeFilter = document.getElementById("typeFilter").value;
+        const topicFilter = document.getElementById("topicFilter").value;
+
+        isSearchActive = searchTerm.length > 0;
+        filteredData = [...resourcesData];
+
+        if (searchTerm) {
+          filteredData = filteredData.filter(
+            (r) =>
+              r.title.toLowerCase().includes(searchTerm) ||
+              r.author.toLowerCase().includes(searchTerm) ||
+              r.description.toLowerCase().includes(searchTerm) ||
+              r.topic.toLowerCase().includes(searchTerm)
+          );
+        }
+
+        if (typeFilter !== "all") {
+          filteredData = filteredData.filter((r) => r.type === typeFilter);
+        }
+
+        if (topicFilter !== "all") {
+          filteredData = filteredData.filter((r) => r.topic === topicFilter);
+        }
+
+        currentPage = 1;
+        const sortValue = document.getElementById("sortSelect").value;
+        sortResources(sortValue);
+        displayResources();
+        updateCount();
+        updatePagination();
+      }
+
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        loadReadingResources();
+
+        const searchInput = document.getElementById("searchInput");
+        const debouncedSearch = debounce(() => applyAllFilters(), 300);
+        searchInput.addEventListener("input", () => debouncedSearch());
+
+        document
+          .getElementById("sortSelect")
+          .addEventListener("change", (e) => {
+            sortResources(e.target.value);
+            displayResources();
+          });
+
+        document.getElementById("typeFilter").addEventListener("change", () => {
+          applyAllFilters();
+        });
+
+        document
+          .getElementById("topicFilter")
+          .addEventListener("change", () => {
+            applyAllFilters();
+          });
+
+        document.getElementById("prevBtn").addEventListener("click", () => {
+          if (currentPage > 1) {
+            currentPage--;
+            displayResources();
+            updateCount();
+            updatePagination();
+          }
+        });
+
+        document.getElementById("nextBtn").addEventListener("click", () => {
+          const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+          if (currentPage < totalPages) {
+            currentPage++;
+            displayResources();
+            updateCount();
+            updatePagination();
+          }
+        });
+      });
+    </script>
   </body>
 </html>
