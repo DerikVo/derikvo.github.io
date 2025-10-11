@@ -190,6 +190,28 @@
         text-align: justify;
       }
 
+      .reflection-section {
+        margin-top: calc(var(--spacing-unit) * 2);
+        padding: calc(var(--spacing-unit) * 2);
+        background: var(--color-background);
+        border-left: 4px solid var(--color-primary);
+        border-radius: var(--border-radius);
+      }
+
+      .reflection-section h3 {
+        font-family: var(--font-heading);
+        font-size: 1.1rem;
+        margin-top: 0;
+        margin-bottom: calc(var(--spacing-unit));
+        color: var(--color-primary);
+      }
+
+      .reflection-section p {
+        line-height: 1.7;
+        font-style: italic;
+        color: var(--color-text-secondary);
+      }
+
       .resource-link {
         display: inline-block;
         margin-top: calc(var(--spacing-unit) * 2);
@@ -452,6 +474,7 @@
                   topic: (row.topic || "").trim(),
                   description: (row.description || "").trim(),
                   url: (row.url || "").trim(),
+                  reflection: (row.reflection || "").trim(),
                 }))
                 .filter((resource) => resource.title && resource.description);
 
@@ -582,6 +605,16 @@
               <p>${resource.description}</p>
             </div>
             ${
+              resource.reflection
+                ? `
+            <div class="reflection-section">
+              <h3>Personal Reflection</h3>
+              <p>${resource.reflection}</p>
+            </div>
+            `
+                : ""
+            }
+            ${
               resource.url
                 ? `<a href="${resource.url}" target="_blank" rel="noopener noreferrer" class="resource-link">View Resource</a>`
                 : ""
@@ -679,7 +712,8 @@
               r.title.toLowerCase().includes(searchTerm) ||
               r.author.toLowerCase().includes(searchTerm) ||
               r.description.toLowerCase().includes(searchTerm) ||
-              r.topic.toLowerCase().includes(searchTerm)
+              r.topic.toLowerCase().includes(searchTerm) ||
+              r.reflection.toLowerCase().includes(searchTerm)
           );
         }
 
