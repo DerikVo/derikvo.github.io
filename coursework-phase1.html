@@ -40,7 +40,6 @@
     />
 
     <script>
-      // On page load or when changing themes, best to add inline in `head` to avoid FOUC
       if (
         localStorage.getItem("color-theme") === "dark" ||
         (!("color-theme" in localStorage) &&
@@ -52,6 +51,99 @@
       }
     </script>
     <link rel="stylesheet" href="style.css" />
+
+    <style>
+      .chapter-controls {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: calc(var(--spacing-unit) * 2);
+        margin: calc(var(--spacing-unit) * 2) 0;
+        display: flex;
+        gap: calc(var(--spacing-unit) * 2);
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .chapter-filter {
+        padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 1.5);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+        min-width: 200px;
+      }
+
+      .chapter-filter:focus {
+        border-color: var(--color-primary);
+        outline: none;
+      }
+
+      .chapter-count {
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+        font-style: italic;
+      }
+
+      .chapter-review {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        padding: calc(var(--spacing-unit) * 3);
+        margin-bottom: calc(var(--spacing-unit) * 2);
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .chapter-review:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+      }
+
+      .chapter-review h3 {
+        font-family: var(--font-heading);
+        font-size: 1.3rem;
+        margin-top: 0;
+        margin-bottom: calc(var(--spacing-unit) * 1.5);
+        color: var(--color-text-primary);
+      }
+
+      .chapter-review p {
+        margin-bottom: calc(var(--spacing-unit) * 1.5);
+        line-height: 1.7;
+        text-align: justify;
+      }
+
+      .no-results {
+        text-align: center;
+        padding: calc(var(--spacing-unit) * 4);
+        color: var(--color-text-secondary);
+        font-style: italic;
+        background: var(--color-surface);
+        border-radius: var(--border-radius);
+        border: 2px dashed var(--color-border);
+      }
+
+      .loading {
+        text-align: center;
+        padding: calc(var(--spacing-unit) * 4);
+        color: var(--color-text-secondary);
+      }
+
+      @media (max-width: 768px) {
+        .chapter-controls {
+          flex-direction: column;
+        }
+
+        .chapter-filter {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
 
   <body>
@@ -74,7 +166,6 @@
               </div>
             </li>
             <li><a href="reflections.html">Reflections</a></li>
-            <!-- <li><a href="journal.html">Journal</a></li> -->
             <li class="dropdown">
               <a href="#" class="dropbtn">Resources ▼</a>
               <div class="dropdown-content">
@@ -143,69 +234,25 @@
           </iframe>
         </div>
       </div>
+
       <div class="content-section">
         <h2>
           Book Study: Culturally Responsive Teaching and the Brain by Zaretta
           Hammond
         </h2>
 
-        <div style="max-width: 800px; margin: 0 auto">
-          <p style="margin-bottom: 1.5em">
-            Zaretta Hammond's
-            <em>Culturally Responsive Teaching & the Brain</em> examines how
-            achievement gaps stem from systemic inequities rather than student
-            deficits. The book challenges the "pedagogy of poverty"
-            instructional practices relying on lecture and rote memorization
-            that leave students with shallow knowledge. Hammond argues that when
-            students receive misaligned support or curriculum that fails to
-            challenge their zone of proximal development, they fall behind while
-            being passed through the system. This creates a cycle where students
-            lose motivation, teachers hold lower expectations, and learning gaps
-            widen. By middle school, many schools lack effective strategies to
-            address struggling readers, highlighting how early intervention
-            failures compound over time. The book emphasizes that assessment
-            tools often carry cultural biases, potentially undervaluing the
-            diverse knowledge students bring from their communities and
-            experiences.
-          </p>
+        <div class="chapter-controls">
+          <label for="chapterFilter" style="font-weight: 600"
+            >Filter by Chapter:</label
+          >
+          <select id="chapterFilter" class="chapter-filter">
+            <option value="all">All Chapters</option>
+          </select>
+          <span id="chapterCount" class="chapter-count"></span>
+        </div>
 
-          <p style="margin-bottom: 1.5em">
-            Hammond connects neuroscience to culturally responsive practice,
-            explaining how brain chemistry impacts learning. When students feel
-            unwelcome or experience microaggressions, their brains produce less
-            oxytocin and more cortisol, inhibiting learning for up to 20 minutes
-            and creating anxiety lasting hours. The book explores how cultural
-            backgrounds shape neural pathways, students from strong oral
-            traditions develop schemas for social learning that may not align
-            with traditional classroom instruction. Building trust through
-            "selective vulnerability," demonstrating competence, and showing
-            genuine concern creates the psychological safety necessary for
-            students to accept academic challenges without triggering defensive
-            responses. Without strong teacher-student relationships, students
-            may interpret feedback as attacks rather than support, leading to
-            learned helplessness and disengagement.
-          </p>
-
-          <p style="margin-bottom: 1.5em">
-            The book provides practical frameworks for developing independent
-            learners through culturally responsive approaches. Hammond
-            emphasizes that students need to believe they can succeed,
-            understand that growth requires effort, see value in their work, and
-            feel like contributing community members. She discusses building
-            intellectual capacity through appropriate scaffolding, predictable
-            routines that promote independence, and opportunities to develop
-            executive function skills. Teachers must examine their implicit
-            biases, learn to describe rather than immediately judge behaviors,
-            and recognize that students' defensive behaviors often mask fear of
-            appearing incapable. The "cognitively rich" gain more academic
-            advantages over time while struggling students receive remedial
-            busywork rather than challenging instruction that builds genuine
-            learning capacity. Effective culturally responsive teaching requires
-            understanding students' cultural lenses, providing multiple pathways
-            to demonstrate knowledge, and creating curriculum that honors what
-            students already know while systematically building the skills
-            needed for academic success and self-directed learning.
-          </p>
+        <div id="chaptersContainer">
+          <div class="loading">Loading chapter reviews...</div>
         </div>
       </div>
 
@@ -234,5 +281,152 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script>
+      let chaptersData = [];
+      let filteredChapters = [];
+
+      // Load chapter reviews from CSV
+      async function loadChapterReviews() {
+        try {
+          console.log("Loading chapter reviews from CSV...");
+          const response = await fetch("Data/book-chapters.csv");
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const csvText = await response.text();
+          console.log("CSV loaded, parsing...");
+
+          Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            dynamicTyping: false,
+            delimitersToGuess: [",", "\t", "|", ";"],
+            complete: function (results) {
+              console.log("Parse results:", results);
+
+              // Clean and process the data
+              chaptersData = results.data
+                .map((row) => ({
+                  chapter: (row.chapter || row.Chapter || "").trim(),
+                  summary: (row.summary || row.Summary || "").trim(),
+                }))
+                .filter((chapter) => chapter.chapter && chapter.summary);
+
+              console.log("Processed chapters data:", chaptersData);
+
+              if (chaptersData.length === 0) {
+                document.getElementById("chaptersContainer").innerHTML =
+                  '<div class="no-results">No valid chapter reviews found in CSV file. Check console for details.</div>';
+                return;
+              }
+
+              filteredChapters = [...chaptersData];
+              populateChapterFilter();
+              displayChapters();
+              updateCount();
+            },
+            error: function (error) {
+              console.error("Error parsing CSV:", error);
+              document.getElementById("chaptersContainer").innerHTML =
+                '<div class="no-results">Error parsing CSV file. Check console for details.</div>';
+            },
+          });
+        } catch (error) {
+          console.error("Error loading CSV file:", error);
+          document.getElementById(
+            "chaptersContainer"
+          ).innerHTML = `<div class="no-results">Error loading Data/book-chapters.csv: ${error.message}<br><br>
+            <strong>To set up your chapter reviews database:</strong><br>
+            1. Create a folder called "Data" in your website directory<br>
+            2. Save your chapter reviews as "book-chapters.csv" in that folder<br>
+            3. Use two columns: chapter, summary</div>`;
+        }
+      }
+
+      // Populate chapter filter dropdown
+      function populateChapterFilter() {
+        const chapterFilter = document.getElementById("chapterFilter");
+
+        // Clear existing options except "All Chapters"
+        chapterFilter.innerHTML = '<option value="all">All Chapters</option>';
+
+        chaptersData.forEach((chapter) => {
+          const option = document.createElement("option");
+          option.value = chapter.chapter;
+          option.textContent = chapter.chapter;
+          chapterFilter.appendChild(option);
+        });
+      }
+
+      // Display chapter reviews
+      function displayChapters() {
+        const container = document.getElementById("chaptersContainer");
+
+        if (filteredChapters.length === 0) {
+          container.innerHTML =
+            '<div class="no-results">No chapter reviews found matching your filter.</div>';
+          return;
+        }
+
+        const html = filteredChapters
+          .map(
+            (chapter) => `
+          <div class="chapter-review">
+            <h3>${chapter.chapter}</h3>
+            <p>${chapter.summary}</p>
+          </div>
+        `
+          )
+          .join("");
+
+        container.innerHTML = html;
+      }
+
+      // Update chapter count display
+      function updateCount() {
+        const countElement = document.getElementById("chapterCount");
+        const total = chaptersData.length;
+        const showing = filteredChapters.length;
+
+        if (showing === total) {
+          countElement.textContent = `Showing all ${total} chapter${
+            total !== 1 ? "s" : ""
+          }`;
+        } else {
+          countElement.textContent = `Showing ${showing} of ${total} chapter${
+            total !== 1 ? "s" : ""
+          }`;
+        }
+      }
+
+      // Filter chapters
+      function filterChapters() {
+        const filterValue = document.getElementById("chapterFilter").value;
+
+        if (filterValue === "all") {
+          filteredChapters = [...chaptersData];
+        } else {
+          filteredChapters = chaptersData.filter(
+            (chapter) => chapter.chapter === filterValue
+          );
+        }
+
+        displayChapters();
+        updateCount();
+      }
+
+      // Initialize everything
+      document.addEventListener("DOMContentLoaded", function () {
+        loadChapterReviews();
+
+        // Chapter filter functionality
+        document
+          .getElementById("chapterFilter")
+          .addEventListener("change", filterChapters);
+      });
+    </script>
   </body>
 </html>
