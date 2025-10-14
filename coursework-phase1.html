@@ -118,6 +118,68 @@
         text-align: justify;
       }
 
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: calc(var(--spacing-unit));
+        margin: calc(var(--spacing-unit) * 3) 0;
+        flex-wrap: wrap;
+      }
+
+      .pagination button {
+        padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 2);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        background: var(--color-surface);
+        color: var(--color-text-primary);
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 40px;
+      }
+
+      .pagination button:hover:not(:disabled) {
+        background: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+      }
+
+      .pagination button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .pagination button.active {
+        background: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+      }
+
+      .pagination .page-info {
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+        padding: 0 calc(var(--spacing-unit));
+      }
+
+      .items-per-page {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--spacing-unit));
+      }
+
+      .items-per-page select {
+        padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 1.5);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        cursor: pointer;
+      }
+
       .no-results {
         text-align: center;
         padding: calc(var(--spacing-unit) * 4);
@@ -141,6 +203,17 @@
 
         .chapter-filter {
           width: 100%;
+        }
+
+        .pagination {
+          gap: calc(var(--spacing-unit) * 0.5);
+        }
+
+        .pagination button {
+          padding: calc(var(--spacing-unit) * 0.75)
+            calc(var(--spacing-unit) * 1.5);
+          min-width: 35px;
+          font-size: 0.85rem;
         }
       }
     </style>
@@ -254,6 +327,14 @@
         <div id="chaptersContainer">
           <div class="loading">Loading chapter reviews...</div>
         </div>
+
+        <div id="paginationContainer" class="pagination" style="display: none">
+          <button id="firstPage" aria-label="First page">«</button>
+          <button id="prevPage" aria-label="Previous page">‹</button>
+          <span class="page-info" id="pageInfo"></span>
+          <button id="nextPage" aria-label="Next page">›</button>
+          <button id="lastPage" aria-label="Last page">»</button>
+        </div>
       </div>
 
       <div class="content-section">
@@ -285,6 +366,8 @@
     <script>
       let chaptersData = [];
       let filteredChapters = [];
+      let currentPage = 1;
+      let itemsPerPage = 1;
 
       // Load chapter reviews from CSV
       async function loadChapterReviews() {
@@ -307,7 +390,6 @@
             complete: function (results) {
               console.log("Parse results:", results);
 
-              // Clean and process the data
               chaptersData = results.data
                 .map((row) => ({
                   chapter: (row.chapter || row.Chapter || "").trim(),
@@ -327,6 +409,7 @@
               populateChapterFilter();
               displayChapters();
               updateCount();
+              updatePagination();
             },
             error: function (error) {
               console.error("Error parsing CSV:", error);
@@ -346,11 +429,8 @@
         }
       }
 
-      // Populate chapter filter dropdown
       function populateChapterFilter() {
         const chapterFilter = document.getElementById("chapterFilter");
-
-        // Clear existing options except "All Chapters"
         chapterFilter.innerHTML = '<option value="all">All Chapters</option>';
 
         chaptersData.forEach((chapter) => {
@@ -361,17 +441,21 @@
         });
       }
 
-      // Display chapter reviews
       function displayChapters() {
         const container = document.getElementById("chaptersContainer");
 
         if (filteredChapters.length === 0) {
           container.innerHTML =
             '<div class="no-results">No chapter reviews found matching your filter.</div>';
+          document.getElementById("paginationContainer").style.display = "none";
           return;
         }
 
-        const html = filteredChapters
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const chaptersToShow = filteredChapters.slice(startIndex, endIndex);
+
+        const html = chaptersToShow
           .map(
             (chapter) => `
           <div class="chapter-review">
@@ -383,9 +467,14 @@
           .join("");
 
         container.innerHTML = html;
+
+        if (filteredChapters.length > itemsPerPage) {
+          document.getElementById("paginationContainer").style.display = "flex";
+        } else {
+          document.getElementById("paginationContainer").style.display = "none";
+        }
       }
 
-      // Update chapter count display
       function updateCount() {
         const countElement = document.getElementById("chapterCount");
         const total = chaptersData.length;
@@ -402,7 +491,30 @@
         }
       }
 
-      // Filter chapters
+      function updatePagination() {
+        const totalPages = Math.ceil(filteredChapters.length / itemsPerPage);
+        const pageInfo = document.getElementById("pageInfo");
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+        document.getElementById("firstPage").disabled = currentPage === 1;
+        document.getElementById("prevPage").disabled = currentPage === 1;
+        document.getElementById("nextPage").disabled =
+          currentPage === totalPages;
+        document.getElementById("lastPage").disabled =
+          currentPage === totalPages;
+      }
+
+      function goToPage(page) {
+        const totalPages = Math.ceil(filteredChapters.length / itemsPerPage);
+        currentPage = Math.max(1, Math.min(page, totalPages));
+        displayChapters();
+        updatePagination();
+        window.scrollTo({
+          top: document.getElementById("chaptersContainer").offsetTop - 100,
+          behavior: "smooth",
+        });
+      }
+
       function filterChapters() {
         const filterValue = document.getElementById("chapterFilter").value;
 
@@ -414,18 +526,39 @@
           );
         }
 
+        currentPage = 1;
         displayChapters();
         updateCount();
+        updatePagination();
       }
 
-      // Initialize everything
+      function changeItemsPerPage() {
+        itemsPerPage = 1;
+        currentPage = 1;
+        displayChapters();
+        updatePagination();
+      }
+
       document.addEventListener("DOMContentLoaded", function () {
         loadChapterReviews();
 
-        // Chapter filter functionality
         document
           .getElementById("chapterFilter")
           .addEventListener("change", filterChapters);
+
+        document
+          .getElementById("firstPage")
+          .addEventListener("click", () => goToPage(1));
+        document
+          .getElementById("prevPage")
+          .addEventListener("click", () => goToPage(currentPage - 1));
+        document
+          .getElementById("nextPage")
+          .addEventListener("click", () => goToPage(currentPage + 1));
+        document.getElementById("lastPage").addEventListener("click", () => {
+          const totalPages = Math.ceil(filteredChapters.length / itemsPerPage);
+          goToPage(totalPages);
+        });
       });
     </script>
   </body>
