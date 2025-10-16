@@ -18,7 +18,7 @@ SLP,Speech Language Pathologist,Professional who provides speech and language th
 APE,Adaptive Physical Education,Modified physical education program designed to meet the needs of students with disabilities
 MDT,Multidisciplinary Team,Team of professionals who evaluate and plan services for students with disabilities
 LEA,Local Education Agency,The school district or other local administrative unit responsible for providing educational services
-PWN,Prior Written Notice,Required written communication to parents explaining any proposed or refused changes to their child's identification, evaluation, educational placement, or FAPE provision
+PWN,Prior Written Notice,Required written communication to parents explaining any proposed or refused changes to their child's identification evaluation educational placement or FAPE provision
 FERPA,Family Educational Rights and Privacy Act,Federal law protecting the privacy of student education records and giving parents rights to access and control disclosure of their child's records
 ADA,Americans with Disabilities Act,Civil rights law prohibiting discrimination based on disability in public accommodations employment transportation and telecommunications
 CAASPP,California Assessment of Student Performance & Progress,California's statewide assessment system measuring student progress toward mastering state standards in English language arts and mathematics
@@ -75,3 +75,132 @@ PBS,Positive Behavior Supports,System of interventions designed to improve quali
 PDD,Pervasive Developmental Disorder,Group of disorders characterized by delays in the development of socialization and communication skills
 TPR,Total Physical Response,Language teaching method that combines speech with physical movement where students respond to verbal commands with physical actions to reinforce learning and comprehension
 SEIS,Special Education Information System,Database system used to manage and track special education student data services and compliance requirements
+AD,Administrative Designee,The individual authorized to make decisions on behalf of the school district or educational administration when the primary administrator is unavailable ensuring compliance with FAPE
+ATD,Adaptive Technology Device,Tools or devices designed to help individuals with disabilities perform tasks that might otherwise be difficult such as communication aids and mobility devices
+SIS,Student Information System,A software system used by schools to manage student data track academic performance and monitor special education services
+IEP Team,Individualized Education Program Team,A group of professionals including teachers parents and specialists who collaborate to develop review and modify a student's IEP
+U.S. DOE,U.S. Department of Education,The federal agency responsible for overseeing public education enforcing civil rights laws and ensuring access to quality education for all students including those with disabilities
+NCLB,No Child Left Behind,A federal law that aimed to close achievement gaps requiring standardized testing and accountability for all students including those with disabilities
+SEAC,Special Education Advisory Committee,A group of parents educators and community members who advise school districts on special education policies and practices
+MAP,Measures of Academic Progress,Adaptive assessment tool that measures student growth and proficiency in mathematics and reading
+STAR,Standardized Test for Assessment of Reading,Computer-adaptive assessment that measures reading comprehension and related skills
+SBAC,Smarter Balanced Assessment Consortium,Assessment system aligned with Common Core standards used to measure student achievement in English language arts and mathematics
+ELPAC,English Language Proficiency Assessments for California,Standardized test used to determine the English language proficiency of students whose primary language is not English
+GATE,Gifted and Talented Education,Programs designed to meet the needs of students who demonstrate high achievement capability in areas such as intellectual creative artistic or leadership capacity
+MTSS,Multi-Tiered System of Supports,A framework that integrates academic and behavioral supports to improve outcomes for all students through data-driven decision making
+AVID,Advancement Via Individual Determination,College readiness program designed to increase the number of students who enroll in four-year colleges focusing on writing inquiry collaboration organization and reading
+CTE,Career Technical Education,Programs that provide students with technical and occupational skills needed for high-skill high-wage and high-demand careers
+STEM,Science Technology Engineering Mathematics,Educational approach that integrates these four disciplines into a cohesive learning paradigm based on real-world applications
+STEAM,Science Technology Engineering Arts Mathematics,Interdisciplinary educational approach that incorporates arts into the traditional STEM model to foster innovation and creativity
+OCR,Office for Civil Rights,Division of the U.S. Department of Education that enforces civil rights laws prohibiting discrimination in education programs receiving federal funding
+OSEP,Office of Special Education Programs,Federal office that provides leadership and financial support to assist states in improving results for children with disabilities
+COPPA,Children's Online Privacy Protection Act,Federal law that protects the privacy of children under 13 by regulating what information websites can collect from them
+Title I,Title I Program,Federal program providing financial assistance to schools with high percentages of children from low-income families to ensure all children meet state academic standards
+SPED,Special Education,Educational programs and services designed to meet the unique needs of students with disabilities
+Para,Paraprofessional,Educational assistant who works under the supervision of a certified teacher to provide instructional and behavioral support to students
+TOSA,Teacher on Special Assignment,Educator who temporarily leaves classroom teaching to perform specialized duties such as curriculum development coaching or program coordination
+SST,Student Study Team,Collaborative team of school staff and parents who meet to discuss student concerns and develop intervention strategies before considering special education referral
+SARB,School Attendance Review Board,Panel that reviews cases of students with excessive absences or truancy to develop intervention plans and ensure school attendance
+SEL,Social Emotional Learning,Process through which children and adults acquire knowledge attitudes and skills to recognize and manage emotions develop caring and concern for others establish positive relationships and make responsible decisions
+UDL,Universal Design for Learning,Educational framework that guides the development of flexible learning environments to accommodate individual learning differences through multiple means of representation engagement and expression
+SMART Goals,Specific Measurable Achievable Relevant Time-bound Goals,Framework for setting clear and attainable objectives in education ensuring goals are well-defined trackable realistic pertinent and deadline-driven
+SDI,Specially Designed Instruction,Instruction that is adapted to meet the unique needs of a student with a disability ensuring access to and progress in the general education curriculum
+WIAT,Wechsler Individual Achievement Test,Standardized assessment measuring academic achievement in reading writing mathematics and oral language
+WISC,Wechsler Intelligence Scale for Children,Individual intelligence test for children ages 6-16 used to assess cognitive abilities
+WAIS,Wechsler Adult Intelligence Scale,Intelligence test for adults and older adolescents measuring cognitive ability
+WPPSI,Wechsler Preschool and Primary Scale of Intelligence,Intelligence test for children ages 2.5-7 years old
+WJ,Woodcock-Johnson Tests of Achievement,Comprehensive assessment measuring cognitive abilities academic achievement and oral language
+KTEA,Kaufman Test of Educational Achievement,Individually administered measure of academic achievement in reading math and written language
+CELF,Clinical Evaluation of Language Fundamentals,Standardized test to assess language skills including semantics syntax and memory
+GORT,Gray Oral Reading Tests,Assessment measuring oral reading rate accuracy fluency and comprehension
+TOWL,Test of Written Language,Assessment of written expression skills including grammar spelling and composition
+PPVT,Peabody Picture Vocabulary Test,Assessment of receptive vocabulary for individuals ages 2.5-90+
+VMI,Developmental Test of Visual-Motor Integration,Assessment measuring the degree to which visual perception and motor behavior are integrated
+BASC,Behavior Assessment System for Children,Comprehensive assessment of emotional and behavioral functioning in children and young adults
+CBCL,Child Behavior Checklist,Parent-report questionnaire assessing behavioral and emotional problems in children
+SIB-R,Scales of Independent Behavior-Revised,Assessment of adaptive and problem behaviors from infancy to mature adult
+ABLLS-R,Assessment of Basic Language and Learning Skills-Revised,Assessment tool for language and critical learner skills often used with individuals with autism
+VB-MAPP,Verbal Behavior Milestones Assessment and Placement Program,Assessment and curriculum guide for children with autism or other developmental disabilities
+CCSS,Common Core State Standards,Set of academic standards in mathematics and English language arts outlining what students should know at each grade level
+NGSS,Next Generation Science Standards,Science education standards emphasizing scientific practices and crosscutting concepts
+ELA,English Language Arts,Subject area encompassing reading writing speaking and listening skills
+PBL,Project-Based Learning,Teaching method where students learn by actively engaging in real-world and personally meaningful projects
+CBE,Community-Based Education,Educational approach that connects classroom learning with community experiences and resources
+CBI,Community-Based Instruction,Teaching functional skills in natural community settings where they will be used
+ILC,Independent Living Curriculum,Program teaching life skills necessary for independent living such as cooking budgeting and personal care
+TWI,Two-Way Immersion,Bilingual education model where native English speakers and native speakers of another language learn together in both languages
+DI,Direct Instruction,Explicit systematic teaching method using carefully sequenced lessons with continuous student-teacher interaction
+SI,Sheltered Instruction,Teaching approach that makes academic content comprehensible to English learners while developing English language proficiency
+SDAIE,Specially Designed Academic Instruction in English,Instructional approach for English learners providing access to core curriculum while developing language skills
+GLAD,Guided Language Acquisition Design,Professional development model providing instructional strategies for English learners across content areas
+SWPBS,School-Wide Positive Behavior Support,Framework for enhancing adoption of evidence-based interventions to improve student behavioral and academic outcomes
+BPP,Behavior Progress Plan,Individualized plan documenting behavioral goals interventions and progress monitoring for students
+CBT,Cognitive Behavioral Therapy,Psychotherapy approach that helps individuals identify and change negative thought patterns and behaviors
+DBT,Dialectical Behavior Therapy,Therapy combining cognitive-behavioral techniques with mindfulness practices to regulate emotions
+CICO,Check-In/Check-Out,Behavioral intervention where students check in at start and end of day to receive feedback and reinforcement
+ABC,Antecedent-Behavior-Consequence,Data collection method recording what happens before during and after a behavior to identify patterns
+SIB,Self-Injurious Behavior,Behaviors where an individual intentionally harms themselves such as head-banging biting or scratching
+RAD,Reactive Attachment Disorder,Condition where children have difficulty forming healthy emotional attachments due to early neglect or trauma
+GAD,Generalized Anxiety Disorder,Mental health disorder characterized by persistent and excessive worry about various aspects of daily life
+MDD,Major Depressive Disorder,Mental health condition marked by persistent feelings of sadness and loss of interest affecting daily functioning
+BPD,Borderline Personality Disorder,Mental health disorder affecting how one thinks and feels about oneself and others causing problems in daily functioning
+SMH,School Mental Health,Mental health services and supports provided within school settings
+ERMHS,Educationally Related Mental Health Services,Mental health services provided through special education when necessary for student to benefit from special education
+ITP,Individual Transition Plan,Component of IEP for students 16+ outlining goals and services to prepare for life after high school
+TWP,Transition Work Program,Program providing work experience and job training for students with disabilities preparing for employment
+IFSP,Individualized Family Service Plan,Written plan for early intervention services for infants and toddlers ages 0-3 with developmental delays or disabilities
+ISP,Individual Service Plan,Personalized plan outlining services and supports for individuals receiving services from agencies
+IHP,Individual Health Plan,Written document outlining health care needs and services required for a student while at school
+ICP,Individual Career Plan,Personalized plan outlining career goals interests and steps needed to achieve post-secondary career objectives
+SWD,Students with Disabilities,General term referring to students who receive special education services
+TC,Traditional Classroom,Standard general education classroom setting
+ICC,Inclusion Collaborative Classroom,Co-taught classroom where general and special education teachers work together to support all students
+FDK,Full-Day Kindergarten,Kindergarten program running the full school day rather than half-day
+SW,Social Worker,Professional providing counseling crisis intervention and connecting families with community resources
+CNS,Central Nervous System,Brain and spinal cord controlling most functions of the body and mind
+ADD,Attention Deficit Disorder,Attention disorder characterized by inattention without hyperactivity component
+CP,Cerebral Palsy,Group of disorders affecting movement muscle tone and posture caused by brain damage before or during birth
+MD,Muscular Dystrophy,Group of genetic diseases causing progressive weakness and loss of muscle mass
+MS,Multiple Sclerosis,Disease affecting the central nervous system disrupting communication between brain and body
+CF,Cystic Fibrosis,Genetic disorder affecting primarily the lungs and digestive system causing thick mucus buildup
+FAS/FASD,Fetal Alcohol Syndrome/Fetal Alcohol Spectrum Disorder,Range of effects occurring from prenatal alcohol exposure including physical behavioral and learning problems
+PKU,Phenylketonuria,Genetic disorder causing amino acid buildup that can lead to intellectual disability if untreated
+SB,Spina Bifida,Birth defect where the spine and spinal cord don't form properly affecting mobility and sensation
+CVI,Cortical Visual Impairment,Visual impairment caused by brain damage rather than eye problems
+APD,Auditory Processing Disorder,Difficulty processing auditory information despite normal hearing affecting understanding of speech
+CAPD,Central Auditory Processing Disorder,Difficulty processing sounds in the brain despite normal peripheral hearing
+HA,Hearing Aid,Electronic device amplifying sound for individuals with hearing loss
+CI,Cochlear Implant,Surgically implanted electronic device providing sound signals to the brain for individuals with severe hearing loss
+GT,Gastrostomy Tube,Tube inserted through abdomen into stomach for feeding when oral intake is insufficient
+NG Tube,Nasogastric Tube,Tube inserted through nose into stomach for feeding or medication administration
+OSERS,Office of Special Education and Rehabilitative Services,Federal office overseeing special education and vocational rehabilitation programs
+SEA,State Education Agency,State-level department responsible for overseeing public education within the state
+CDE,California Department of Education,State agency overseeing public education in California or equivalent state education department
+DP,Due Process,Legal procedure ensuring fair treatment when disputes arise between parents and school districts regarding special education
+DPH,Due Process Hearing,Formal legal proceeding to resolve disputes between parents and schools regarding special education services
+IEE,Independent Educational Evaluation,Assessment conducted by qualified examiner not employed by school district at public expense when parents disagree with district evaluation
+MOE,Maintenance of Effort,Federal requirement that school districts maintain spending levels for special education from year to year
+LMS,Learning Management System,Software application for administration documentation tracking and delivery of educational courses or training programs
+TTS,Text-to-Speech,Technology that converts written text into spoken words
+STT,Speech-to-Text,Technology that converts spoken words into written text
+OCR,Optical Character Recognition,Technology converting printed or handwritten text into digital format that can be read by screen readers
+EL,English Learner,Student whose primary language is not English and is learning English as an additional language
+LEP,Limited English Proficient,Student with limited ability in reading writing speaking or understanding English
+FEP,Fluent English Proficient,Student who has achieved English language proficiency
+RFEP,Reclassified Fluent English Proficient,English learner who has been reclassified as fluent after meeting proficiency criteria
+IFEP,Initially Fluent English Proficient,Student identified as English proficient upon initial assessment
+ELD,English Language Development,Instruction specifically designed to advance English language proficiency
+CELDT,California English Language Development Test,Assessment used to identify and monitor English learners (predecessor to ELPAC)
+BICS,Basic Interpersonal Communication Skills,Social language used in everyday face-to-face interactions typically acquired in 1-3 years
+CALP,Cognitive Academic Language Proficiency,Academic language needed for school success typically taking 5-7 years to develop
+LTEL,Long-Term English Learner,Student who has been classified as English learner for six or more years without reaching proficiency
+ADA,Average Daily Attendance,Funding metric based on average number of students attending school each day
+LCAP,Local Control and Accountability Plan,Three-year plan describing goals actions and expenditures to support student outcomes
+LCFF,Local Control Funding Formula,California's school financing system providing base funding plus supplemental and concentration grants
+PWE,Paid Work Experience,Program providing students with disabilities paid employment opportunities to develop job skills
+DOR,Department of Rehabilitation,State agency providing vocational rehabilitation services to individuals with disabilities
+VR,Vocational Rehabilitation,Services helping individuals with disabilities prepare for obtain or retain employment
+RC,Regional Center,Agency providing services to individuals with developmental disabilities throughout their lifetime
+SSI,Supplemental Security Income,Federal program providing monthly payments to individuals with disabilities who have limited income and resources
+SSDI,Social Security Disability Insurance,Federal program providing benefits to disabled individuals who have worked and paid Social Security taxes
+ILS,Independent Living Skills,Skills necessary for daily functioning such as cooking cleaning money management and personal care
