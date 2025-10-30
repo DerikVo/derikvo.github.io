@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PDF Question Extractor - N2Y Adaptation Tools - Derik Vo</title>
 
-    <!-- SEO Meta Tags -->
+    <!-- SEO -->
     <meta
       name="description"
-      content="Free PDF question extractor tool for special education. Extract and enlarge individual questions from worksheets for better accessibility."
+      content="Free PDF Question Extractor for special education. Extract and enlarge individual questions from worksheets for accessibility."
     />
     <meta
       name="keywords"
-      content="PDF question extractor, worksheet adapter, special education tools, accessibility, N2Y, teaching tools, Derik Vo"
+      content="PDF question extractor, worksheet adapter, accessibility, N2Y, Derik Vo, special education tools"
     />
     <meta name="author" content="Derik Vo" />
     <meta name="robots" content="index, follow" />
 
+    <!-- Theme initialization -->
     <script>
       if (
         localStorage.getItem("color-theme") === "dark" ||
@@ -28,49 +29,67 @@
         document.documentElement.classList.remove("dark");
       }
     </script>
+
+    <!-- Site CSS -->
     <link rel="stylesheet" href="style.css" />
+
     <style>
-      .app-container {
-        width: 100%;
-        height: 100vh;
-        min-height: 800px;
+      /* Launch button styling */
+      .launch-button {
+        display: inline-block;
+        background-color: var(--primary-color, #007bff);
+        color: white;
+        padding: 14px 28px;
+        font-size: 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
         border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2);
+      }
+
+      .launch-button:hover {
+        background-color: var(--primary-hover, #0056b3);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 123, 255, 0.3);
+        color: white;
+        text-decoration: none;
+      }
+
+      /* Launch section styling */
+      .launch-section {
+        text-align: center;
+        padding: 40px 20px;
         border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin: 20px 0;
+        background: var(
+          --card-bg,
+          linear-gradient(135deg, #007bff15, #28a74515)
+        );
+        box-shadow: var(--card-shadow, 0 2px 8px rgba(0, 0, 0, 0.1));
+        margin: 2rem 0;
       }
 
-      .loading-overlay {
-        position: relative;
-        width: 100%;
-        height: 800px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #f8f9fa;
-        border-radius: 8px;
+      /* Dark mode adjustments */
+      html.dark .launch-button {
+        background-color: #339cff;
+        color: white;
       }
 
-      .loading-spinner {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #007bff;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 1s linear infinite;
+      html.dark .launch-button:hover {
+        background-color: #1a73e8;
+        color: white;
       }
 
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
+      html.dark .launch-section {
+        background: linear-gradient(135deg, #00408040, #007bff20);
       }
     </style>
   </head>
+
   <body>
+    <!-- HEADER / NAVIGATION -->
     <header>
       <nav class="sticky">
         <div class="container">
@@ -107,12 +126,11 @@
             <li class="dropdown">
               <a href="#" class="dropbtn">N2Y Adaptation Tools ▼</a>
               <div class="dropdown-content">
-                <a href="n2y-tools.html">Tools Overview</a>
                 <a href="n2y-question-extractor.html">Question Extractor</a>
-                <a href="n2y-worksheet-adapter.html">Worksheet Adapter</a>
               </div>
             </li>
           </ul>
+          <!-- Add theme toggle button -->
           <button id="theme-toggle" type="button" class="theme-toggle-button">
             <svg
               id="theme-toggle-dark-icon"
@@ -141,62 +159,50 @@
       </nav>
     </header>
 
+    <!-- MAIN CONTENT -->
     <main class="container">
-      <h1>📄 PDF Question Extractor</h1>
+      <h1>PDF Question Extractor</h1>
 
       <div class="content-section">
         <p>
-          Extract individual questions from PDF worksheets and enlarge them for
-          better accessibility. This tool uses OCR technology to automatically
-          detect questions and create one-question-per-page PDFs with adjustable
-          sizing.
+          This free tool extracts individual questions from PDF worksheets and
+          enlarges them for better accessibility. It uses OCR (Optical Character
+          Recognition) to detect question numbers and automatically create
+          one-question-per-page PDFs.
         </p>
       </div>
 
-      <div class="content-section">
-        <div id="loading" class="loading-overlay">
-          <div>
-            <div class="loading-spinner"></div>
-            <p style="margin-top: 20px; color: #666">Loading application...</p>
-          </div>
-        </div>
-
-        <!-- Replace YOUR_STREAMLIT_APP_URL with your actual deployed Streamlit app URL -->
-        <!-- For example: https://your-app.streamlit.app or your custom domain -->
-        <iframe
-          id="streamlit-app"
-          src="https://n2y-pdf-question-extractor.streamlit.app/"
-          class="app-container"
-          style="display: none"
-          onload="document.getElementById('loading').style.display='none'; this.style.display='block';"
-        ></iframe>
+      <div class="content-section launch-section">
+        <a
+          href="https://n2y-pdf-question-extractor.streamlit.app/"
+          target="_blank"
+          class="launch-button"
+        >
+          Launch the PDF Question Extractor
+        </a>
+        <p style="margin-top: 12px; color: var(--text-muted, #666)">
+          Opens securely in a new tab on Streamlit Cloud
+        </p>
       </div>
 
-      <div
-        class="content-section"
-        style="background-color: #f8f9fa; padding: 20px; border-radius: 8px"
-      >
+      <div class="content-section how-to-box">
         <h3>How to Use This Tool</h3>
         <ol style="line-height: 1.8">
           <li>
             <strong>Upload PDF:</strong> Click the upload button and select your
-            PDF worksheet
+            worksheet.
           </li>
           <li>
-            <strong>Select Page:</strong> Choose which page contains the
-            questions you want to extract
+            <strong>Select Page:</strong> Choose the page that contains the
+            questions.
           </li>
           <li>
-            <strong>Set Enlargement:</strong> Use the slider to adjust how much
-            to enlarge the questions (1x-10x)
+            <strong>Process:</strong> Click <em>"Process PDF"</em> to extract
+            and enlarge questions automatically.
           </li>
           <li>
-            <strong>Process:</strong> Click "Process PDF" and wait for the tool
-            to extract questions
-          </li>
-          <li>
-            <strong>Download:</strong> Download your new PDF with one enlarged
-            question per page
+            <strong>Download:</strong> Download your new PDF — each page shows
+            one question at 1× scale.
           </li>
         </ol>
       </div>
@@ -205,37 +211,69 @@
         <h3>Tips for Best Results</h3>
         <ul style="line-height: 1.8">
           <li>
-            Use PDFs with clearly numbered questions (e.g., "1.", "2.",
-            "Question 1")
+            Use PDFs with clearly numbered questions (e.g., "1.", "2)",
+            "Question 3").
           </li>
-          <li>Ensure questions are well-spaced on the original page</li>
-          <li>
-            Start with a smaller enlargement factor (4x-6x) and adjust as needed
-          </li>
-          <li>
-            For students with visual impairments, try larger factors (8x-10x)
-          </li>
-          <li>
-            The tool works best with text-based PDFs, but also supports scanned
-            documents via OCR
-          </li>
+          <li>Ensure questions are visually separated on the page.</li>
+          <li>The tool works with both text-based and scanned PDFs via OCR.</li>
+          <li>Processing time may vary depending on page complexity.</li>
         </ul>
-      </div>
-
-      <div class="content-section">
-        <p style="text-align: center">
-          <a href="n2y-tools.html" style="color: #007bff; text-decoration: none"
-            >← Back to N2Y Adaptation Tools</a
-          >
-        </p>
       </div>
     </main>
 
+    <!-- FOOTER -->
     <footer>
-      <div class="container">
-        <p>&copy; 2025 Derik Vo</p>
-      </div>
+      <p>&copy; 2025 Derik Vo | N2Y Adaptation Tools</p>
     </footer>
-    <script src="script.js"></script>
+
+    <!-- Add the theme toggle script -->
+    <script>
+      var themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+      );
+      var themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+      );
+
+      // Change the icons inside the button based on previous settings
+      if (
+        localStorage.getItem("color-theme") === "dark" ||
+        (!("color-theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        themeToggleLightIcon.classList.remove("hidden");
+      } else {
+        themeToggleDarkIcon.classList.remove("hidden");
+      }
+
+      var themeToggleBtn = document.getElementById("theme-toggle");
+
+      themeToggleBtn.addEventListener("click", function () {
+        // toggle icons
+        themeToggleDarkIcon.classList.toggle("hidden");
+        themeToggleLightIcon.classList.toggle("hidden");
+
+        // if set via local storage previously
+        if (localStorage.getItem("color-theme")) {
+          if (localStorage.getItem("color-theme") === "light") {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("color-theme", "dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("color-theme", "light");
+          }
+
+          // if NOT set via local storage previously
+        } else {
+          if (document.documentElement.classList.contains("dark")) {
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("color-theme", "light");
+          } else {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("color-theme", "dark");
+          }
+        }
+      });
+    </script>
   </body>
 </html>
